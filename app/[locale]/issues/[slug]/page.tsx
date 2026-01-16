@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowDown, ArrowRight } from 'lucide-react';
-import { SiteLayout } from '@/components/site-layout';
-import { ReadIssueButton } from '@/components/read-issue-button';
-import { IssueCard } from '@/components/issue-card';
-import { getIssueBySlug, getAllIssues } from '@/content/data/issues';
-import { getSponsorsByIds } from '@/content/data/sponsors';
-import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
-import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowDown, ArrowRight } from "lucide-react";
+import { SiteLayout } from "@/components/site-layout";
+import { ReadIssueButton } from "@/components/read-issue-button";
+import { IssueCard } from "@/components/issue-card";
+import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
+import { getSponsorsByIds } from "@/content/data/sponsors";
+import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
+import { issueTranslations as ptIssueTranslations } from "@/content/i18n/pt/issues";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -30,12 +30,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!issue) {
     return {
-      title: 'Issue Not Found',
+      title: "Issue Not Found",
     };
   }
 
   const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+    locale === "pt" ? ptIssueTranslations : enIssueTranslations;
   const translation = issueTranslations[issue.id];
 
   return {
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${translation.title} | Blue Mind Magazine`,
       description: translation.description,
-      type: 'article',
+      type: "article",
       publishedTime: issue.date,
     },
   };
@@ -60,13 +60,13 @@ export default async function IssueDetailPage({ params }: Props) {
     notFound();
   }
 
-  const t = await getTranslations('Issues');
-  const tCommon = await getTranslations('Common');
+  const t = await getTranslations("Issues");
+  const tCommon = await getTranslations("Common");
   const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+    locale === "pt" ? ptIssueTranslations : enIssueTranslations;
   const translation = issueTranslations[issue.id];
   const sponsors = getSponsorsByIds(issue.sponsors);
-  const flipbookUrl = locale === 'pt' ? issue.flipbook.pt : issue.flipbook.en;
+  const flipbookUrl = locale === "pt" ? issue.flipbook.pt : issue.flipbook.en;
 
   // Get other issues for "More Issues" section
   const allIssues = getAllIssues();
@@ -98,10 +98,10 @@ export default async function IssueDetailPage({ params }: Props) {
                     className="absolute -top-3 -right-3 px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full shadow-lg"
                     style={{
                       backgroundColor: issue.accentColor,
-                      color: '#ffffff',
+                      color: "#ffffff",
                     }}
                   >
-                    {t('current')}
+                    {t("current")}
                   </div>
                 )}
               </div>
@@ -128,13 +128,13 @@ export default async function IssueDetailPage({ params }: Props) {
               <ReadIssueButton
                 flipbookUrl={flipbookUrl}
                 issueTitle={translation.title}
-                label={t('readIssue')}
+                label={t("readIssue")}
               />
 
               {/* Sections */}
               <div className="mt-12 pt-8 border-t border-border">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
-                  {t('sections')}
+                  {t("sections")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {issue.sections.map((section) => (
@@ -151,70 +151,77 @@ export default async function IssueDetailPage({ params }: Props) {
               {/* Scroll indicator */}
               <div className="hidden lg:flex items-center gap-2 mt-16 text-muted-foreground">
                 <ArrowDown className="w-4 h-4" />
-                <span className="text-sm">{t('features')}</span>
+                <span className="text-sm">{t("features")}</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features/Highlights Section */}
-      <section id="features" className="py-16 md:py-24 border-t border-border">
-        <div className="container-editorial">
-          <h2 className="headline text-3xl md:text-4xl mb-12">
-            {t('features')}
-          </h2>
+      {/* Features/Highlights Section - Surfer's Journal Style */}
+      <section id="features" className="border-t border-border">
+        {/* Section Header */}
+        <div className="container-editorial py-8 md:py-12">
+          <h2 className="headline text-3xl md:text-4xl">{t("features")}</h2>
+        </div>
 
-          <div className="space-y-12 md:space-y-16">
-            {issue.highlights.map((highlight, index) => {
-              const highlightTranslation = translation.highlights[highlight.id];
+        {/* Full-width Feature Cards */}
+        <div className="space-y-0">
+          {issue.highlights.map((highlight) => {
+            const highlightTranslation = translation.highlights[highlight.id];
+            if (!highlightTranslation) return null;
 
-              if (!highlightTranslation) return null;
+            return (
+              <article
+                key={highlight.id}
+                className="group relative w-full overflow-hidden"
+              >
+                {/* Full-width Image Container */}
+                <div className="relative aspect-[2/1] md:aspect-[21/9] w-full">
+                  <Image
+                    src={highlight.image}
+                    alt={highlightTranslation.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                    sizes="100vw"
+                  />
 
-              const isReversed = index % 2 === 1;
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-              return (
-                <article
-                  key={highlight.id}
-                  className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
-                >
-                  {/* Feature Image */}
-                  <div className={isReversed ? 'md:order-2' : ''}>
-                    <div className="relative aspect-[16/10] overflow-hidden rounded shadow-editorial">
-                      <Image
-                        src={highlight.image}
-                        alt={highlightTranslation.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div
-                      className="inline-block mt-3 px-2 py-1 text-xs font-medium rounded"
-                      style={{
-                        backgroundColor: issue.accentColor,
-                        color: '#ffffff',
-                      }}
-                    >
-                      {t('page')} {highlight.page}
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 flex items-end">
+                    <div className="w-full p-6 md:p-10 lg:p-16">
+                      <div className="max-w-4xl">
+                        {/* Page Number */}
+                        <p
+                          className="text-sm font-medium uppercase tracking-widest mb-3"
+                          style={{ color: issue.accentColor }}
+                        >
+                          {t("page")} {highlight.page}
+                        </p>
+
+                        {/* Title */}
+                        <h3 className="headline text-2xl md:text-4xl lg:text-5xl text-white mb-4">
+                          {highlightTranslation.title}
+                        </h3>
+
+                        {/* Excerpt */}
+                        <p className="text-white/80 text-base md:text-lg max-w-2xl mb-3 leading-relaxed">
+                          {highlightTranslation.excerpt}
+                        </p>
+
+                        {/* Author */}
+                        <p className="text-white/60 text-sm italic">
+                          {t("by")} {highlightTranslation.author}
+                        </p>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Content */}
-                  <div className={isReversed ? 'md:order-1' : ''}>
-                    <h3 className="headline text-2xl md:text-3xl mb-4">
-                      {highlightTranslation.title}
-                    </h3>
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
-                      {highlightTranslation.excerpt}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('by')} {highlightTranslation.author}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -223,17 +230,17 @@ export default async function IssueDetailPage({ params }: Props) {
         <div className="container-editorial">
           <div className="max-w-xl mx-auto text-center">
             <h2 className="headline text-3xl md:text-4xl mb-6">
-              {locale === 'pt' ? 'Pronto para ler?' : 'Ready to read?'}
+              {locale === "pt" ? "Pronto para ler?" : "Ready to read?"}
             </h2>
             <p className="text-muted-foreground mb-8">
-              {locale === 'pt'
-                ? 'Abra a edição completa no nosso visualizador de flipbook imersivo.'
-                : 'Open the full issue in our immersive flipbook viewer.'}
+              {locale === "pt"
+                ? "Abra a edição completa no nosso visualizador de flipbook imersivo."
+                : "Open the full issue in our immersive flipbook viewer."}
             </p>
             <ReadIssueButton
               flipbookUrl={flipbookUrl}
               issueTitle={translation.title}
-              label={t('readIssue')}
+              label={t("readIssue")}
             />
           </div>
         </div>
@@ -245,7 +252,7 @@ export default async function IssueDetailPage({ params }: Props) {
           <div className="container-editorial">
             <div className="text-center">
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-6">
-                {t('supportedBy')}
+                {t("supportedBy")}
               </p>
               <div className="flex flex-wrap justify-center items-center gap-8">
                 {sponsors.map((sponsor) => (
@@ -277,13 +284,13 @@ export default async function IssueDetailPage({ params }: Props) {
           <div className="container-editorial">
             <div className="flex items-center justify-between mb-12">
               <h2 className="headline text-2xl md:text-3xl">
-                {locale === 'pt' ? 'Mais Edições' : 'More Issues'}
+                {locale === "pt" ? "Mais Edições" : "More Issues"}
               </h2>
               <Link
                 href="/issues"
                 className="text-sm font-medium text-muted-foreground hover:text-brand transition-fast flex items-center gap-1"
               >
-                {tCommon('viewAll')}
+                {tCommon("viewAll")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
