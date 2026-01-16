@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================
-   BLUE MIND MAGAZINE - BRAND THEME
+   BLUE MIND MAGAZINE - PREMIUM WHITE THEME
    ============================================ */
 
 @theme inline {
@@ -44,35 +44,42 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
+  
+  /* Snappy Transitions */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 /* ============================================
-   DARK MODE (DEFAULT) - Editorial Black & White
+   LIGHT MODE (DEFAULT) - Premium White Editorial
    ============================================ */
 :root {
-  /* Base colors - Dark mode default */
-  --background: #000000;
-  --foreground: #ffffff;
+  /* Pure white base */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
   
-  /* Card - slightly elevated */
-  --card: #0a0a0a;
-  --card-foreground: #ffffff;
+  /* Subtle card elevation */
+  --card: #fafafa;
+  --card-foreground: #0a0a0a;
   
   /* Popover */
-  --popover: #0a0a0a;
-  --popover-foreground: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
   
   /* Primary - Brand turquoise */
   --primary: #0097B2;
   --primary-foreground: #ffffff;
   
-  /* Secondary - Subtle gray */
-  --secondary: #1a1a1a;
-  --secondary-foreground: #ffffff;
+  /* Secondary - Very subtle gray */
+  --secondary: #f8f8f8;
+  --secondary-foreground: #0a0a0a;
   
-  /* Muted */
-  --muted: #1a1a1a;
-  --muted-foreground: #a1a1a1;
+  /* Muted - Light gray for backgrounds */
+  --muted: #f5f5f5;
+  --muted-foreground: #666666;
   
   /* Accent - Dynamic per issue (default: turquoise) */
   --accent: #0097B2;
@@ -85,36 +92,36 @@
   /* Destructive */
   --destructive: #dc2626;
   
-  /* Borders */
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
+  /* Borders - Super subtle */
+  --border: rgba(0, 0, 0, 0.06);
+  --input: rgba(0, 0, 0, 0.08);
   --ring: #0097B2;
   
   /* Radius */
-  --radius: 0.5rem;
+  --radius: 0.375rem;
 }
 
 /* ============================================
-   LIGHT MODE - Clean white editorial
+   DARK MODE - Editorial Black
    ============================================ */
-.light {
-  --background: #ffffff;
-  --foreground: #000000;
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
   
-  --card: #fafafa;
-  --card-foreground: #000000;
+  --card: #141414;
+  --card-foreground: #fafafa;
   
-  --popover: #ffffff;
-  --popover-foreground: #000000;
+  --popover: #141414;
+  --popover-foreground: #fafafa;
   
   --primary: #0097B2;
   --primary-foreground: #ffffff;
   
-  --secondary: #f5f5f5;
-  --secondary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #fafafa;
   
-  --muted: #f5f5f5;
-  --muted-foreground: #6b7280;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1a1;
   
   --accent: #0097B2;
   --accent-foreground: #ffffff;
@@ -124,8 +131,8 @@
   
   --destructive: #dc2626;
   
-  --border: rgba(0, 0, 0, 0.1);
-  --input: rgba(0, 0, 0, 0.1);
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.1);
   --ring: #0097B2;
 }
 
@@ -159,15 +166,15 @@
   }
   
   h1 {
-    @apply text-5xl md:text-7xl lg:text-8xl;
+    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
   }
   
   h2 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-3xl sm:text-4xl md:text-5xl;
   }
   
   h3 {
-    @apply text-2xl md:text-3xl lg:text-4xl;
+    @apply text-2xl md:text-3xl;
   }
   
   h4 {
@@ -182,6 +189,36 @@
   ::selection {
     background-color: var(--brand);
     color: var(--brand-foreground);
+  }
+}
+
+/* ============================================
+   SNAPPY INTERACTIVE STYLES
+   ============================================ */
+@layer base {
+  /* All interactive elements get snappy transitions */
+  a, button, [role="button"] {
+    transition: all var(--transition-fast) var(--ease-out);
+  }
+  
+  /* Hover states - subtle lift */
+  a:hover, button:hover, [role="button"]:hover {
+    transform: translateY(-1px);
+  }
+  
+  a:active, button:active, [role="button"]:active {
+    transform: translateY(0);
+  }
+  
+  /* Focus states */
+  a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  
+  /* Image hover zoom */
+  img {
+    transition: transform var(--transition-base) var(--ease-out);
   }
 }
 
@@ -215,6 +252,10 @@
     @apply mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8;
   }
   
+  .container-wide {
+    @apply mx-auto w-full max-w-[90rem] px-4 sm:px-6 lg:px-8;
+  }
+  
   /* Typography utilities */
   .headline {
     font-family: var(--font-headline), system-ui, sans-serif;
@@ -245,62 +286,99 @@
     transform-style: preserve-3d;
   }
   
-  /* Smooth transitions */
-  .transition-brand {
-    @apply transition-all duration-300 ease-out;
+  /* Snappy transition utilities */
+  .transition-fast {
+    transition: all var(--transition-fast) var(--ease-out);
   }
   
-  /* Text gradient */
-  .text-gradient-brand {
-    background: linear-gradient(135deg, var(--brand) 0%, var(--foreground) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .transition-base {
+    transition: all var(--transition-base) var(--ease-out);
   }
   
-  /* Glow effect */
+  .transition-slow {
+    transition: all var(--transition-slow) var(--ease-out);
+  }
+  
+  /* Hover lift effect */
+  .hover-lift {
+    transition: transform var(--transition-fast) var(--ease-out),
+                box-shadow var(--transition-fast) var(--ease-out);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Subtle card shadow */
+  .shadow-editorial {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
+                0 6px 16px rgba(0, 0, 0, 0.04);
+  }
+  
+  .shadow-editorial-lg {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
+                0 12px 40px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Brand glow (subtle) */
   .glow-brand {
-    box-shadow: 0 0 20px rgba(0, 151, 178, 0.3);
+    box-shadow: 0 0 30px -10px var(--brand);
   }
 }
 
 /* ============================================
-   ANIMATION UTILITIES
+   ANIMATION UTILITIES - FAST & PURPOSEFUL
    ============================================ */
 @layer utilities {
-  /* Fade in animation */
+  /* Quick fade in */
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: fadeIn var(--transition-base) var(--ease-out) forwards;
   }
   
   .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: fadeInUp var(--transition-base) var(--ease-out) forwards;
   }
   
-  /* Stagger children animations */
-  .stagger-children > * {
-    opacity: 0;
-    animation: fadeInUp 0.5s ease-out forwards;
+  /* Scale in for modals */
+  .animate-scale-in {
+    animation: scaleIn var(--transition-base) var(--ease-out) forwards;
   }
   
-  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
-  .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
-  .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+  /* Slide in */
+  .animate-slide-up {
+    animation: slideUp var(--transition-base) var(--ease-out) forwards;
+  }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -312,23 +390,91 @@
 }
 
 /* ============================================
-   FLIPBOOK VIEWER STYLES
+   FLIPBOOK MODAL STYLES
    ============================================ */
-.flipbook-container {
-  @apply relative w-full overflow-hidden rounded-lg;
-  aspect-ratio: 16 / 10;
+.flipbook-modal-backdrop {
+  @apply fixed inset-0 z-50;
+  background: rgba(0, 0, 0, 0.95);
+  animation: fadeIn var(--transition-base) var(--ease-out) forwards;
 }
 
-.flipbook-container iframe {
-  @apply absolute inset-0 h-full w-full;
-  border: none;
+.flipbook-modal-content {
+  @apply fixed inset-4 z-50 flex items-center justify-center;
+  animation: scaleIn var(--transition-base) var(--ease-out) forwards;
 }
 
-/* Fullscreen flipbook */
-.flipbook-fullscreen {
-  @apply fixed inset-0 z-50 bg-black;
+.flipbook-modal-content iframe {
+  @apply h-full w-full rounded-lg;
+  max-height: calc(100vh - 2rem);
+  max-width: calc(100vw - 2rem);
 }
 
-.flipbook-fullscreen iframe {
-  @apply h-full w-full;
+/* ============================================
+   ISSUE CARD 3D TILT STYLES
+   ============================================ */
+.issue-card-container {
+  perspective: 1000px;
+}
+
+.issue-card {
+  transform-style: preserve-3d;
+  transition: transform var(--transition-base) var(--ease-out);
+}
+
+/* Magazine cover shadow */
+.cover-shadow {
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+.cover-shadow:hover {
+  box-shadow: 
+    0 8px 12px rgba(0, 0, 0, 0.08),
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    0 30px 80px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   PROSE STYLES FOR MDX CONTENT
+   ============================================ */
+.prose-editorial {
+  @apply text-foreground;
+}
+
+.prose-editorial h2 {
+  @apply mt-12 mb-4 text-2xl font-normal tracking-wide;
+}
+
+.prose-editorial h3 {
+  @apply mt-8 mb-3 text-xl font-normal tracking-wide;
+}
+
+.prose-editorial p {
+  @apply mb-4 leading-relaxed text-muted-foreground;
+}
+
+.prose-editorial strong {
+  @apply font-semibold text-foreground;
+}
+
+.prose-editorial ul, .prose-editorial ol {
+  @apply mb-4 pl-6;
+}
+
+.prose-editorial li {
+  @apply mb-2 text-muted-foreground;
+}
+
+.prose-editorial a {
+  @apply text-brand underline-offset-2 hover:underline;
+}
+
+.prose-editorial hr {
+  @apply my-8 border-border;
+}
+
+.prose-editorial blockquote {
+  @apply border-l-2 border-brand pl-4 italic text-muted-foreground;
 }

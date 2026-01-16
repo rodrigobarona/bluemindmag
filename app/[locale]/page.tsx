@@ -1,12 +1,11 @@
-import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
-import Image from 'next/image';
+import { ArrowRight } from 'lucide-react';
 import { SiteLayout } from '@/components/site-layout';
-import { IssueCard } from '@/components/issue-card';
+import { IssueCardFeatured, IssueCard } from '@/components/issue-card';
 import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
-import type { Locale } from '@/content/types/content';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -17,6 +16,7 @@ export default async function HomePage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
+  const tCommon = await getTranslations('Common');
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
 
@@ -26,52 +26,40 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <SiteLayout>
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-transparent" />
-
-        {/* Background pattern */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }}
-        />
-
-        <div className="container-editorial relative z-10 py-20 md:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      {/* Hero Section - Clean and editorial */}
+      <section className="py-20 md:py-32 lg:py-40">
+        <div className="container-editorial">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Text Content */}
             <div className="text-center lg:text-left order-2 lg:order-1">
-              <p className="text-brand font-medium uppercase tracking-widest mb-4 animate-fade-in">
+              <p className="text-sm font-medium uppercase tracking-widest text-brand mb-6">
                 {t('hero.subtitle')}
               </p>
 
-              <h1 className="headline text-6xl md:text-8xl lg:text-9xl mb-6 animate-fade-in-up">
+              <h1 className="headline text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-6">
                 {t('hero.title')}
               </h1>
 
-              <p className="text-xl md:text-2xl text-muted-foreground mb-4 italic animate-fade-in-up">
+              <p className="text-lg md:text-xl text-muted-foreground mb-4 italic">
                 {t('hero.tagline')}
               </p>
 
-              <p className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-8 animate-fade-in-up">
+              <p className="text-muted-foreground max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">
                 {t('hero.description')}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 {currentIssue && (
                   <Link
                     href={`/issues/${currentIssue.slug}`}
-                    className="bg-brand text-brand-foreground px-8 py-4 rounded-full font-medium transition-all hover:opacity-90 hover:scale-105 text-center"
+                    className="bg-foreground text-background px-8 py-4 text-sm font-medium transition-fast hover:bg-brand text-center"
                   >
                     {t('hero.cta')}
                   </Link>
                 )}
                 <Link
-                  href="/issues"
-                  className="border border-foreground/20 px-8 py-4 rounded-full font-medium transition-all hover:bg-foreground/5 text-center"
+                  href="/about"
+                  className="border border-border px-8 py-4 text-sm font-medium transition-fast hover:border-foreground text-center"
                 >
                   {t('hero.secondary')}
                 </Link>
@@ -82,56 +70,59 @@ export default async function HomePage({ params }: Props) {
             {currentIssue && (
               <div className="order-1 lg:order-2 flex justify-center">
                 <div className="w-full max-w-sm">
-                  <IssueCard
+                  <IssueCardFeatured
                     issue={currentIssue}
                     translation={issueTranslations[currentIssue.id]}
                     priority
                   />
+                  <div className="mt-6 text-center">
+                    <p className="headline text-xl">
+                      {issueTranslations[currentIssue.id].title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {issueTranslations[currentIssue.id].subtitle}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-1">
-            <div className="w-1 h-2 bg-muted-foreground/50 rounded-full animate-pulse" />
-          </div>
-        </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-20 md:py-32 bg-card border-y border-border">
-        <div className="container-editorial">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="headline text-4xl md:text-5xl mb-6">
+      {/* About Section - Minimal */}
+      <section className="py-20 md:py-32 border-t border-border">
+        <div className="container-narrow">
+          <div className="text-center">
+            <h2 className="headline text-3xl md:text-4xl mb-8">
               {t('about.title')}
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               {t('about.description')}
             </p>
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 mt-8 text-brand hover:underline font-medium"
+              className="inline-flex items-center gap-2 mt-8 text-sm font-medium text-foreground hover:text-brand transition-fast"
             >
-              Learn more about us →
+              {tCommon('learnMore')}
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Issues Archive Grid */}
+      {/* Past Issues Grid */}
       {issues.length > 1 && (
-        <section className="py-20 md:py-32">
+        <section className="py-20 md:py-32 border-t border-border bg-muted/30">
           <div className="container-editorial">
             <div className="flex items-center justify-between mb-12">
-              <h2 className="headline text-3xl md:text-4xl">{t('archive.title')}</h2>
+              <h2 className="headline text-2xl md:text-3xl">{t('archive.title')}</h2>
               <Link
                 href="/issues"
-                className="text-brand hover:underline font-medium"
+                className="text-sm font-medium text-muted-foreground hover:text-brand transition-fast flex items-center gap-1"
               >
-                {t('archive.viewAll')}
+                {tCommon('viewAll')}
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
@@ -149,29 +140,19 @@ export default async function HomePage({ params }: Props) {
         </section>
       )}
 
-      {/* Newsletter CTA Section */}
-      <section className="py-20 md:py-32 bg-brand/10 relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `radial-gradient(circle at 50% 50%, var(--brand) 0%, transparent 70%)`,
-            }}
-          />
-        </div>
-
-        <div className="container-editorial relative z-10">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="headline text-4xl md:text-5xl mb-6">
+      {/* Newsletter CTA - Simple */}
+      <section className="py-20 md:py-32 border-t border-border">
+        <div className="container-narrow">
+          <div className="text-center">
+            <h2 className="headline text-3xl md:text-4xl mb-6">
               {t('newsletter.title')}
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-muted-foreground mb-10 max-w-lg mx-auto">
               {t('newsletter.description')}
             </p>
             <Link
               href="/newsletter"
-              className="inline-flex bg-brand text-brand-foreground px-8 py-4 rounded-full font-medium transition-all hover:opacity-90 hover:scale-105"
+              className="inline-flex bg-foreground text-background px-8 py-4 text-sm font-medium transition-fast hover:bg-brand"
             >
               {t('newsletter.cta')}
             </Link>
