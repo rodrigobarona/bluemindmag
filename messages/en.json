@@ -1,0 +1,26 @@
+{
+  "Metadata": {
+    "title": "Blue Mind Magazine",
+    "description": "A magazine about the ocean and the mind"
+  },
+  "Common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "issues": "Issues"
+  }
+}
+
