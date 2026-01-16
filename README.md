@@ -1,0 +1,2 @@
+# bluemindmag
+Blue Mind Magazine
