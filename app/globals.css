@@ -259,8 +259,9 @@
   /* Typography utilities */
   .headline {
     font-family: var(--font-headline), system-ui, sans-serif;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.02em;
     line-height: 0.95;
   }
   

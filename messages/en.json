@@ -140,14 +140,31 @@
     "subtitle": "Where surf & science meet, delivered to your inbox",
     "description": "Join our community of surfers, scientists, and ocean enthusiasts. Get exclusive content, early access to new issues, and insights from the world of surf science.",
     "cta": "Subscribe Now",
+    "placeholder": "Enter your email",
+    "submit": "Subscribe",
+    "submitting": "Subscribing...",
+    "success": {
+      "title": "You're in!",
+      "description": "Check your inbox for a confirmation email."
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "generic": "Something went wrong. Please try again."
+    },
     "features": {
       "title": "What you'll get",
-      "items": [
-        "New issue announcements",
-        "Exclusive surf science insights",
-        "Community stories and events",
-        "Early access to content"
-      ]
+      "newIssues": "New issue announcements",
+      "exclusiveInsights": "Exclusive surf science insights",
+      "communityStories": "Community stories and events",
+      "earlyAccess": "Early access to content"
+    },
+    "freeNewsletter": "Free Newsletter",
+    "formTitle": "Newsletter Signup",
+    "privacyNote": "We respect your privacy. Unsubscribe at any time.",
+    "readFirst": {
+      "title": "Read First, Subscribe Second?",
+      "description": "Check out our latest issue before joining the community.",
+      "cta": "Browse Issues"
     }
   },
   "Legal": {

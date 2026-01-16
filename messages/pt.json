@@ -140,14 +140,31 @@
     "subtitle": "Onde surf e ciência se encontram, entregue na sua caixa de correio",
     "description": "Junte-se à nossa comunidade de surfistas, cientistas e entusiastas do oceano. Receba conteúdo exclusivo, acesso antecipado a novas edições e conhecimentos do mundo da ciência do surf.",
     "cta": "Subscrever Agora",
+    "placeholder": "Insira o seu email",
+    "submit": "Subscrever",
+    "submitting": "A subscrever...",
+    "success": {
+      "title": "Está dentro!",
+      "description": "Verifique a sua caixa de correio para um email de confirmação."
+    },
+    "errors": {
+      "invalidEmail": "Por favor insira um endereço de email válido",
+      "generic": "Algo correu mal. Por favor tente novamente."
+    },
     "features": {
       "title": "O que vai receber",
-      "items": [
-        "Anúncios de novas edições",
-        "Conhecimentos exclusivos de ciência do surf",
-        "Histórias e eventos da comunidade",
-        "Acesso antecipado a conteúdos"
-      ]
+      "newIssues": "Anúncios de novas edições",
+      "exclusiveInsights": "Conhecimentos exclusivos de ciência do surf",
+      "communityStories": "Histórias e eventos da comunidade",
+      "earlyAccess": "Acesso antecipado a conteúdos"
+    },
+    "freeNewsletter": "Newsletter Gratuita",
+    "formTitle": "Subscrição da Newsletter",
+    "privacyNote": "Respeitamos a sua privacidade. Cancele a subscrição a qualquer momento.",
+    "readFirst": {
+      "title": "Ler Primeiro, Subscrever Depois?",
+      "description": "Veja a nossa última edição antes de se juntar à comunidade.",
+      "cta": "Ver Edições"
     }
   },
   "Legal": {
