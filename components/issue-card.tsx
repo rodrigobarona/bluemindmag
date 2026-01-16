@@ -14,24 +14,24 @@ interface IssueCardProps {
 export function IssueCard({ issue, translation, priority = false }: IssueCardProps) {
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <article className="relative">
+      <article className="relative pb-8">
         <Tilt
-          tiltMaxAngleX={15}
-          tiltMaxAngleY={15}
-          scale={1.02}
-          transitionSpeed={400}
+          tiltMaxAngleX={12}
+          tiltMaxAngleY={12}
+          scale={1.03}
+          transitionSpeed={300}
           glareEnable={true}
-          glareMaxOpacity={0.15}
+          glareMaxOpacity={0.2}
           glarePosition="all"
-          glareBorderRadius="4px"
+          glareBorderRadius="6px"
           perspective={1000}
           className="relative"
         >
-          {/* Cover container */}
-          <div className="relative overflow-hidden rounded cover-shadow">
+          {/* Cover container with floating shadow */}
+          <div className="relative overflow-hidden rounded-md cover-shadow">
             {/* Accent border on hover */}
             <div
-              className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded"
+              className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none rounded-md"
               style={{
                 boxShadow: `inset 0 0 0 3px ${issue.accentColor}`,
               }}
@@ -43,7 +43,7 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
                 src={issue.cover}
                 alt={`${translation.title} cover`}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 priority={priority}
               />
@@ -65,7 +65,7 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
         </Tilt>
 
         {/* Issue info */}
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <h3 className="headline text-xl md:text-2xl transition-fast group-hover:text-brand">
             {translation.title}
           </h3>
@@ -82,24 +82,24 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
 export function IssueCardFeatured({ issue, translation, priority = true }: IssueCardProps) {
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <article className="relative">
+      <article className="relative pb-12">
         <Tilt
           tiltMaxAngleX={8}
           tiltMaxAngleY={8}
-          scale={1.01}
-          transitionSpeed={500}
+          scale={1.02}
+          transitionSpeed={400}
           glareEnable={true}
-          glareMaxOpacity={0.12}
+          glareMaxOpacity={0.15}
           glarePosition="all"
           glareBorderRadius="8px"
           perspective={1200}
           className="relative"
         >
-          {/* Cover container */}
-          <div className="relative overflow-hidden rounded-lg shadow-editorial-lg">
+          {/* Cover container with enhanced floating shadow */}
+          <div className="relative overflow-hidden rounded-lg cover-shadow-featured">
             {/* Accent border on hover */}
             <div
-              className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-lg"
+              className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none rounded-lg"
               style={{
                 boxShadow: `inset 0 0 0 4px ${issue.accentColor}`,
               }}
@@ -111,11 +111,24 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
                 src={issue.cover}
                 alt={`${translation.title} cover`}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority={priority}
               />
             </div>
+
+            {/* Current issue badge */}
+            {issue.isCurrent && (
+              <div
+                className="absolute top-4 right-4 z-20 px-4 py-2 text-sm font-bold uppercase tracking-wider rounded-full shadow-lg"
+                style={{
+                  backgroundColor: issue.accentColor,
+                  color: '#ffffff',
+                }}
+              >
+                Current Issue
+              </div>
+            )}
           </div>
         </Tilt>
       </article>
@@ -131,29 +144,32 @@ export function IssueCardSimple({
 }: IssueCardProps) {
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <article className="relative">
-        {/* Cover Image */}
-        <div
-          className="relative overflow-hidden rounded transition-fast hover-lift"
-          style={{
-            '--tw-ring-color': issue.accentColor,
-          } as React.CSSProperties}
-        >
-          <div className="aspect-magazine-cover relative bg-muted shadow-editorial">
+      <article className="relative pb-6">
+        {/* Cover Image with subtle shadow */}
+        <div className="relative overflow-hidden rounded-md cover-shadow transition-base">
+          <div className="aspect-magazine-cover relative bg-muted">
             <Image
               src={issue.cover}
               alt={`${translation.title} cover`}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={priority}
             />
           </div>
 
+          {/* Accent border on hover */}
+          <div
+            className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none rounded-md"
+            style={{
+              boxShadow: `inset 0 0 0 2px ${issue.accentColor}`,
+            }}
+          />
+
           {/* Current issue badge */}
           {issue.isCurrent && (
             <div
-              className="absolute top-3 right-3 z-10 px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+              className="absolute top-3 right-3 z-10 px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-full shadow-md"
               style={{
                 backgroundColor: issue.accentColor,
                 color: '#ffffff',
@@ -165,7 +181,7 @@ export function IssueCardSimple({
         </div>
 
         {/* Issue info */}
-        <div className="mt-4 text-center">
+        <div className="mt-6 text-center">
           <h3 className="headline text-lg md:text-xl transition-fast group-hover:text-brand">
             {translation.title}
           </h3>

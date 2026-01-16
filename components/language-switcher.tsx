@@ -1,13 +1,15 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
+import { usePathname, useRouter } from '@/i18n/navigation';
+import type { Locale } from '@/i18n/routing';
+import { cn } from '@/lib/utils';
 
-const locales = [
+const locales: { code: Locale; label: string; fullName: string }[] = [
   { code: 'en', label: 'EN', fullName: 'English' },
   { code: 'pt', label: 'PT', fullName: 'Português' },
-] as const;
+];
 
 interface LanguageSwitcherProps {
   variant?: 'default' | 'minimal';
@@ -16,49 +18,48 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({
   variant = 'default',
-  className = '',
+  className,
 }: LanguageSwitcherProps) {
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  const handleLocaleChange = (newLocale: string) => {
-    // Remove current locale prefix if present
-    let newPath = pathname;
-
-    // Handle paths that start with locale
-    if (pathname.startsWith('/en')) {
-      newPath = pathname.replace('/en', '') || '/';
-    } else if (pathname.startsWith('/pt')) {
-      newPath = pathname.replace('/pt', '') || '/';
-    }
-
-    // Build new path with new locale
-    const finalPath = newLocale === 'en' ? newPath : `/${newLocale}${newPath}`;
+  const handleLocaleChange = (newLocale: Locale) => {
+    if (newLocale === locale) return;
 
     startTransition(() => {
-      router.replace(finalPath);
+      router.replace(pathname, { locale: newLocale });
     });
   };
 
   if (variant === 'minimal') {
     return (
-      <div className={`flex items-center gap-1 text-sm ${className}`}>
+      <div
+        role="group"
+        aria-label="Language selection"
+        className={cn('flex items-center gap-1 text-sm', className)}
+      >
         {locales.map((loc, index) => (
           <span key={loc.code} className="flex items-center">
             {index > 0 && (
-              <span className="mx-1 text-muted-foreground">/</span>
+              <span className="mx-1 text-muted-foreground" aria-hidden="true">
+                /
+              </span>
             )}
             <button
+              type="button"
               onClick={() => handleLocaleChange(loc.code)}
-              disabled={isPending || locale === loc.code}
-              className={`transition-colors ${
+              disabled={isPending}
+              aria-pressed={locale === loc.code}
+              aria-label={`Switch language to ${loc.fullName}`}
+              className={cn(
+                'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm',
                 locale === loc.code
                   ? 'text-foreground font-medium'
-                  : 'text-muted-foreground hover:text-foreground'
-              } ${isPending ? 'opacity-50' : ''}`}
-              aria-label={`Switch to ${loc.fullName}`}
+                  : 'text-muted-foreground hover:text-foreground',
+                isPending && 'opacity-50 cursor-not-allowed'
+              )}
             >
               {loc.label}
             </button>
@@ -70,24 +71,39 @@ export function LanguageSwitcher({
 
   return (
     <div
-      className={`inline-flex items-center rounded-full border border-border bg-background/50 p-0.5 ${className}`}
+      role="tablist"
+      aria-label="Language selection"
+      className={cn(
+        'inline-flex items-center rounded-full border border-border bg-muted/50 p-0.5',
+        className
+      )}
     >
-      {locales.map((loc) => (
-        <button
-          key={loc.code}
-          onClick={() => handleLocaleChange(loc.code)}
-          disabled={isPending}
-          className={`rounded-full px-3 py-1 text-sm font-medium transition-all ${
-            locale === loc.code
-              ? 'bg-foreground text-background'
-              : 'text-muted-foreground hover:text-foreground'
-          } ${isPending ? 'opacity-50' : ''}`}
-          aria-label={`Switch to ${loc.fullName}`}
-        >
-          {loc.label}
-        </button>
-      ))}
+      {locales.map((loc) => {
+        const isActive = locale === loc.code;
+
+        return (
+          <button
+            key={loc.code}
+            type="button"
+            role="tab"
+            onClick={() => handleLocaleChange(loc.code)}
+            disabled={isPending}
+            aria-selected={isActive}
+            aria-label={`Switch language to ${loc.fullName}`}
+            tabIndex={isActive ? 0 : -1}
+            className={cn(
+              'rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              isActive
+                ? 'bg-foreground text-background shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/80',
+              isPending && 'opacity-50 cursor-not-allowed'
+            )}
+          >
+            {loc.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
-

@@ -140,25 +140,6 @@ export default async function HomePage({ params }: Props) {
         </section>
       )}
 
-      {/* Newsletter CTA - Simple */}
-      <section className="py-20 md:py-32 border-t border-border">
-        <div className="container-narrow">
-          <div className="text-center">
-            <h2 className="headline text-3xl md:text-4xl mb-6">
-              {t('newsletter.title')}
-            </h2>
-            <p className="text-muted-foreground mb-10 max-w-lg mx-auto">
-              {t('newsletter.description')}
-            </p>
-            <Link
-              href="/newsletter"
-              className="inline-flex bg-foreground text-background px-8 py-4 text-sm font-medium transition-fast hover:bg-brand"
-            >
-              {t('newsletter.cta')}
-            </Link>
-          </div>
-        </div>
-      </section>
     </SiteLayout>
   );
 }

@@ -1,9 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { IconCheck, IconMail, IconSparkles } from '@tabler/icons-react';
+import { IconCheck, IconSparkles } from '@tabler/icons-react';
 import { SiteLayout } from '@/components/site-layout';
-import { externalLinks } from '@/content/data/navigation';
+import { BeehiivEmbed } from '@/components/beehiiv-embed';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -38,7 +38,7 @@ export default async function NewsletterPage({ params }: Props) {
       <section className="py-20 md:py-32 relative overflow-hidden">
         {/* Background gradient */}
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-20"
           style={{
             background:
               'radial-gradient(circle at 50% 0%, var(--brand) 0%, transparent 50%)',
@@ -46,7 +46,7 @@ export default async function NewsletterPage({ params }: Props) {
         />
 
         <div className="container-editorial relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-2xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/10 rounded-full text-brand font-medium text-sm mb-6">
               <IconSparkles className="h-4 w-4" />
               Free Newsletter
@@ -58,20 +58,14 @@ export default async function NewsletterPage({ params }: Props) {
               {t('subtitle')}
             </p>
 
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-10">
               {t('description')}
             </p>
 
-            {/* Subscribe CTA */}
-            <a
-              href={externalLinks.beehiiv}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-brand text-brand-foreground px-8 py-4 rounded-full font-medium text-lg transition-all hover:opacity-90 hover:scale-105"
-            >
-              <IconMail className="h-5 w-5" />
-              {t('cta')}
-            </a>
+            {/* Beehiiv Subscribe Form */}
+            <div className="max-w-lg mx-auto">
+              <BeehiivEmbed />
+            </div>
           </div>
         </div>
       </section>
@@ -97,38 +91,6 @@ export default async function NewsletterPage({ params }: Props) {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Beehiiv Embed Section */}
-      <section className="py-20 md:py-32">
-        <div className="container-editorial">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="headline text-3xl md:text-4xl mb-6">
-              Subscribe Now
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Join thousands of surfers, scientists, and ocean enthusiasts
-              getting surf science in their inbox.
-            </p>
-
-            {/* Beehiiv embed iframe - replace with your actual embed code */}
-            <div className="bg-card border border-border rounded-lg p-8">
-              <iframe
-                src={`${externalLinks.beehiiv}?slim=true`}
-                data-test-id="beehiiv-embed"
-                height="52"
-                frameBorder="0"
-                scrolling="no"
-                className="w-full"
-                title="Subscribe to Blue Mind Magazine Newsletter"
-              />
-            </div>
-
-            <p className="text-sm text-muted-foreground mt-6">
-              We respect your privacy. Unsubscribe at any time.
-            </p>
           </div>
         </div>
       </section>

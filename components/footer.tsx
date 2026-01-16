@@ -6,6 +6,7 @@ import {
   socialLinks,
   siteConfig,
 } from "@/content/data/navigation";
+import { BeehiivInline } from "./beehiiv-embed";
 
 export function Footer() {
   const t = useTranslations("Navigation");
@@ -26,22 +27,17 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border">
-      {/* Newsletter CTA Section */}
+      {/* Newsletter Section with Beehiiv Form */}
       <div className="bg-muted/50">
-        <div className="container-editorial py-16 md:py-20">
-          <div className="max-w-xl mx-auto text-center">
-            <h3 className="headline text-2xl md:text-3xl mb-4">
+        <div className="container-editorial py-12 md:py-16">
+          <div className="max-w-md mx-auto text-center">
+            <h3 className="headline text-2xl md:text-3xl mb-3">
               {tFooter("newsletter.title")}
             </h3>
-            <p className="text-muted-foreground text-sm mb-8">
+            <p className="text-muted-foreground text-sm mb-6">
               {tFooter("newsletter.description")}
             </p>
-            <Link
-              href="/newsletter"
-              className="inline-flex bg-foreground text-background px-8 py-3 text-sm font-medium transition-fast hover:bg-brand"
-            >
-              {tFooter("newsletter.cta")}
-            </Link>
+            <BeehiivInline className="mx-auto" />
           </div>
         </div>
       </div>
