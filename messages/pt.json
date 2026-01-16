@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Blue Mind Magazine",
-    "description": "Uma revista sobre o oceano e a mente"
+    "description": "Surf Science: Onde o surf e a ciência se encontram. De surfistas, para surfistas."
   },
   "Common": {
     "loading": "A carregar...",
@@ -14,13 +14,164 @@
     "close": "Fechar",
     "back": "Voltar",
     "next": "Seguinte",
-    "previous": "Anterior"
+    "previous": "Anterior",
+    "readMore": "Ler Mais",
+    "viewAll": "Ver Tudo",
+    "subscribe": "Subscrever",
+    "learnMore": "Saber Mais"
   },
   "Navigation": {
     "home": "Início",
     "about": "Sobre",
     "contact": "Contacto",
-    "issues": "Edições"
+    "issues": "Edições",
+    "newsletter": "Newsletter",
+    "privacy": "Política de Privacidade",
+    "cookies": "Política de Cookies",
+    "terms": "Termos de Uso"
+  },
+  "Footer": {
+    "newsletter": {
+      "title": "Mantenha-se Informado",
+      "description": "Onde surf e ciência se encontram, entregue na sua caixa de correio.",
+      "cta": "Subscrever Newsletter"
+    },
+    "tagline": "Onde surf e ciência se encontram.",
+    "navigation": "Navegação",
+    "legal": "Legal",
+    "rights": "Todos os direitos reservados.",
+    "publishedBy": "Publicado por"
+  },
+  "Home": {
+    "hero": {
+      "title": "BLUE MIND",
+      "subtitle": "Revista de Ciência do Surf",
+      "tagline": "De surfistas, para surfistas",
+      "description": "Onde o surf e a ciência se encontram. Explorando a interseção entre desportos oceânicos, saúde humana e investigação científica.",
+      "cta": "Ler Edição Atual",
+      "secondary": "Explorar Edições"
+    },
+    "currentIssue": {
+      "label": "Edição Atual",
+      "readNow": "Ler Agora",
+      "preview": "Pré-visualizar"
+    },
+    "archive": {
+      "title": "Edições Anteriores",
+      "viewAll": "Ver Todas as Edições"
+    },
+    "newsletter": {
+      "title": "Não Perca uma Edição",
+      "description": "Subscreva a nossa newsletter para receber as últimas novidades em ciência do surf, conteúdo exclusivo e acesso antecipado a novas edições.",
+      "cta": "Subscrever Agora"
+    },
+    "about": {
+      "title": "Sobre a Blue Mind",
+      "description": "A Blue Mind Magazine faz a ponte entre a investigação científica e a comunidade surfista. Tornamos estudos complexos acessíveis enquanto celebramos o poder transformador do mar."
+    }
+  },
+  "Issues": {
+    "title": "Edições",
+    "subtitle": "O Arquivo",
+    "description": "Explore a nossa coleção de edições onde o surf e a ciência se encontram.",
+    "current": "Edição Atual",
+    "page": "Página",
+    "readIssue": "Ler Edição",
+    "features": "Destaques",
+    "by": "Por",
+    "supportedBy": "Apoiado por",
+    "sections": "Nesta edição"
+  },
+  "About": {
+    "title": "Sobre",
+    "subtitle": "A Nossa História",
+    "magazine": {
+      "title": "Sobre a Blue Mind",
+      "description": "A Blue Mind Magazine é onde o surf e a ciência se encontram. Exploramos a fascinante interseção entre desportos oceânicos, saúde humana e investigação científica."
+    },
+    "mission": {
+      "title": "A Nossa Missão",
+      "description": "Fazer a ponte entre a investigação científica e a comunidade surfista, tornando estudos complexos acessíveis e aplicáveis."
+    },
+    "editor": {
+      "title": "Editor-Chefe",
+      "name": "Pedro Seixas",
+      "credentials": "PT, PhD",
+      "bio": "Pedro Seixas é doutorado em Cinética Humana e serve como Coordenador Científico na Surfing Medicine International (SMI). Como fisioterapeuta e surfista apaixonado, fundou a Blue Mind Magazine para criar uma plataforma que une as suas duas maiores paixões: ciência e surf."
+    },
+    "publisher": {
+      "title": "Editora",
+      "name": "Surfisio",
+      "description": "A Surfisio é uma empresa especializada em fisioterapia e performance desportiva dedicada à comunidade surfista. Fundada em 2011 com a filosofia \"We Drop The Pain!\""
+    },
+    "supporters": {
+      "title": "Principal Apoiante",
+      "smi": {
+        "name": "Surfing Medicine International",
+        "description": "A SMI é uma organização sem fins lucrativos fundada por médicos e surfistas dedicados à ciência da medicina do surf."
+      }
+    }
+  },
+  "Contact": {
+    "title": "Entre em Contacto",
+    "subtitle": "Adoraríamos ouvir de si",
+    "description": "Se tem uma pergunta sobre a nossa revista, quer contribuir com um artigo, ou está interessado em oportunidades de parceria, estamos aqui para ajudar.",
+    "form": {
+      "name": "Nome",
+      "namePlaceholder": "O seu nome",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "subject": "Assunto",
+      "subjectPlaceholder": "Como podemos ajudar?",
+      "message": "Mensagem",
+      "messagePlaceholder": "A sua mensagem...",
+      "submit": "Enviar Mensagem",
+      "submitting": "A enviar...",
+      "success": "Obrigado! A sua mensagem foi enviada.",
+      "error": "Algo correu mal. Por favor tente novamente."
+    },
+    "info": {
+      "email": "info@bluemindmag.com",
+      "response": "Normalmente respondemos dentro de 48 horas."
+    }
+  },
+  "Newsletter": {
+    "title": "Mantenha-se Informado",
+    "subtitle": "Onde surf e ciência se encontram, entregue na sua caixa de correio",
+    "description": "Junte-se à nossa comunidade de surfistas, cientistas e entusiastas do oceano. Receba conteúdo exclusivo, acesso antecipado a novas edições e conhecimentos do mundo da ciência do surf.",
+    "cta": "Subscrever Agora",
+    "features": {
+      "title": "O que vai receber",
+      "items": [
+        "Anúncios de novas edições",
+        "Conhecimentos exclusivos de ciência do surf",
+        "Histórias e eventos da comunidade",
+        "Acesso antecipado a conteúdos"
+      ]
+    }
+  },
+  "Legal": {
+    "privacy": {
+      "title": "Política de Privacidade",
+      "lastUpdated": "Última atualização"
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "lastUpdated": "Última atualização"
+    },
+    "terms": {
+      "title": "Termos de Uso",
+      "lastUpdated": "Última atualização"
+    }
+  },
+  "CookieConsent": {
+    "title": "Valorizamos a sua privacidade",
+    "description": "Utilizamos cookies para melhorar a sua experiência de navegação, fornecer conteúdo personalizado e analisar o nosso tráfego.",
+    "accept": "Aceitar Todos",
+    "reject": "Rejeitar Todos",
+    "customize": "Personalizar",
+    "essential": "Essenciais",
+    "analytics": "Analíticos",
+    "marketing": "Marketing"
   }
 }
-

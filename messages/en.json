@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Blue Mind Magazine",
-    "description": "A magazine about the ocean and the mind"
+    "description": "Surf Science: Where surf and science meet. From surfers, to surfers."
   },
   "Common": {
     "loading": "Loading...",
@@ -14,13 +14,164 @@
     "close": "Close",
     "back": "Back",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "subscribe": "Subscribe",
+    "learnMore": "Learn More"
   },
   "Navigation": {
     "home": "Home",
     "about": "About",
     "contact": "Contact",
-    "issues": "Issues"
+    "issues": "Issues",
+    "newsletter": "Newsletter",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "terms": "Terms of Use"
+  },
+  "Footer": {
+    "newsletter": {
+      "title": "Stay in the Loop",
+      "description": "Where surf & science meet, delivered to your inbox.",
+      "cta": "Subscribe to Newsletter"
+    },
+    "tagline": "Where surf and science meet.",
+    "navigation": "Navigation",
+    "legal": "Legal",
+    "rights": "All rights reserved.",
+    "publishedBy": "Published by"
+  },
+  "Home": {
+    "hero": {
+      "title": "BLUE MIND",
+      "subtitle": "Surf Science Magazine",
+      "tagline": "From surfers, to surfers",
+      "description": "Where surf and science meet. Exploring the intersection of ocean sports, human health, and scientific research.",
+      "cta": "Read Current Issue",
+      "secondary": "Explore Issues"
+    },
+    "currentIssue": {
+      "label": "Current Issue",
+      "readNow": "Read Now",
+      "preview": "Preview Issue"
+    },
+    "archive": {
+      "title": "Past Issues",
+      "viewAll": "View All Issues"
+    },
+    "newsletter": {
+      "title": "Don't Miss an Issue",
+      "description": "Subscribe to our newsletter for the latest in surf science, exclusive content, and early access to new issues.",
+      "cta": "Subscribe Now"
+    },
+    "about": {
+      "title": "About Blue Mind",
+      "description": "Blue Mind Magazine bridges the gap between scientific research and the surfing community. We make complex studies accessible while celebrating the transformative power of the sea."
+    }
+  },
+  "Issues": {
+    "title": "Issues",
+    "subtitle": "The Archive",
+    "description": "Explore our collection of issues where surf and science meet.",
+    "current": "Current Issue",
+    "page": "Page",
+    "readIssue": "Read Issue",
+    "features": "Features",
+    "by": "By",
+    "supportedBy": "Supported by",
+    "sections": "In this issue"
+  },
+  "About": {
+    "title": "About",
+    "subtitle": "Our Story",
+    "magazine": {
+      "title": "About Blue Mind",
+      "description": "Blue Mind Magazine is where surf and science meet. We explore the fascinating intersection of ocean sports, human health, and scientific research."
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "To bridge the gap between scientific research and the surfing community, making complex studies accessible and actionable."
+    },
+    "editor": {
+      "title": "Chief Editor",
+      "name": "Pedro Seixas",
+      "credentials": "PT, PhD",
+      "bio": "Pedro Seixas holds a PhD in Human Kinetics and serves as the Scientific Coordinator at Surfing Medicine International (SMI). As a physiotherapist and passionate surfer, he founded Blue Mind Magazine to create a platform that unites his two greatest passions: science and surfing."
+    },
+    "publisher": {
+      "title": "Publisher",
+      "name": "Surfisio",
+      "description": "Surfisio is a specialized physiotherapy and sports performance company dedicated to the surfing community. Founded in 2011 with the philosophy \"We Drop The Pain!\""
+    },
+    "supporters": {
+      "title": "Main Supporter",
+      "smi": {
+        "name": "Surfing Medicine International",
+        "description": "SMI is a non-profit organization founded by medical doctors and surfers dedicated to the science of surfing medicine."
+      }
+    }
+  },
+  "Contact": {
+    "title": "Get in Touch",
+    "subtitle": "We'd love to hear from you",
+    "description": "Whether you have a question about our magazine, want to contribute an article, or are interested in partnership opportunities, we're here to help.",
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "How can we help?",
+      "message": "Message",
+      "messagePlaceholder": "Your message...",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "success": "Thank you! Your message has been sent.",
+      "error": "Something went wrong. Please try again."
+    },
+    "info": {
+      "email": "info@bluemindmag.com",
+      "response": "We typically respond within 48 hours."
+    }
+  },
+  "Newsletter": {
+    "title": "Stay in the Loop",
+    "subtitle": "Where surf & science meet, delivered to your inbox",
+    "description": "Join our community of surfers, scientists, and ocean enthusiasts. Get exclusive content, early access to new issues, and insights from the world of surf science.",
+    "cta": "Subscribe Now",
+    "features": {
+      "title": "What you'll get",
+      "items": [
+        "New issue announcements",
+        "Exclusive surf science insights",
+        "Community stories and events",
+        "Early access to content"
+      ]
+    }
+  },
+  "Legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated"
+    },
+    "cookies": {
+      "title": "Cookie Policy",
+      "lastUpdated": "Last updated"
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "lastUpdated": "Last updated"
+    }
+  },
+  "CookieConsent": {
+    "title": "We value your privacy",
+    "description": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic.",
+    "accept": "Accept All",
+    "reject": "Reject All",
+    "customize": "Customize",
+    "essential": "Essential",
+    "analytics": "Analytics",
+    "marketing": "Marketing"
   }
 }
-
