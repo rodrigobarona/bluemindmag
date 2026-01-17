@@ -398,7 +398,7 @@ export function IssueDetailCTA({
 }: IssueDetailAnimatedProps) {
   return (
     <section
-      className="py-16 md:py-20 relative overflow-hidden"
+      className="py-16 md:py-20 relative"
       style={{
         background: `linear-gradient(135deg, ${issue.accentColor} 0%, ${issue.accentColor}dd 100%)`,
       }}
@@ -444,24 +444,19 @@ export function IssueDetailCTA({
               </p>
             </StaggerItem>
             <StaggerItem>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
+              <Link
+                href={`/read/${issue.slug}`}
+                className="inline-flex items-center gap-3 bg-white text-foreground px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-white/90"
               >
-                <Link
-                  href={`/read/${issue.slug}`}
-                  className="inline-flex items-center gap-3 bg-white text-foreground px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-white/90"
+                <BookOpen className="w-5 h-5" />
+                {labels.readIssue}
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                  <BookOpen className="w-5 h-5" />
-                  {labels.readIssue}
-                  <motion.span
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.span>
-                </Link>
-              </motion.div>
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
+              </Link>
             </StaggerItem>
           </StaggerContainer>
 
@@ -489,7 +484,7 @@ export function IssueDetailCTA({
               <motion.div
                 className="relative -mt-24 z-10"
                 initial={{ rotate: 3 }}
-                whileHover={{ rotate: 0, scale: 1.05 }}
+                whileHover={{ rotate: 0 }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl" />
