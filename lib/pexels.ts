@@ -408,19 +408,10 @@ async function fetchFromPexels(
   } = {}
 ): Promise<PexelsSearchResponse | null> {
   if (!PEXELS_API_KEY) {
-    // #region agent log
-    console.log('[DEBUG-PEXELS] NO_API_KEY:', JSON.stringify({query}));
-    fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchFromPexels',message:'NO_API_KEY',data:{query},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
-    // #endregion
     return null;
   }
 
   const { perPage = 1, page = 1, orientation = 'landscape' } = options;
-
-  // #region agent log
-  console.log('[DEBUG-PEXELS] PEXELS_API_REQUEST:', JSON.stringify({query,perPage,page,orientation,fullUrl:`${PEXELS_BASE_URL}/search?query=${query}&per_page=${perPage}&page=${page}`}));
-  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchFromPexels:request',message:'PEXELS_API_REQUEST',data:{query,perPage,page,orientation,fullUrl:`${PEXELS_BASE_URL}/search?query=${query}&per_page=${perPage}&page=${page}`},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C,D'})}).catch(()=>{});
-  // #endregion
 
   try {
     const params = new URLSearchParams({
@@ -467,11 +458,6 @@ async function fetchImagePoolForCategory(category: ImageCategory, queryIndex: nu
   // Fetch 15 images to build a pool for random selection
   const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
-  // #region agent log
-  console.log('[DEBUG-PEXELS] POOL_FETCH:', JSON.stringify({category,queryIndex,query,photoCount:response?.photos?.length||0}));
-  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchImagePoolForCategory',message:'POOL_FETCH',data:{category,queryIndex,query,photoCount:response?.photos?.length||0},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
-  // #endregion
-
   if (response?.photos && response.photos.length > 0) {
     return response.photos.map(photo => transformPhoto(photo, query));
   }
@@ -515,11 +501,6 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
   const randomIndex = Math.floor(Math.random() * pool.length);
   const selectedImage = pool[randomIndex];
 
-  // #region agent log
-  console.log('[DEBUG-PEXELS] RANDOM_SELECT:', JSON.stringify({slot,category:config.category,poolSize:pool.length,randomIndex,selectedPhotoPreview:selectedImage?.src?.substring(0,60)||null}));
-  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchImageForSlotInternal',message:'RANDOM_SELECT',data:{slot,category:config.category,poolSize:pool.length,randomIndex},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
-  // #endregion
-
   return selectedImage || getFallbackImage(config.category, config.index);
 }
 
@@ -535,21 +516,9 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
  * for a fresh feel on every visit.
  */
 export async function getImageForSlot(slot: string): Promise<ImageResult | null> {
-  // #region agent log
-  console.log('[DEBUG-PEXELS] SLOT_REQUEST_START:', JSON.stringify({slot,note:'NO_CACHE_ON_SELECTION'}));
-  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:getImageForSlot',message:'SLOT_REQUEST_START',data:{slot,note:'NO_CACHE_ON_SELECTION'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
-  // #endregion
-
   // NO unstable_cache here - we want fresh random selection each time
   // The pool fetch inside is cached, but the random pick is not
-  const result = await fetchImageForSlotInternal(slot);
-  
-  // #region agent log
-  console.log('[DEBUG-PEXELS] SLOT_REQUEST_RESULT:', JSON.stringify({slot,hasSrc:!!result?.src,photographer:result?.photographer||null,avgColor:result?.avgColor||null,srcPreview:result?.src?.substring(0,80)||null}));
-  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:getImageForSlot:result',message:'SLOT_REQUEST_RESULT',data:{slot,hasSrc:!!result?.src,photographer:result?.photographer||null,avgColor:result?.avgColor||null,srcPreview:result?.src?.substring(0,80)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
-  // #endregion
-  
-  return result;
+  return fetchImageForSlotInternal(slot);
 }
 
 /**
