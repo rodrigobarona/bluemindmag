@@ -33,26 +33,26 @@ const HERO_QUERIES = [
   'pacific ocean sunset',
 ];
 
-// Quote/atmosphere backgrounds - Soft, misty, ethereal (NOT dramatic)
+// Quote/atmosphere backgrounds - Soft, calm (NOT ocean-focused, use nature variety)
 const QUOTE_QUERIES = [
-  'misty ocean morning',
-  'foggy beach sunrise',
-  'soft waves pastel sky',
-  'ocean haze calm',
-  'peaceful sea dawn light',
-  'dreamy ocean horizon',
-  'gentle waves golden hour',
-  'serene beach mist',
+  'morning mist lake calm',
+  'fog forest peaceful',
+  'soft clouds sky pastel',
+  'zen garden peaceful',
+  'mountain mist sunrise',
+  'lavender field calm',
+  'meadow morning dew',
+  'still water reflection trees',
 ];
 
-// Science/research themed
+// Science/underwater - Colorful marine life (vibrant, not dark)
 const SCIENCE_QUERIES = [
-  'ocean marine life',
-  'coral reef underwater',
-  'waves underwater',
-  'marine biology research',
-  'ocean ecosystem',
-  'sea creatures underwater',
+  'coral reef fish colorful',
+  'jellyfish glowing dark water',
+  'sea turtle swimming underwater',
+  'dolphins underwater blue',
+  'manta ray underwater graceful',
+  'kelp forest underwater sunlight',
 ];
 
 // Surfer lifestyle
@@ -65,36 +65,36 @@ const SURFER_QUERIES = [
   'surfer dawn patrol',
 ];
 
-// Portugal/Atlantic specific - Dramatic cliffs and rugged coastline
+// Portugal/Atlantic specific - Rocky cliffs and dramatic landscapes (emphasize rocks)
 const PORTUGAL_QUERIES = [
-  'atlantic coast cliffs',
-  'rocky coastline dramatic',
-  'portugal algarve cliffs',
-  'coastal rocks waves crashing',
-  'rugged atlantic shore',
-  'lighthouse coast storm',
+  'dramatic cliff edge aerial view',
+  'rocky coast birds eye view',
+  'sea arch rock formation',
+  'lighthouse cliff stormy sky',
+  'basalt columns coastline',
+  'volcanic rocks ocean coast',
 ];
 
-// Newsletter/CTA backgrounds - Dark, dramatic, contrasts with lighter quote sections
+// Newsletter/CTA backgrounds - Very dark, moody (storm, night, abyss)
 const CTA_QUERIES = [
-  'dark ocean waves',
-  'deep sea underwater',
-  'stormy ocean dramatic',
-  'night ocean moonlight',
-  'underwater dark blue',
-  'ocean depth darkness',
-  'turbulent sea waves',
-  'dramatic ocean sky',
+  'storm clouds ocean dark dramatic',
+  'lightning ocean night',
+  'deep ocean abyss dark',
+  'underwater cave dark mysterious',
+  'moonlight ocean reflection night',
+  'thunderstorm sea dramatic waves',
+  'dark water texture abstract',
+  'black sand beach moody',
 ];
 
-// Contact page - Warm, inviting, human connection (distinct from ocean imagery)
+// Contact page - Warm, golden sunset tones (very warm, inviting)
 const CONTACT_QUERIES = [
-  'beach sunset golden',
-  'tropical palm trees sunset',
-  'warm sunset beach silhouette',
-  'golden hour coast',
-  'beach bonfire evening',
-  'sunset pier ocean',
+  'palm silhouette sunset orange',
+  'beach hammock sunset tropical',
+  'tropical sunset vibrant colors',
+  'pier sunset golden reflection',
+  'coconut palms golden hour',
+  'beach bonfire night warm',
 ];
 
 // Category to queries mapping
@@ -125,9 +125,9 @@ const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = 
   'home:quote': { category: 'quote', index: 0 },
   'home:newsletter': { category: 'cta', index: 0 },
   
-  // About page
-  'about:hero': { category: 'portugal', index: 0 },
-  'about:quote': { category: 'quote', index: 1 },
+  // About page - Each section uses completely different visual style
+  'about:hero': { category: 'portugal', index: 0 },      // Dramatic cliffs
+  'about:quote': { category: 'science', index: 0 },      // Underwater/marine (distinct from hero)
   'about:surfer': { category: 'surfer', index: 0 },
   'about:newsletter': { category: 'cta', index: 1 },
   
@@ -449,7 +449,7 @@ async function fetchFromPexels(
 
 /**
  * Internal function to fetch image for a slot
- * This is wrapped with unstable_cache for 24-hour caching
+ * Uses page variation to get different results from Pexels for each slot
  */
 async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
   const config = IMAGE_SLOTS[slot];
@@ -460,8 +460,12 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
 
   const queries = CATEGORY_QUERIES[config.category];
   const query = queries[config.index % queries.length];
+  
+  // Use different page numbers based on slot index to get varied results
+  // This prevents all slots from getting the same "top result" from Pexels
+  const pageNumber = (config.index % 5) + 1;
 
-  const response = await fetchFromPexels(query, { perPage: 1 });
+  const response = await fetchFromPexels(query, { perPage: 1, page: pageNumber });
 
   if (response?.photos[0]) {
     return transformPhoto(response.photos[0], query);
@@ -478,25 +482,33 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
  * - 'about:quote'
  * - 'contact:newsletter'
  * 
- * This ensures no image repetition across pages during navigation.
+ * Each slot gets its own unique cache key to ensure no cache collisions.
  */
-export const getImageForSlot = unstable_cache(
-  fetchImageForSlotInternal,
-  ['pexels-slot'],
-  { 
-    revalidate: 86400, // 24 hours
-    tags: ['pexels'] 
-  }
-);
+export async function getImageForSlot(slot: string): Promise<ImageResult | null> {
+  const cachedFetch = unstable_cache(
+    async () => fetchImageForSlotInternal(slot),
+    [`pexels-slot-${slot}`],  // Explicit unique cache key per slot
+    { 
+      revalidate: 86400, // 24 hours
+      tags: ['pexels', `pexels-${slot}`]  // Slot-specific tag for granular invalidation
+    }
+  );
+  
+  return cachedFetch();
+}
 
 /**
  * Internal function to fetch section image for issue highlights
+ * Uses page variation based on index to get different results
  */
 async function fetchSectionImageInternal(section: string, index: number): Promise<ImageResult | null> {
   const queries = SECTION_QUERIES[section] || HERO_QUERIES;
   const query = queries[index % queries.length];
+  
+  // Use different page numbers to get varied results
+  const pageNumber = (index % 5) + 1;
 
-  const response = await fetchFromPexels(query, { perPage: 1 });
+  const response = await fetchFromPexels(query, { perPage: 1, page: pageNumber });
 
   if (response?.photos[0]) {
     return transformPhoto(response.photos[0], query);
@@ -507,15 +519,20 @@ async function fetchSectionImageInternal(section: string, index: number): Promis
 
 /**
  * Get image for issue section highlights with 24-hour caching
+ * Each section gets its own unique cache key.
  */
-export const getSectionImage = unstable_cache(
-  fetchSectionImageInternal,
-  ['pexels-section'],
-  { 
-    revalidate: 86400, // 24 hours
-    tags: ['pexels'] 
-  }
-);
+export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
+  const cachedFetch = unstable_cache(
+    async () => fetchSectionImageInternal(section, index),
+    [`pexels-section-${section}-${index}`],  // Explicit unique cache key
+    { 
+      revalidate: 86400, // 24 hours
+      tags: ['pexels', `pexels-section-${section}`]
+    }
+  );
+  
+  return cachedFetch();
+}
 
 /**
  * Get images for multiple issue highlights
