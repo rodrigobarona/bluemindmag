@@ -142,36 +142,72 @@ export default async function HomePage({ params }: Props) {
       </section>
       )}
 
-      {/* Section 3: Quick Preview - Compact teaser cards */}
+      {/* Section 3: Quick Contents - Compact cards with thumbnails */}
       {currentIssue && currentIssue.highlights.length > 0 && (
-        <section className="py-16 md:py-20 bg-secondary">
+        <section className="py-12 md:py-16 bg-muted/30">
           <div className="container-editorial">
-            {/* Header with CTA */}
-            <ScrollReveal className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-              <div>
-                <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-3 block">
-                  {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
-                </span>
-                <h2 className="font-headline text-2xl md:text-3xl">
-                  {locale === 'pt' ? 'Destaques' : 'Featured'}
-                </h2>
-              </div>
+            {/* Inline header */}
+            <ScrollReveal className="flex items-center justify-between mb-6">
+              <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
+              </span>
               <Link
                 href={`/issues/${currentIssue.slug}#features`}
-                className="font-ui text-sm font-medium transition-colors hover:opacity-70 flex items-center gap-2"
+                className="font-ui text-xs font-medium transition-colors hover:opacity-70 flex items-center gap-1"
                 style={{ color: currentIssue.accentColor }}
               >
                 {locale === 'pt' ? 'Ver Todos' : 'View All'}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-3 h-3" />
               </Link>
             </ScrollReveal>
 
-            {/* Compact Grid */}
-            <StaggerList
-              staggerDelay={0.08}
-              direction="up"
-              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6"
-            >
+            {/* Horizontal scroll on mobile */}
+            <div className="md:hidden">
+              <HorizontalScroll>
+                {currentIssue.highlights.slice(0, 5).map((highlight) => {
+                  const highlightTranslation =
+                    issueTranslations[currentIssue.id].highlights[highlight.id];
+                  if (!highlightTranslation) return null;
+
+                  const pexelsImage = sectionImages.get(highlight.id);
+                  const imageSrc = highlight.image || pexelsImage?.srcMedium || '/images/hero/ocean-aerial.jpg';
+
+                  return (
+                    <HorizontalScrollItem key={highlight.id} className="w-[260px]">
+                      <Link
+                        href={`/issues/${currentIssue.slug}#features`}
+                        className="group block overflow-hidden"
+                      >
+                        <div className="aspect-[16/10] relative overflow-hidden">
+                          <Image
+                            src={imageSrc}
+                            alt={highlightTranslation.title}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="260px"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                          {/* Content inside */}
+                          <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                            <span 
+                              className="font-headline text-2xl text-white/90 mb-1"
+                            >
+                              {highlight.page}
+                            </span>
+                            <h3 className="font-headline text-sm text-white leading-tight line-clamp-2">
+                              {highlightTranslation.title}
+                            </h3>
+                          </div>
+                        </div>
+                      </Link>
+                    </HorizontalScrollItem>
+                  );
+                })}
+              </HorizontalScroll>
+            </div>
+
+            {/* Desktop: Grid with content inside - landscape cards */}
+            <div className="hidden md:grid grid-cols-5 gap-4">
               {currentIssue.highlights.slice(0, 5).map((highlight) => {
                 const highlightTranslation =
                   issueTranslations[currentIssue.id].highlights[highlight.id];
@@ -184,40 +220,34 @@ export default async function HomePage({ params }: Props) {
                   <Link
                     key={highlight.id}
                     href={`/issues/${currentIssue.slug}#features`}
-                    className="group block"
+                    className="group block overflow-hidden"
                   >
-                    <article className="relative overflow-hidden bg-card">
-                      {/* Image */}
-                      <div className="aspect-[4/5] relative overflow-hidden">
-                        <Image
-                          src={imageSrc}
-                          alt={highlightTranslation.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 20vw"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                        
-                        {/* Page number */}
+                    <div className="aspect-[16/10] relative overflow-hidden">
+                      <Image
+                        src={imageSrc}
+                        alt={highlightTranslation.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 1200px) 20vw, 240px"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                      {/* Content inside */}
+                      <div className="absolute inset-0 p-4 flex flex-col justify-end">
                         <span 
-                          className="absolute top-3 left-3 px-2 py-1 font-ui text-[10px] font-semibold uppercase tracking-wider"
-                          style={{ backgroundColor: currentIssue.accentColor, color: '#ffffff' }}
+                          className="font-headline text-2xl lg:text-3xl mb-1"
+                          style={{ color: currentIssue.accentColor }}
                         >
-                          P.{highlight.page}
+                          {highlight.page}
                         </span>
-
-                        {/* Content */}
-                        <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <h3 className="font-headline text-sm md:text-base text-white leading-tight line-clamp-2 group-hover:text-white/90 transition-colors">
-                            {highlightTranslation.title}
-                          </h3>
-                        </div>
+                        <h3 className="font-headline text-sm text-white leading-tight line-clamp-2">
+                          {highlightTranslation.title}
+                        </h3>
                       </div>
-                    </article>
+                    </div>
                   </Link>
                 );
               })}
-            </StaggerList>
+            </div>
           </div>
         </section>
       )}
