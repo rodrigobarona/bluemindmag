@@ -120,20 +120,24 @@ export function Footer({ newsletterImage }: FooterProps) {
               <p className="tagline text-background/60 max-w-xs mb-8">
                 {siteConfig.tagline}
               </p>
-              {/* Social Links */}
-              <div className="flex gap-5">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.platform}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-background/60 hover:text-brand transition-base"
-                    aria-label={social.label}
-                  >
-                    {getSocialIcon(social.platform)}
-                  </a>
-                ))}
+              {/* Social Links & Language */}
+              <div className="flex items-center gap-6">
+                <div className="flex gap-5">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.platform}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-background/60 hover:text-brand transition-base"
+                      aria-label={social.label}
+                    >
+                      {getSocialIcon(social.platform)}
+                    </a>
+                  ))}
+                </div>
+                <div className="h-5 w-px bg-background/20" />
+                <LanguageDropdown />
               </div>
             </div>
 
@@ -190,14 +194,10 @@ export function Footer({ newsletterImage }: FooterProps) {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-16 pt-8 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-6 font-ui text-xs text-background/40">
+          <div className="mt-16 pt-8 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-4 font-ui text-xs text-background/40">
             <p>
               © {currentYear} {siteConfig.name}. {tFooter('rights')}
             </p>
-            
-            {/* Language Dropdown */}
-            <LanguageDropdown />
-            
             <p>
               {tFooter('publishedBy')}{' '}
               <a

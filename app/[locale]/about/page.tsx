@@ -156,16 +156,17 @@ export default async function AboutPage({ params }: Props) {
       <section className="py-24 md:py-32">
         <div className="container-editorial">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            {/* Image */}
+            {/* Image - Surfing action shot */}
             <ScrollReveal direction="left" className="order-2 lg:order-1">
               <div className="relative">
-                <div className="aspect-[4/5] relative bg-secondary overflow-hidden shadow-float">
+                <div className="aspect-square relative bg-secondary overflow-hidden shadow-float">
                   {editor?.image ? (
                     <Image
                       src={editor.image}
                       alt={t('editor.name')}
                       fill
-                      className="object-cover"
+                      className="object-cover object-center"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : surferImage ? (
                     // Use Pexels surfer image as placeholder
@@ -296,18 +297,19 @@ export default async function AboutPage({ params }: Props) {
               )}
             </ScrollReveal>
 
-            {/* Image */}
+            {/* Image - Surfisio Van */}
             <ScrollReveal direction="right" delay={0.2}>
-              <div className="aspect-video relative bg-background overflow-hidden shadow-editorial">
+              <div className="aspect-video relative overflow-hidden shadow-editorial">
                 {publisher?.image ? (
                   <Image
                     src={publisher.image}
                     alt={t('publisher.name')}
                     fill
-                    className="object-contain p-10"
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center bg-secondary">
                     <span className="font-headline text-6xl text-muted-foreground/20">
                       SURFISIO
                     </span>

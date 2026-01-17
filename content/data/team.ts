@@ -8,7 +8,7 @@ export const team: TeamMember[] = [
   {
     id: 'pedro-seixas',
     role: 'editor',
-    image: '/images/team/pedro-seixas.jpg',
+    image: '/images/team/pedro-seixas-surf.png',
     social: {
       linkedin: 'https://www.linkedin.com/in/pedro-seixas-31934230/',
       instagram: 'https://www.instagram.com/seixasbay/',
@@ -17,7 +17,7 @@ export const team: TeamMember[] = [
   {
     id: 'surfisio',
     role: 'publisher',
-    image: '/images/team/surfisio-logo.png',
+    image: '/images/sponsors/surfisio-van.jpg',
     social: {
       website: 'https://surfisio.pt',
       linkedin: 'https://www.linkedin.com/company/surfisio/',

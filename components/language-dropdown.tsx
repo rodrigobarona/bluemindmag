@@ -6,7 +6,7 @@ import { useTransition } from 'react';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { Menu } from '@base-ui/react/menu';
-import { Globe, Check, ChevronUp } from 'lucide-react';
+import { Globe, Check, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const locales: { code: Locale; label: string; fullName: string }[] = [
@@ -50,11 +50,11 @@ export function LanguageDropdown({ className }: LanguageDropdownProps) {
       >
         <Globe className="h-4 w-4" />
         <span>{currentLocale?.fullName}</span>
-        <ChevronUp className="h-3 w-3 transition-transform data-[popup-open]:rotate-180" />
+        <ChevronDown className="h-3 w-3 transition-transform data-[popup-open]:rotate-180" />
       </Menu.Trigger>
       
       <Menu.Portal>
-        <Menu.Positioner sideOffset={8} side="top" className="outline-none z-50">
+        <Menu.Positioner sideOffset={8} side="bottom" className="outline-none z-50">
           <Menu.Popup
             className={cn(
               'origin-[var(--transform-origin)] rounded-lg py-1 min-w-[140px]',
