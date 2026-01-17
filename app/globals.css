@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================
-   BLUE MIND MAGAZINE - PREMIUM WHITE THEME
+   BLUE MIND MAGAZINE - SURFER'S JOURNAL STYLE
+   Warm ocean tones, photography-first, immersive
    ============================================ */
 
 @theme inline {
@@ -28,112 +29,146 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
+
   /* Brand accent (dynamic per issue) */
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
-  
-  /* Fonts */
+
+  /* Warm accent for golden hour effects */
+  --color-warm: var(--warm);
+  --color-warm-foreground: var(--warm-foreground);
+
+  /* Typography System */
   --font-sans: var(--font-body);
   --font-display: var(--font-headline);
-  --font-mono: var(--font-geist-mono);
-  
-  /* Radius */
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  
-  /* Snappy Transitions */
+  --font-ui: var(--font-ui);
+  --font-accent: var(--font-accent);
+
+  /* Radius - Sharp edges for editorial look */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  /* Immersive Transitions */
   --transition-fast: 150ms;
-  --transition-base: 200ms;
-  --transition-slow: 300ms;
-  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --transition-base: 300ms;
+  --transition-slow: 500ms;
+  --transition-slower: 800ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================
-   LIGHT MODE (DEFAULT) - Premium White Editorial
+   LIGHT MODE - Warm Ocean Editorial
    ============================================ */
 :root {
-  /* Pure white base */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  
-  /* Subtle card elevation */
-  --card: #fafafa;
-  --card-foreground: #0a0a0a;
-  
+  /* Warm white base - like sun-bleached paper */
+  --background: #faf8f5;
+  --foreground: #1a1a1a;
+
+  /* Sand-toned surfaces */
+  --card: #f5f2ed;
+  --card-foreground: #1a1a1a;
+
   /* Popover */
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  
-  /* Primary - Brand turquoise */
-  --primary: #0097B2;
+  --popover-foreground: #1a1a1a;
+
+  /* Primary - Ocean Teal */
+  --primary: #0097b2;
   --primary-foreground: #ffffff;
-  
-  /* Secondary - Very subtle gray */
-  --secondary: #f8f8f8;
-  --secondary-foreground: #0a0a0a;
-  
-  /* Muted - Light gray for backgrounds */
-  --muted: #f5f5f5;
-  --muted-foreground: #666666;
-  
-  /* Accent - Dynamic per issue (default: turquoise) */
-  --accent: #0097B2;
+
+  /* Secondary - Warm Sand */
+  --secondary: #f0ebe4;
+  --secondary-foreground: #1a1a1a;
+
+  /* Muted - Soft warmth */
+  --muted: #ebe6df;
+  --muted-foreground: #6b6560;
+
+  /* Accent - Ocean Teal */
+  --accent: #0097b2;
   --accent-foreground: #ffffff;
-  
-  /* Brand accent (can be overridden per issue) */
-  --brand: #0097B2;
+
+  /* Brand accent */
+  --brand: #0097b2;
   --brand-foreground: #ffffff;
-  
+
+  /* Warm accent - Golden Hour */
+  --warm: #c9956c;
+  --warm-foreground: #ffffff;
+
   /* Destructive */
-  --destructive: #dc2626;
-  
-  /* Borders - Super subtle */
-  --border: rgba(0, 0, 0, 0.06);
-  --input: rgba(0, 0, 0, 0.08);
-  --ring: #0097B2;
-  
-  /* Radius */
-  --radius: 0.375rem;
+  --destructive: #b91c1c;
+
+  /* Borders - Warm subtle */
+  --border: rgba(26, 26, 26, 0.1);
+  --input: rgba(26, 26, 26, 0.1);
+  --ring: #0097b2;
+
+  /* Radius - Sharp for editorial */
+  --radius: 0;
+
+  /* Grain and texture opacity */
+  --grain-opacity: 0.03;
+  --overlay-opacity: 0.4;
 }
 
 /* ============================================
-   DARK MODE - Editorial Black
+   DARK MODE - Deep Ocean Night
+   System preference adaptive
    ============================================ */
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  
-  --card: #141414;
-  --card-foreground: #fafafa;
-  
-  --popover: #141414;
-  --popover-foreground: #fafafa;
-  
-  --primary: #0097B2;
-  --primary-foreground: #ffffff;
-  
-  --secondary: #1a1a1a;
-  --secondary-foreground: #fafafa;
-  
-  --muted: #1a1a1a;
-  --muted-foreground: #a1a1a1;
-  
-  --accent: #0097B2;
-  --accent-foreground: #ffffff;
-  
-  --brand: #0097B2;
-  --brand-foreground: #ffffff;
-  
-  --destructive: #dc2626;
-  
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: #0097B2;
+  /* Deep ocean backgrounds */
+  --background: #0d1117;
+  --foreground: #f0ece8;
+
+  /* Midnight surfaces */
+  --card: #161b22;
+  --card-foreground: #f0ece8;
+
+  /* Popover */
+  --popover: #1c2128;
+  --popover-foreground: #f0ece8;
+
+  /* Primary - Cyan Glow */
+  --primary: #00d4ff;
+  --primary-foreground: #0d1117;
+
+  /* Secondary - Deep midnight */
+  --secondary: #21262d;
+  --secondary-foreground: #f0ece8;
+
+  /* Muted - Ocean depths */
+  --muted: #21262d;
+  --muted-foreground: #8b8680;
+
+  /* Accent - Cyan Glow */
+  --accent: #00d4ff;
+  --accent-foreground: #0d1117;
+
+  /* Brand accent */
+  --brand: #00d4ff;
+  --brand-foreground: #0d1117;
+
+  /* Warm accent - Sunset */
+  --warm: #f0a050;
+  --warm-foreground: #0d1117;
+
+  /* Destructive */
+  --destructive: #f87171;
+
+  /* Borders - Subtle glow */
+  --border: rgba(240, 236, 232, 0.1);
+  --input: rgba(240, 236, 232, 0.1);
+  --ring: #00d4ff;
+
+  /* Grain and texture opacity */
+  --grain-opacity: 0.02;
+  --overlay-opacity: 0.6;
 }
 
 /* ============================================
@@ -143,48 +178,69 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   html {
     scroll-behavior: smooth;
+    /* Enable system dark mode preference */
+    color-scheme: light dark;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-body), Georgia, "Times New Roman", serif;
+    font-feature-settings: "rlig" 1, "calt" 1, "kern" 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
-  
-  /* Editorial typography scale */
-  h1, h2, h3, h4 {
-    font-family: var(--font-headline), system-ui, sans-serif;
+
+  /* Massive Editorial Typography Scale */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    line-height: 0.95;
+    line-height: 0.85;
   }
-  
+
+  /* Hero-scale headlines */
   h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl;
+    font-size: clamp(3rem, 12vw, 10rem);
   }
-  
+
   h2 {
-    @apply text-3xl sm:text-4xl md:text-5xl;
+    font-size: clamp(2.5rem, 8vw, 6rem);
   }
-  
+
   h3 {
-    @apply text-2xl md:text-3xl;
+    font-size: clamp(2rem, 5vw, 4rem);
   }
-  
+
   h4 {
-    @apply text-xl md:text-2xl;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
   }
-  
-  p, li, span {
-    font-family: var(--font-body), system-ui, sans-serif;
+
+  /* Body text - Warm serif */
+  p {
+    font-family: var(--font-body), Georgia, "Times New Roman", serif;
+    @apply leading-relaxed text-lg;
   }
-  
+
+  /* UI text - Clean sans for navigation */
+  nav,
+  button,
+  [role="button"],
+  label,
+  input,
+  select,
+  textarea {
+    font-family: var(--font-ui), system-ui, sans-serif;
+  }
+
   /* Selection color */
   ::selection {
     background-color: var(--brand);
@@ -193,32 +249,35 @@
 }
 
 /* ============================================
-   SNAPPY INTERACTIVE STYLES
+   INTERACTIVE STYLES - Smooth & Immersive
    ============================================ */
 @layer base {
-  /* All interactive elements get snappy transitions */
-  a, button, [role="button"] {
-    transition: all var(--transition-fast) var(--ease-out);
+  /* All interactive elements get smooth transitions */
+  a,
+  button,
+  [role="button"] {
+    transition: opacity var(--transition-base) var(--ease-smooth),
+      color var(--transition-base) var(--ease-smooth),
+      background-color var(--transition-base) var(--ease-smooth),
+      transform var(--transition-base) var(--ease-out);
   }
-  
-  /* Hover states - subtle lift */
-  a:hover, button:hover, [role="button"]:hover {
-    transform: translateY(-1px);
+
+  /* Hover states */
+  a:hover {
+    opacity: 0.8;
   }
-  
-  a:active, button:active, [role="button"]:active {
-    transform: translateY(0);
+
+  button:hover,
+  [role="button"]:hover {
+    opacity: 0.9;
   }
-  
+
   /* Focus states */
-  a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
-  }
-  
-  /* Image hover zoom */
-  img {
-    transition: transform var(--transition-base) var(--ease-out);
   }
 }
 
@@ -230,141 +289,380 @@
   .bg-brand {
     background-color: var(--brand);
   }
-  
+
   .text-brand {
     color: var(--brand);
   }
-  
+
   .border-brand {
     border-color: var(--brand);
   }
-  
+
   .ring-brand {
     --tw-ring-color: var(--brand);
   }
-  
+
+  /* Warm accent utilities */
+  .bg-warm {
+    background-color: var(--warm);
+  }
+
+  .text-warm {
+    color: var(--warm);
+  }
+
+  .border-warm {
+    border-color: var(--warm);
+  }
+
   /* Editorial layout utilities */
   .container-editorial {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+    max-width: 1200px;
   }
-  
+
   .container-narrow {
-    @apply mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+    max-width: 800px;
   }
-  
+
   .container-wide {
-    @apply mx-auto w-full max-w-[90rem] px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+    max-width: 1400px;
   }
-  
+
+  /* Full-bleed container */
+  .container-bleed {
+    @apply w-full;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    width: 100vw;
+  }
+
   /* Typography utilities */
-  .headline {
-    font-family: var(--font-headline), system-ui, sans-serif;
-    font-weight: 500;
+  .font-headline {
+    font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+    font-weight: 400;
     text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 0.85;
+  }
+
+  .font-body {
+    font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  }
+
+  .font-ui {
+    font-family: var(--font-ui), system-ui, sans-serif;
+  }
+
+  .font-accent {
+    font-family: var(--font-accent), "Garamond", Georgia, serif;
+    font-style: italic;
+  }
+
+  /* Tagline style - elegant italic */
+  .tagline {
+    font-family: var(--font-accent), "Garamond", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  /* Hero text with letter spacing */
+  .text-hero {
+    font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+    font-size: clamp(4rem, 15vw, 12rem);
+    letter-spacing: -4px;
+    line-height: 0.8;
+    text-transform: uppercase;
+  }
+
+  /* Massive display numbers */
+  .text-display-number {
+    font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+    font-size: clamp(6rem, 20vw, 16rem);
     letter-spacing: -0.02em;
-    line-height: 0.95;
+    line-height: 0.75;
   }
-  
-  .body-text {
-    font-family: var(--font-body), system-ui, sans-serif;
-  }
-  
+
   /* Aspect ratios for magazine covers */
   .aspect-magazine-cover {
     aspect-ratio: 210 / 297; /* A4 ratio */
   }
-  
+
   .aspect-magazine-spread {
     aspect-ratio: 297 / 210; /* Landscape A4 */
   }
-  
-  /* 3D perspective for card effects */
-  .perspective-1000 {
-    perspective: 1000px;
+
+  /* Cinematic aspect ratios */
+  .aspect-cinema {
+    aspect-ratio: 21 / 9;
   }
-  
-  .preserve-3d {
-    transform-style: preserve-3d;
+
+  .aspect-hero {
+    aspect-ratio: 16 / 9;
   }
-  
-  /* Snappy transition utilities */
+
+  /* Transition utilities */
   .transition-fast {
     transition: all var(--transition-fast) var(--ease-out);
   }
-  
+
   .transition-base {
     transition: all var(--transition-base) var(--ease-out);
   }
-  
+
   .transition-slow {
     transition: all var(--transition-slow) var(--ease-out);
   }
-  
-  /* Hover lift effect */
-  .hover-lift {
-    transition: transform var(--transition-fast) var(--ease-out),
-                box-shadow var(--transition-fast) var(--ease-out);
+
+  .transition-slower {
+    transition: all var(--transition-slower) var(--ease-out);
   }
-  
-  .hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Subtle card shadow */
+
+  /* Shadow utilities - Warm tones */
   .shadow-editorial {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
-                0 6px 16px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 3px rgba(26, 26, 26, 0.04),
+      0 4px 12px rgba(26, 26, 26, 0.06);
   }
-  
+
   .shadow-editorial-lg {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04),
-                0 12px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(26, 26, 26, 0.06),
+      0 12px 32px rgba(26, 26, 26, 0.1);
   }
-  
-  /* Brand glow (subtle) */
-  .glow-brand {
-    box-shadow: 0 0 30px -10px var(--brand);
+
+  /* Cover shadow - Dramatic depth */
+  .shadow-cover {
+    box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1),
+      0 24px 60px rgba(26, 26, 26, 0.15);
+  }
+
+  /* Floating shadow for parallax elements */
+  .shadow-float {
+    box-shadow: 0 20px 40px rgba(26, 26, 26, 0.15),
+      0 40px 80px rgba(26, 26, 26, 0.1);
   }
 }
 
 /* ============================================
-   ANIMATION UTILITIES - FAST & PURPOSEFUL
+   TEXTURE & OVERLAY UTILITIES
    ============================================ */
 @layer utilities {
-  /* Quick fade in */
+  /* Film grain overlay */
+  .grain {
+    position: relative;
+  }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: var(--grain-opacity);
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* Vignette effect */
+  .vignette {
+    position: relative;
+  }
+
+  .vignette::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Gradient overlays */
+  .overlay-dark {
+    position: relative;
+  }
+
+  .overlay-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 17, 23, 0.3) 0%,
+      rgba(13, 17, 23, 0.1) 30%,
+      rgba(13, 17, 23, 0.1) 70%,
+      rgba(13, 17, 23, 0.5) 100%
+    );
+    pointer-events: none;
+  }
+
+  .overlay-warm {
+    position: relative;
+  }
+
+  .overlay-warm::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(201, 149, 108, 0.1) 0%,
+      transparent 50%,
+      rgba(0, 151, 178, 0.1) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Ken Burns container */
+  .ken-burns {
+    animation: kenBurns 20s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+
+  @keyframes kenBurns {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+    }
+  }
+}
+
+/* ============================================
+   ANIMATION UTILITIES - Immersive
+   ============================================ */
+@layer utilities {
+  /* Fade animations */
   .animate-fade-in {
-    animation: fadeIn var(--transition-base) var(--ease-out) forwards;
+    animation: fadeIn var(--transition-slow) var(--ease-out) forwards;
   }
-  
+
   .animate-fade-in-up {
-    animation: fadeInUp var(--transition-base) var(--ease-out) forwards;
+    animation: fadeInUp var(--transition-slower) var(--ease-out) forwards;
   }
-  
-  /* Scale in for modals */
-  .animate-scale-in {
-    animation: scaleIn var(--transition-base) var(--ease-out) forwards;
+
+  .animate-fade-in-down {
+    animation: fadeInDown var(--transition-slower) var(--ease-out) forwards;
   }
-  
-  /* Slide in */
+
+  /* Slide animations */
   .animate-slide-up {
-    animation: slideUp var(--transition-base) var(--ease-out) forwards;
+    animation: slideUp var(--transition-slower) var(--ease-out) forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft var(--transition-slower) var(--ease-out) forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight var(--transition-slower) var(--ease-out) forwards;
+  }
+
+  /* Scale animations */
+  .animate-scale-in {
+    animation: scaleIn var(--transition-slow) var(--ease-out) forwards;
+  }
+
+  /* Scroll indicator bounce */
+  .animate-scroll-hint {
+    animation: scrollHint 2s var(--ease-in-out) infinite;
+  }
+
+  /* Stagger delay utilities */
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+  .delay-600 {
+    animation-delay: 600ms;
+  }
+  .delay-700 {
+    animation-delay: 700ms;
+  }
+  .delay-800 {
+    animation-delay: 800ms;
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -379,123 +677,52 @@
   }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
+@keyframes scrollHint {
+  0%,
+  100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(12px);
+    opacity: 0.5;
   }
 }
 
 /* ============================================
-   FLIPBOOK MODAL STYLES
+   HORIZONTAL SCROLL CONTAINER
    ============================================ */
-.flipbook-modal-backdrop {
-  @apply fixed inset-0 z-50;
-  background: rgba(0, 0, 0, 0.95);
-  animation: fadeIn var(--transition-base) var(--ease-out) forwards;
-}
+@layer utilities {
+  .scroll-snap-x {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
 
-.flipbook-modal-content {
-  @apply fixed inset-4 z-50 flex items-center justify-center;
-  animation: scaleIn var(--transition-base) var(--ease-out) forwards;
-}
+  .scroll-snap-x::-webkit-scrollbar {
+    display: none;
+  }
 
-.flipbook-modal-content iframe {
-  @apply h-full w-full rounded-lg;
-  max-height: calc(100vh - 2rem);
-  max-width: calc(100vw - 2rem);
+  .snap-start {
+    scroll-snap-align: start;
+  }
+
+  .snap-center {
+    scroll-snap-align: center;
+  }
 }
 
 /* ============================================
-   ISSUE CARD 3D TILT STYLES
+   FLIPBOOK READER STYLES
    ============================================ */
-.issue-card-container {
-  perspective: 1000px;
+.flipbook-reader {
+  @apply fixed inset-0;
+  background: #0d1117;
 }
 
-.issue-card {
-  transform-style: preserve-3d;
-  transition: transform var(--transition-base) var(--ease-out);
-}
-
-/* Magazine cover shadow - Creates floating 3D effect */
-.cover-shadow {
-  position: relative;
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06),
-    0 24px 48px rgba(0, 0, 0, 0.04);
-  transition: box-shadow var(--transition-base) var(--ease-out);
-}
-
-/* Ground shadow - Simulates shadow on surface below */
-.cover-shadow::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 10%;
-  right: 10%;
-  height: 30px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15) 0%, transparent 70%);
-  filter: blur(8px);
-  transition: all var(--transition-base) var(--ease-out);
-  z-index: -1;
-  border-radius: 50%;
-}
-
-.cover-shadow:hover {
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.06),
-    0 16px 32px rgba(0, 0, 0, 0.1),
-    0 32px 64px rgba(0, 0, 0, 0.08),
-    0 48px 96px rgba(0, 0, 0, 0.06);
-}
-
-.cover-shadow:hover::after {
-  bottom: -30px;
-  left: 5%;
-  right: 5%;
-  height: 40px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.2) 0%, transparent 70%);
-  filter: blur(12px);
-}
-
-/* Enhanced shadow for featured cards */
-.cover-shadow-featured {
-  position: relative;
-  box-shadow: 
-    0 4px 8px rgba(0, 0, 0, 0.04),
-    0 12px 24px rgba(0, 0, 0, 0.08),
-    0 24px 48px rgba(0, 0, 0, 0.08),
-    0 36px 72px rgba(0, 0, 0, 0.06);
-}
-
-.cover-shadow-featured::after {
-  content: '';
-  position: absolute;
-  bottom: -30px;
-  left: 8%;
-  right: 8%;
-  height: 50px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.18) 0%, transparent 70%);
-  filter: blur(12px);
-  z-index: -1;
-  border-radius: 50%;
-  transition: all var(--transition-base) var(--ease-out);
-}
-
-.cover-shadow-featured:hover::after {
-  bottom: -40px;
-  left: 3%;
-  right: 3%;
-  height: 60px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22) 0%, transparent 70%);
-  filter: blur(16px);
+.flipbook-reader iframe {
+  @apply h-full w-full;
 }
 
 /* ============================================
@@ -503,40 +730,109 @@
    ============================================ */
 .prose-editorial {
   @apply text-foreground;
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
 }
 
 .prose-editorial h2 {
-  @apply mt-12 mb-4 text-2xl font-normal tracking-wide;
+  font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+  @apply mt-20 mb-8 font-normal uppercase tracking-wide;
+  font-size: clamp(2rem, 5vw, 3rem);
 }
 
 .prose-editorial h3 {
-  @apply mt-8 mb-3 text-xl font-normal tracking-wide;
+  font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+  @apply mt-16 mb-6 font-normal uppercase tracking-wide;
+  font-size: clamp(1.5rem, 3vw, 2rem);
 }
 
 .prose-editorial p {
-  @apply mb-4 leading-relaxed text-muted-foreground;
+  @apply mb-8 text-xl leading-relaxed text-muted-foreground;
 }
 
 .prose-editorial strong {
   @apply font-semibold text-foreground;
 }
 
-.prose-editorial ul, .prose-editorial ol {
-  @apply mb-4 pl-6;
+.prose-editorial ul,
+.prose-editorial ol {
+  @apply mb-8 pl-6;
 }
 
 .prose-editorial li {
-  @apply mb-2 text-muted-foreground;
+  @apply mb-4 text-xl text-muted-foreground;
 }
 
 .prose-editorial a {
-  @apply text-brand underline-offset-2 hover:underline;
+  @apply text-brand underline-offset-4 hover:underline;
 }
 
 .prose-editorial hr {
-  @apply my-8 border-border;
+  @apply my-16 border-border;
 }
 
 .prose-editorial blockquote {
-  @apply border-l-2 border-brand pl-4 italic text-muted-foreground;
+  font-family: var(--font-accent), "Garamond", Georgia, serif;
+  @apply border-l-2 border-brand pl-8 text-2xl italic text-muted-foreground my-12;
+}
+
+/* Pull quote style - Dramatic */
+.prose-editorial .pullquote,
+.pullquote {
+  font-family: var(--font-accent), "Garamond", Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  @apply italic text-center my-16 px-4 md:px-12 leading-relaxed;
+}
+
+/* ============================================
+   HERO SECTION UTILITIES
+   ============================================ */
+@layer utilities {
+  /* Full viewport hero */
+  .hero-viewport {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Hero image container */
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Hero content overlay */
+  .hero-content {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Glass effect for cards on images */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .dark .glass {
+    background: rgba(13, 17, 23, 0.5);
+  }
+}
+
+/* ============================================
+   RESPONSIVE TYPOGRAPHY ADJUSTMENTS
+   ============================================ */
+@media (max-width: 640px) {
+  .text-hero {
+    letter-spacing: -2px;
+  }
+
+  .tagline {
+    font-size: 1.125rem;
+  }
 }

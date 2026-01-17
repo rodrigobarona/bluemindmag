@@ -12,7 +12,7 @@ const locales: { code: Locale; label: string; fullName: string }[] = [
 ];
 
 interface LanguageSwitcherProps {
-  variant?: 'default' | 'minimal';
+  variant?: 'default' | 'minimal' | 'footer';
   className?: string;
 }
 
@@ -65,6 +65,47 @@ export function LanguageSwitcher({
             </button>
           </span>
         ))}
+      </div>
+    );
+  }
+
+  // Footer variant - designed for dark backgrounds
+  if (variant === 'footer') {
+    return (
+      <div
+        role="tablist"
+        aria-label="Language selection"
+        className={cn(
+          'inline-flex items-center rounded-full border border-background/20 bg-background/10 p-0.5',
+          className
+        )}
+      >
+        {locales.map((loc) => {
+          const isActive = locale === loc.code;
+
+          return (
+            <button
+              key={loc.code}
+              type="button"
+              role="tab"
+              onClick={() => handleLocaleChange(loc.code)}
+              disabled={isPending}
+              aria-selected={isActive}
+              aria-label={`Switch language to ${loc.fullName}`}
+              tabIndex={isActive ? 0 : -1}
+              className={cn(
+                'rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2',
+                isActive
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-background/70 hover:text-background hover:bg-background/10',
+                isPending && 'opacity-50 cursor-not-allowed'
+              )}
+            >
+              {loc.label}
+            </button>
+          );
+        })}
       </div>
     );
   }
