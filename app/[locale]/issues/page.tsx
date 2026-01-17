@@ -9,7 +9,11 @@ import { StaggerList } from '@/components/stagger-list';
 import { getAllIssues } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
-import { getCtaImage, getHeroImage } from '@/lib/pexels';
+import { getImageForSlot } from '@/lib/pexels';
+import { generateBlurPlaceholder } from '@/lib/image-utils';
+
+// ISR: Revalidate every hour
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -32,10 +36,10 @@ export default async function IssuesPage({ params }: Props) {
   const t = await getTranslations('Issues');
   const issues = getAllIssues();
   
-  // Fetch Pexels images
+  // Fetch Pexels images using slot-based system (no repeats across pages)
   const [newsletterImage, heroImage] = await Promise.all([
-    getCtaImage(),
-    getHeroImage(),
+    getImageForSlot('issues:newsletter'),
+    getImageForSlot('issues:hero'),
   ]);
 
   // Get translations based on locale
@@ -58,6 +62,8 @@ export default async function IssuesPage({ params }: Props) {
               alt={heroImage.alt}
               fill
               priority
+              placeholder={heroImage.blurDataURL || heroImage.avgColor ? 'blur' : 'empty'}
+              blurDataURL={heroImage.blurDataURL || (heroImage.avgColor ? generateBlurPlaceholder(heroImage.avgColor) : undefined)}
               className="object-cover"
               sizes="100vw"
               quality={85}

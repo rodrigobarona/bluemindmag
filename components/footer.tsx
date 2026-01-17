@@ -12,6 +12,7 @@ import {
 import { LanguageDropdown } from './language-dropdown';
 import { NewsletterForm } from './newsletter-form';
 import type { ImageResult } from '@/lib/pexels';
+import { generateBlurPlaceholder } from '@/lib/image-utils';
 
 interface FooterProps {
   newsletterImage?: ImageResult | null;
@@ -45,6 +46,8 @@ export function Footer({ newsletterImage }: FooterProps) {
               src={newsletterImage.srcLarge || newsletterImage.src}
               alt={newsletterImage.alt}
               fill
+              placeholder={newsletterImage.blurDataURL || newsletterImage.avgColor ? 'blur' : 'empty'}
+              blurDataURL={newsletterImage.blurDataURL || (newsletterImage.avgColor ? generateBlurPlaceholder(newsletterImage.avgColor) : undefined)}
               className="object-cover"
               sizes="100vw"
               quality={80}

@@ -9,10 +9,13 @@ import { StaggerList } from '@/components/stagger-list';
 import { PullQuoteImage } from '@/components/pull-quote';
 import { IssueCardFeatured, IssueCardMini } from '@/components/issue-card';
 import { HorizontalScroll, HorizontalScrollItem } from '@/components/horizontal-scroll';
-import { getHeroImage, getQuoteImage, getCtaImage, getSectionImages } from '@/lib/pexels';
+import { getImageForSlot, getSectionImages } from '@/lib/pexels';
 import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+
+// ISR: Revalidate every hour
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -27,11 +30,11 @@ export default async function HomePage({ params }: Props) {
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
 
-  // Fetch dynamic Pexels images
+  // Fetch dynamic Pexels images using slot-based system (no repeats across pages)
   const [heroImage, quoteImage, newsletterImage] = await Promise.all([
-    getHeroImage(),
-    getQuoteImage(),
-    getCtaImage(),
+    getImageForSlot('home:hero'),
+    getImageForSlot('home:quote'),
+    getImageForSlot('home:newsletter'),
   ]);
 
   // Get section images for highlights

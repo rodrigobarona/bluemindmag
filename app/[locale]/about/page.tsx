@@ -13,7 +13,11 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { PullQuoteImage } from '@/components/pull-quote';
 import { getTeamMemberById } from '@/content/data/team';
 import { getSponsorById } from '@/content/data/sponsors';
-import { getQuoteImage, getPortugalImage, getSurferImage, getCtaImage } from '@/lib/pexels';
+import { getImageForSlot } from '@/lib/pexels';
+import { generateBlurPlaceholder } from '@/lib/image-utils';
+
+// ISR: Revalidate every 24 hours (static content)
+export const revalidate = 86400;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -38,12 +42,12 @@ export default async function AboutPage({ params }: Props) {
   const publisher = getTeamMemberById('surfisio');
   const smi = getSponsorById('surfing-medicine-international');
 
-  // Fetch Pexels images for visual sections
+  // Fetch Pexels images using slot-based system (no repeats across pages)
   const [quoteImage, heroImage, surferImage, newsletterImage] = await Promise.all([
-    getQuoteImage(),
-    getPortugalImage(),
-    getSurferImage(),
-    getCtaImage(),
+    getImageForSlot('about:quote'),
+    getImageForSlot('about:hero'),
+    getImageForSlot('about:surfer'),
+    getImageForSlot('about:newsletter'),
   ]);
 
   return (
@@ -58,6 +62,8 @@ export default async function AboutPage({ params }: Props) {
               alt={heroImage.alt}
               fill
               priority
+              placeholder={heroImage.blurDataURL || heroImage.avgColor ? 'blur' : 'empty'}
+              blurDataURL={heroImage.blurDataURL || (heroImage.avgColor ? generateBlurPlaceholder(heroImage.avgColor) : undefined)}
               className="object-cover"
               sizes="100vw"
               quality={85}
@@ -173,10 +179,12 @@ export default async function AboutPage({ params }: Props) {
                     <>
                       <Image
                         src={surferImage.srcLarge || surferImage.src}
-                    alt={t('editor.name')}
-                    fill
-                    className="object-cover"
-                  />
+                        alt={t('editor.name')}
+                        fill
+                        placeholder={surferImage.blurDataURL || surferImage.avgColor ? 'blur' : 'empty'}
+                        blurDataURL={surferImage.blurDataURL || (surferImage.avgColor ? generateBlurPlaceholder(surferImage.avgColor) : undefined)}
+                        className="object-cover"
+                      />
                       {surferImage.photographer && (
                         <div className="absolute bottom-2 left-2 font-ui text-xs text-white/40 bg-black/30 px-2 py-1">
                           Photo: {surferImage.photographer} / Pexels
@@ -389,6 +397,8 @@ export default async function AboutPage({ params }: Props) {
                       src={surferImage.srcLarge || surferImage.src}
                       alt={surferImage.alt}
                       fill
+                      placeholder={surferImage.blurDataURL || surferImage.avgColor ? 'blur' : 'empty'}
+                      blurDataURL={surferImage.blurDataURL || (surferImage.avgColor ? generateBlurPlaceholder(surferImage.avgColor) : undefined)}
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />

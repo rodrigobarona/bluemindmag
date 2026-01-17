@@ -15,7 +15,11 @@ import { ContactForm } from "@/components/contact-form";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { socialLinks, siteConfig } from "@/content/data/navigation";
 import { getTeamMemberById } from "@/content/data/team";
-import { getCtaImage, getQuoteImage } from "@/lib/pexels";
+import { getImageForSlot } from "@/lib/pexels";
+import { generateBlurPlaceholder } from "@/lib/image-utils";
+
+// ISR: Revalidate every 24 hours (static content)
+export const revalidate = 86400;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -38,10 +42,10 @@ export default async function ContactPage({ params }: Props) {
   const t = await getTranslations("Contact");
   const editor = getTeamMemberById("pedro-seixas");
 
-  // Fetch Pexels images
+  // Fetch Pexels images using slot-based system (no repeats across pages)
   const [newsletterImage, heroImage] = await Promise.all([
-    getCtaImage(),
-    getQuoteImage(),
+    getImageForSlot('contact:newsletter'),
+    getImageForSlot('contact:hero'),
   ]);
 
   const getSocialIcon = (platform: string) => {
@@ -67,6 +71,8 @@ export default async function ContactPage({ params }: Props) {
               alt={heroImage.alt}
               fill
               priority
+              placeholder={heroImage.blurDataURL || heroImage.avgColor ? 'blur' : 'empty'}
+              blurDataURL={heroImage.blurDataURL || (heroImage.avgColor ? generateBlurPlaceholder(heroImage.avgColor) : undefined)}
               className="object-cover"
               sizes="100vw"
               quality={85}

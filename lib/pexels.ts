@@ -1,14 +1,23 @@
 /**
  * Pexels API Integration for Blue Mind Magazine
  * Fetches high-quality ocean and surf photography for all sections
+ * 
+ * Features:
+ * - Slot-based deterministic image assignment (no repeats across pages)
+ * - Multi-layer caching with unstable_cache (24h TTL)
+ * - Blur placeholder generation for instant loading feedback
  */
+
+import { unstable_cache } from 'next/cache';
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.PEXELS_API_URL;
 const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
 
 // ============================================
-// CURATED SEARCH QUERIES BY SECTION
+// IMAGE CATEGORIES & QUERIES
 // ============================================
+
+type ImageCategory = 'hero' | 'quote' | 'science' | 'surfer' | 'portugal' | 'cta';
 
 // Hero images - Dramatic, cinematic ocean/surf
 const HERO_QUERIES = [
@@ -74,6 +83,66 @@ const CTA_QUERIES = [
   'sea surface ripples',
 ];
 
+// Category to queries mapping
+const CATEGORY_QUERIES: Record<ImageCategory, string[]> = {
+  hero: HERO_QUERIES,
+  quote: QUOTE_QUERIES,
+  science: SCIENCE_QUERIES,
+  surfer: SURFER_QUERIES,
+  portugal: PORTUGAL_QUERIES,
+  cta: CTA_QUERIES,
+};
+
+// ============================================
+// SLOT REGISTRY - Deterministic Image Assignment
+// ============================================
+
+/**
+ * Each page section gets a unique slot to ensure no image repetition
+ * across different pages during user navigation.
+ * 
+ * Format: 'page:section' -> { category, index }
+ * The index determines which query from the category to use.
+ */
+const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = {
+  // Home page
+  'home:hero': { category: 'hero', index: 0 },
+  'home:quote': { category: 'quote', index: 0 },
+  'home:newsletter': { category: 'cta', index: 0 },
+  
+  // About page
+  'about:hero': { category: 'portugal', index: 0 },
+  'about:quote': { category: 'quote', index: 1 },
+  'about:surfer': { category: 'surfer', index: 0 },
+  'about:newsletter': { category: 'cta', index: 1 },
+  
+  // Contact page
+  'contact:hero': { category: 'quote', index: 2 },
+  'contact:newsletter': { category: 'cta', index: 2 },
+  
+  // Issues pages
+  'issues:hero': { category: 'hero', index: 1 },
+  'issues:newsletter': { category: 'cta', index: 3 },
+  
+  // Newsletter page
+  'newsletter:hero': { category: 'hero', index: 2 },
+  'newsletter:newsletter': { category: 'cta', index: 4 },
+  
+  // Legal pages (share same images)
+  'legal:newsletter': { category: 'cta', index: 5 },
+};
+
+// Section-specific queries for issue highlights
+const SECTION_QUERIES: Record<string, string[]> = {
+  'editors-note': ['ocean horizon peaceful', 'calm sea morning'],
+  'meet-the-scientist': SCIENCE_QUERIES,
+  'students-peak': ['surfer learning', 'beginner surfing'],
+  'surf-science-explained': ['ocean waves physics', 'wave formation'],
+  'meet-the-surfer': SURFER_QUERIES,
+  'tips-tricks': ['surfboard beach', 'surf equipment'],
+  'community-projects': ['beach cleanup', 'surf community'],
+};
+
 // ============================================
 // TYPES
 // ============================================
@@ -119,63 +188,149 @@ export interface ImageResult {
   alt: string;
   avgColor: string;
   pexelsUrl?: string;
+  blurDataURL?: string;
 }
 
 // ============================================
 // FALLBACK IMAGES
 // ============================================
 
-// Fallback images if API fails or no key
-const FALLBACK_HERO_IMAGES: ImageResult[] = [
-  {
-    src: '/images/hero/ocean-aerial.jpg',
-    srcLarge: '/images/hero/ocean-aerial.jpg',
-    srcMedium: '/images/hero/ocean-aerial.jpg',
-    srcSmall: '/images/hero/ocean-aerial.jpg',
-    photographer: 'Pexels',
-    alt: 'Aerial view of ocean waves',
-    avgColor: '#0d4f6c',
-  },
-  {
-    src: '/images/hero/surfer-sunset.jpg',
-    srcLarge: '/images/hero/surfer-sunset.jpg',
-    srcMedium: '/images/hero/surfer-sunset.jpg',
-    srcSmall: '/images/hero/surfer-sunset.jpg',
-    photographer: 'Pexels',
-    alt: 'Surfer silhouette at golden sunset',
-    avgColor: '#c9956c',
-  },
-  {
-    src: '/images/hero/underwater-blue.jpg',
-    srcLarge: '/images/hero/underwater-blue.jpg',
-    srcMedium: '/images/hero/underwater-blue.jpg',
-    srcSmall: '/images/hero/underwater-blue.jpg',
-    photographer: 'Pexels',
-    alt: 'Underwater ocean blue light rays',
-    avgColor: '#0a3d5c',
-  },
-  {
-    src: '/images/hero/beach-golden-hour.jpg',
-    srcLarge: '/images/hero/beach-golden-hour.jpg',
-    srcMedium: '/images/hero/beach-golden-hour.jpg',
-    srcSmall: '/images/hero/beach-golden-hour.jpg',
-    photographer: 'Pexels',
-    alt: 'Beach at golden hour with waves',
-    avgColor: '#d4a574',
-  },
-];
+const FALLBACK_IMAGES: Record<ImageCategory, ImageResult[]> = {
+  hero: [
+    {
+      src: '/images/hero/ocean-aerial.jpg',
+      srcLarge: '/images/hero/ocean-aerial.jpg',
+      srcMedium: '/images/hero/ocean-aerial.jpg',
+      srcSmall: '/images/hero/ocean-aerial.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Aerial view of ocean waves',
+      avgColor: '#0d4f6c',
+      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+    },
+    {
+      src: '/images/hero/surfer-sunset.jpg',
+      srcLarge: '/images/hero/surfer-sunset.jpg',
+      srcMedium: '/images/hero/surfer-sunset.jpg',
+      srcSmall: '/images/hero/surfer-sunset.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Surfer silhouette at golden sunset',
+      avgColor: '#c9956c',
+      blurDataURL: generateBlurPlaceholder('#c9956c'),
+    },
+    {
+      src: '/images/hero/underwater-blue.jpg',
+      srcLarge: '/images/hero/underwater-blue.jpg',
+      srcMedium: '/images/hero/underwater-blue.jpg',
+      srcSmall: '/images/hero/underwater-blue.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Underwater ocean blue light rays',
+      avgColor: '#0a3d5c',
+      blurDataURL: generateBlurPlaceholder('#0a3d5c'),
+    },
+    {
+      src: '/images/hero/beach-golden-hour.jpg',
+      srcLarge: '/images/hero/beach-golden-hour.jpg',
+      srcMedium: '/images/hero/beach-golden-hour.jpg',
+      srcSmall: '/images/hero/beach-golden-hour.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Beach at golden hour with waves',
+      avgColor: '#d4a574',
+      blurDataURL: generateBlurPlaceholder('#d4a574'),
+    },
+  ],
+  quote: [
+    {
+      src: '/images/hero/ocean-aerial.jpg',
+      srcLarge: '/images/hero/ocean-aerial.jpg',
+      srcMedium: '/images/hero/ocean-aerial.jpg',
+      srcSmall: '/images/hero/ocean-aerial.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Ocean mist at dawn',
+      avgColor: '#5a7d8c',
+      blurDataURL: generateBlurPlaceholder('#5a7d8c'),
+    },
+  ],
+  science: [
+    {
+      src: '/images/hero/underwater-blue.jpg',
+      srcLarge: '/images/hero/underwater-blue.jpg',
+      srcMedium: '/images/hero/underwater-blue.jpg',
+      srcSmall: '/images/hero/underwater-blue.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Ocean science imagery',
+      avgColor: '#0a3d5c',
+      blurDataURL: generateBlurPlaceholder('#0a3d5c'),
+    },
+  ],
+  surfer: [
+    {
+      src: '/images/hero/surfer-sunset.jpg',
+      srcLarge: '/images/hero/surfer-sunset.jpg',
+      srcMedium: '/images/hero/surfer-sunset.jpg',
+      srcSmall: '/images/hero/surfer-sunset.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Surfer lifestyle',
+      avgColor: '#c9956c',
+      blurDataURL: generateBlurPlaceholder('#c9956c'),
+    },
+  ],
+  portugal: [
+    {
+      src: '/images/hero/ocean-aerial.jpg',
+      srcLarge: '/images/hero/ocean-aerial.jpg',
+      srcMedium: '/images/hero/ocean-aerial.jpg',
+      srcSmall: '/images/hero/ocean-aerial.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Portuguese coastline',
+      avgColor: '#0d4f6c',
+      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+    },
+  ],
+  cta: [
+    {
+      src: '/images/hero/ocean-aerial.jpg',
+      srcLarge: '/images/hero/ocean-aerial.jpg',
+      srcMedium: '/images/hero/ocean-aerial.jpg',
+      srcSmall: '/images/hero/ocean-aerial.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Ocean blue gradient',
+      avgColor: '#0d4f6c',
+      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+    },
+    {
+      src: '/images/hero/beach-golden-hour.jpg',
+      srcLarge: '/images/hero/beach-golden-hour.jpg',
+      srcMedium: '/images/hero/beach-golden-hour.jpg',
+      srcSmall: '/images/hero/beach-golden-hour.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Beach aerial view',
+      avgColor: '#d4a574',
+      blurDataURL: generateBlurPlaceholder('#d4a574'),
+    },
+  ],
+};
 
-const FALLBACK_QUOTE_IMAGES: ImageResult[] = [
-  {
-    src: '/images/atmosphere/ocean-mist.jpg',
-    srcLarge: '/images/atmosphere/ocean-mist.jpg',
-    srcMedium: '/images/atmosphere/ocean-mist.jpg',
-    srcSmall: '/images/atmosphere/ocean-mist.jpg',
-    photographer: 'Pexels',
-    alt: 'Ocean mist at dawn',
-    avgColor: '#5a7d8c',
-  },
-];
+// ============================================
+// BLUR PLACEHOLDER GENERATION
+// ============================================
+
+/**
+ * Generate a blur placeholder SVG data URL from an average color
+ * This provides instant visual feedback while images load
+ */
+export function generateBlurPlaceholder(avgColor: string): string {
+  // Ensure color is valid
+  const color = avgColor.startsWith('#') ? avgColor : '#5a7d8c';
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5">
+    <filter id="b" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="1"/>
+    </filter>
+    <rect width="100%" height="100%" fill="${color}" filter="url(#b)"/>
+  </svg>`;
+  
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+}
 
 // ============================================
 // HELPER FUNCTIONS
@@ -202,18 +357,20 @@ function transformPhoto(photo: PexelsPhoto, query?: string): ImageResult {
     alt: photo.alt || `${query || 'Ocean'} photography`,
     avgColor: photo.avg_color,
     pexelsUrl: photo.url,
+    blurDataURL: generateBlurPlaceholder(photo.avg_color),
   };
 }
 
 /**
- * Get random item from array
+ * Get fallback image for a category
  */
-function getRandomItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
+function getFallbackImage(category: ImageCategory, index: number = 0): ImageResult {
+  const fallbacks = FALLBACK_IMAGES[category] || FALLBACK_IMAGES.hero;
+  return fallbacks[index % fallbacks.length];
 }
 
 /**
- * Fetch images from Pexels API
+ * Fetch images from Pexels API (internal, not cached)
  */
 async function fetchFromPexels(
   query: string,
@@ -241,9 +398,9 @@ async function fetchFromPexels(
       headers: {
         Authorization: PEXELS_API_KEY,
       },
+      // Fetch-level cache as backup (24 hours)
       next: {
-        // Cache for 1 hour
-        revalidate: 3600,
+        revalidate: 86400,
       },
     });
 
@@ -260,21 +417,140 @@ async function fetchFromPexels(
 }
 
 // ============================================
-// PUBLIC API FUNCTIONS
+// CACHED API FUNCTIONS
 // ============================================
 
 /**
- * Get a random hero image for the homepage
+ * Internal function to fetch image for a slot
+ * This is wrapped with unstable_cache for 24-hour caching
+ */
+async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
+  const config = IMAGE_SLOTS[slot];
+  if (!config) {
+    console.warn(`Unknown image slot: ${slot}`);
+    return null;
+  }
+
+  const queries = CATEGORY_QUERIES[config.category];
+  const query = queries[config.index % queries.length];
+
+  const response = await fetchFromPexels(query, { perPage: 1 });
+
+  if (response?.photos[0]) {
+    return transformPhoto(response.photos[0], query);
+  }
+
+  return getFallbackImage(config.category, config.index);
+}
+
+/**
+ * Get image for a specific slot with 24-hour caching
+ * 
+ * Slots are formatted as 'page:section', e.g.:
+ * - 'home:hero'
+ * - 'about:quote'
+ * - 'contact:newsletter'
+ * 
+ * This ensures no image repetition across pages during navigation.
+ */
+export const getImageForSlot = unstable_cache(
+  fetchImageForSlotInternal,
+  ['pexels-slot'],
+  { 
+    revalidate: 86400, // 24 hours
+    tags: ['pexels'] 
+  }
+);
+
+/**
+ * Internal function to fetch section image for issue highlights
+ */
+async function fetchSectionImageInternal(section: string, index: number): Promise<ImageResult | null> {
+  const queries = SECTION_QUERIES[section] || HERO_QUERIES;
+  const query = queries[index % queries.length];
+
+  const response = await fetchFromPexels(query, { perPage: 1 });
+
+  if (response?.photos[0]) {
+    return transformPhoto(response.photos[0], query);
+  }
+
+  return getFallbackImage('hero', index);
+}
+
+/**
+ * Get image for issue section highlights with 24-hour caching
+ */
+export const getSectionImage = unstable_cache(
+  fetchSectionImageInternal,
+  ['pexels-section'],
+  { 
+    revalidate: 86400, // 24 hours
+    tags: ['pexels'] 
+  }
+);
+
+/**
+ * Get images for multiple issue highlights
+ */
+export async function getSectionImages(sections: string[]): Promise<Map<string, ImageResult>> {
+  const imageMap = new Map<string, ImageResult>();
+
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+    const image = await getSectionImage(section, i);
+    if (image) {
+      imageMap.set(section, image);
+    }
+  }
+
+  return imageMap;
+}
+
+// ============================================
+// LEGACY API FUNCTIONS (Deprecated - use getImageForSlot instead)
+// ============================================
+
+/**
+ * @deprecated Use getImageForSlot('home:hero') instead
  */
 export async function getHeroImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(HERO_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 5 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return getRandomItem(FALLBACK_HERO_IMAGES);
+  return getImageForSlot('home:hero');
+}
+
+/**
+ * @deprecated Use getImageForSlot('home:quote') instead
+ */
+export async function getQuoteImage(): Promise<ImageResult | null> {
+  return getImageForSlot('home:quote');
+}
+
+/**
+ * @deprecated Use getImageForSlot with appropriate slot instead
+ */
+export async function getScienceImage(): Promise<ImageResult | null> {
+  return getImageForSlot('about:hero');
+}
+
+/**
+ * @deprecated Use getImageForSlot('about:surfer') instead
+ */
+export async function getSurferImage(): Promise<ImageResult | null> {
+  return getImageForSlot('about:surfer');
+}
+
+/**
+ * @deprecated Use getImageForSlot('about:hero') instead
+ */
+export async function getPortugalImage(): Promise<ImageResult | null> {
+  return getImageForSlot('about:hero');
+}
+
+/**
+ * @deprecated Use getImageForSlot with appropriate slot instead
+ */
+export async function getCtaImage(): Promise<ImageResult | null> {
+  return getImageForSlot('home:newsletter');
 }
 
 /**
@@ -282,122 +558,18 @@ export async function getHeroImage(): Promise<ImageResult | null> {
  */
 export async function getHeroImages(count: number = 3): Promise<ImageResult[]> {
   const images: ImageResult[] = [];
-  const queries = HERO_QUERIES.slice(0, count);
-  
-  for (const query of queries) {
-    const response = await fetchFromPexels(query, { perPage: 1 });
-    
+
+  for (let i = 0; i < count && i < HERO_QUERIES.length; i++) {
+    const response = await fetchFromPexels(HERO_QUERIES[i], { perPage: 1 });
+
     if (response && response.photos.length > 0) {
-      images.push(transformPhoto(response.photos[0], query));
+      images.push(transformPhoto(response.photos[0], HERO_QUERIES[i]));
+    } else {
+      images.push(getFallbackImage('hero', i));
     }
   }
-  
-  // Fill with fallbacks if needed
-  while (images.length < count) {
-    images.push(FALLBACK_HERO_IMAGES[images.length % FALLBACK_HERO_IMAGES.length]);
-  }
-  
+
   return images;
-}
-
-/**
- * Get atmospheric image for quote sections
- */
-export async function getQuoteImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(QUOTE_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 3 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return FALLBACK_QUOTE_IMAGES[0] || null;
-}
-
-/**
- * Get science/research themed images
- */
-export async function getScienceImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(SCIENCE_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 3 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return null;
-}
-
-/**
- * Get surfer lifestyle images
- */
-export async function getSurferImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(SURFER_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 3 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return null;
-}
-
-/**
- * Get Portugal/Atlantic themed images
- */
-export async function getPortugalImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(PORTUGAL_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 3 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return null;
-}
-
-/**
- * Get CTA/Newsletter background images
- */
-export async function getCtaImage(): Promise<ImageResult | null> {
-  const query = getRandomItem(CTA_QUERIES);
-  const response = await fetchFromPexels(query, { perPage: 3 });
-  
-  if (response && response.photos.length > 0) {
-    return transformPhoto(getRandomItem(response.photos), query);
-  }
-  
-  return getRandomItem(FALLBACK_HERO_IMAGES);
-}
-
-/**
- * Get images for issue highlights (editorial sections)
- */
-export async function getSectionImages(sections: string[]): Promise<Map<string, ImageResult>> {
-  const imageMap = new Map<string, ImageResult>();
-  
-  const sectionQueries: Record<string, string[]> = {
-    'editors-note': ['ocean horizon peaceful', 'calm sea morning'],
-    'meet-the-scientist': SCIENCE_QUERIES,
-    'students-peak': ['surfer learning', 'beginner surfing'],
-    'surf-science-explained': ['ocean waves physics', 'wave formation'],
-    'meet-the-surfer': SURFER_QUERIES,
-    'tips-tricks': ['surfboard beach', 'surf equipment'],
-    'community-projects': ['beach cleanup', 'surf community'],
-    default: HERO_QUERIES,
-  };
-  
-  for (const section of sections) {
-    const queries = sectionQueries[section] || sectionQueries.default;
-    const query = getRandomItem(queries);
-    const response = await fetchFromPexels(query, { perPage: 1 });
-    
-    if (response && response.photos.length > 0) {
-      imageMap.set(section, transformPhoto(response.photos[0], query));
-    }
-  }
-  
-  return imageMap;
 }
 
 /**
@@ -408,11 +580,11 @@ export async function searchSurfImages(
   count: number = 6
 ): Promise<ImageResult[]> {
   const response = await fetchFromPexels(customQuery, { perPage: count });
-  
+
   if (response && response.photos.length > 0) {
     return response.photos.map(photo => transformPhoto(photo, customQuery));
   }
-  
+
   return [];
 }
 
@@ -420,30 +592,22 @@ export async function searchSurfImages(
  * Get curated images by category
  */
 export async function getCuratedImages(
-  category: 'hero' | 'quote' | 'science' | 'surfer' | 'portugal' | 'cta',
+  category: ImageCategory,
   count: number = 3
 ): Promise<ImageResult[]> {
-  const queryMap: Record<string, string[]> = {
-    hero: HERO_QUERIES,
-    quote: QUOTE_QUERIES,
-    science: SCIENCE_QUERIES,
-    surfer: SURFER_QUERIES,
-    portugal: PORTUGAL_QUERIES,
-    cta: CTA_QUERIES,
-  };
-  
-  const queries = queryMap[category] || HERO_QUERIES;
+  const queries = CATEGORY_QUERIES[category] || HERO_QUERIES;
   const images: ImageResult[] = [];
-  
-  // Fetch from different queries for variety
+
   for (let i = 0; i < count && i < queries.length; i++) {
     const response = await fetchFromPexels(queries[i], { perPage: 1 });
-    
+
     if (response && response.photos.length > 0) {
       images.push(transformPhoto(response.photos[0], queries[i]));
+    } else {
+      images.push(getFallbackImage(category, i));
     }
   }
-  
+
   return images;
 }
 
@@ -452,15 +616,15 @@ export async function getCuratedImages(
  */
 export async function getPhotoById(id: number): Promise<ImageResult | null> {
   if (!PEXELS_API_KEY) return null;
-  
+
   try {
     const response = await fetch(`${PEXELS_BASE_URL}/photos/${id}`, {
       headers: { Authorization: PEXELS_API_KEY },
       next: { revalidate: 86400 }, // Cache for 24 hours
     });
-    
+
     if (!response.ok) return null;
-    
+
     const photo: PexelsPhoto = await response.json();
     return transformPhoto(photo);
   } catch {

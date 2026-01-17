@@ -13,8 +13,12 @@ import {
 import { SiteLayout } from "@/components/site-layout";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { ScrollReveal } from "@/components/scroll-reveal";
-import { getCtaImage, getQuoteImage } from "@/lib/pexels";
+import { getImageForSlot } from "@/lib/pexels";
+import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { getTeamMemberById } from "@/content/data/team";
+
+// ISR: Revalidate every 24 hours (static content)
+export const revalidate = 86400;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -37,10 +41,10 @@ export default async function NewsletterPage({ params }: Props) {
   const t = await getTranslations("Newsletter");
   const editor = getTeamMemberById("pedro-seixas");
 
-  // Fetch Pexels images
+  // Fetch Pexels images using slot-based system (no repeats across pages)
   const [newsletterImage, heroImage] = await Promise.all([
-    getCtaImage(),
-    getQuoteImage(),
+    getImageForSlot('newsletter:newsletter'),
+    getImageForSlot('newsletter:hero'),
   ]);
 
   const features = [
@@ -90,6 +94,8 @@ export default async function NewsletterPage({ params }: Props) {
               alt={heroImage.alt}
               fill
               priority
+              placeholder={heroImage.blurDataURL || heroImage.avgColor ? 'blur' : 'empty'}
+              blurDataURL={heroImage.blurDataURL || (heroImage.avgColor ? generateBlurPlaceholder(heroImage.avgColor) : undefined)}
               className="object-cover"
               sizes="100vw"
               quality={85}

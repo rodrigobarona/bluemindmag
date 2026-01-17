@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
+import { generateBlurPlaceholder } from '@/lib/image-utils';
 
 interface HeroImmersiveProps {
   heroImage?: {
@@ -15,6 +16,7 @@ interface HeroImmersiveProps {
     photographerUrl?: string;
     alt: string;
     avgColor?: string;
+    blurDataURL?: string;
   } | null;
   tagline?: string;
   issueNumber?: string;
@@ -53,6 +55,7 @@ export function HeroImmersive({
   // Use fallback local image if no Pexels image
   const imageSrc = heroImage?.srcLarge || heroImage?.src || '/images/hero/ocean-aerial.jpg';
   const imageAlt = heroImage?.alt || 'Ocean waves';
+  const blurDataURL = heroImage?.blurDataURL || (heroImage?.avgColor ? generateBlurPlaceholder(heroImage.avgColor) : undefined);
 
   return (
     <section
@@ -69,6 +72,8 @@ export function HeroImmersive({
           alt={imageAlt}
           fill
           priority
+          placeholder={blurDataURL ? 'blur' : 'empty'}
+          blurDataURL={blurDataURL}
           className="object-cover"
           sizes="100vw"
           quality={90}

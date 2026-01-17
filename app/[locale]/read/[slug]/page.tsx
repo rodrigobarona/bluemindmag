@@ -37,28 +37,35 @@ export default async function ReadIssuePage({ params }: Props) {
 
   return (
     <div className="flipbook-reader">
-      {/* Close button - returns to issue page */}
-      <Link
-        href={`/issues/${slug}`}
-        className="fixed top-4 right-4 z-50 p-3 bg-white/10 hover:bg-white/20 text-white transition-colors"
-        aria-label="Close reader"
-      >
-        <IconX className="h-6 w-6" />
-      </Link>
+      {/* Header with close button and issue indicator */}
+      <header className="flipbook-reader__header">
+        <div className="font-ui text-white/60 text-sm">
+          Issue {issue.issueNumber}
+        </div>
 
-      {/* Issue indicator */}
-      <div className="fixed top-4 left-4 z-50 font-ui text-white/60 text-sm">
-        Issue {issue.issueNumber}
+        <div className="text-white/40 text-xs font-ui hidden sm:block">
+          Press <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">ESC</kbd> to close
+        </div>
+
+        <Link
+          href={`/issues/${slug}`}
+          className="p-2 bg-white/10 hover:bg-white/20 text-white transition-colors rounded"
+          aria-label="Close reader"
+        >
+          <IconX className="h-5 w-5" />
+        </Link>
+      </header>
+
+      {/* Flipbook content area */}
+      <div className="flipbook-reader__content">
+        <iframe
+          src={flipbookUrl}
+          title={`Blue Mind Magazine Issue ${issue.issueNumber}`}
+          className="w-full h-full"
+          allow="clipboard-write; autoplay; fullscreen"
+          allowFullScreen
+        />
       </div>
-
-      {/* Fullscreen flipbook iframe */}
-      <iframe
-        src={flipbookUrl}
-        title={`Blue Mind Magazine Issue ${issue.issueNumber}`}
-        className="w-full h-full"
-        allow="clipboard-write; autoplay; fullscreen"
-        allowFullScreen
-      />
     </div>
   );
 }

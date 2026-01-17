@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import Image from "next/image";
 import type { ImageResult } from "@/lib/pexels";
+import { generateBlurPlaceholder } from "@/lib/image-utils";
 
 interface PullQuoteProps {
   quote: string;
@@ -94,6 +95,7 @@ export function PullQuoteImage({
   // Use fallback if no image provided
   const imageSrc = image?.srcLarge || image?.src || '/images/hero/ocean-aerial.jpg';
   const imageAlt = image?.alt || 'Ocean atmosphere';
+  const blurDataURL = image?.blurDataURL || (image?.avgColor ? generateBlurPlaceholder(image.avgColor) : undefined);
 
   return (
     <section
@@ -109,6 +111,8 @@ export function PullQuoteImage({
           src={imageSrc}
           alt={imageAlt}
           fill
+          placeholder={blurDataURL ? 'blur' : 'empty'}
+          blurDataURL={blurDataURL}
           className="object-cover"
           sizes="100vw"
           quality={85}
