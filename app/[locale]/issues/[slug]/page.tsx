@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
 import { ReadIssueButton } from "@/components/read-issue-button";
 import { IssueCard } from "@/components/issue-card";
@@ -312,22 +312,76 @@ export default async function IssueDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Read CTA - centered */}
-      <section className="py-16 md:py-24 bg-muted">
-        <div className="container-editorial">
-          <div className="max-w-xl mx-auto text-center">
-            <h2 className="font-headline text-3xl md:text-4xl mb-6">
-              {locale === "pt" ? "Pronto para ler?" : "Ready to read?"}
-            </h2>
-            <p className="font-body text-muted-foreground mb-8">
-              {locale === "pt"
-                ? "Abra a edição completa no nosso visualizador de flipbook imersivo."
-                : "Open the full issue in our immersive flipbook viewer."}
-            </p>
-            <ReadIssueButton
-              issueSlug={issue.slug}
-              label={t("readIssue")}
-            />
+      {/* Read CTA - Full-width accent banner with overflowing cover */}
+      <section
+        className="py-16 md:py-20 relative"
+        style={{
+          background: `linear-gradient(135deg, ${issue.accentColor} 0%, ${issue.accentColor}dd 100%)`,
+        }}
+      >
+        {/* Decorative elements */}
+        <div className="absolute inset-0 overflow-hidden opacity-10">
+          <div
+            className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl"
+            style={{ background: "#ffffff" }}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-2xl"
+            style={{ background: "#ffffff" }}
+          />
+        </div>
+
+        <div className="container-editorial relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Text content */}
+            <div className="text-center lg:text-left">
+              <span className="inline-block font-ui text-xs font-semibold uppercase tracking-[0.3em] text-white/70 mb-4">
+                {locale === "pt" ? "Edição Completa" : "Full Issue"}
+              </span>
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+                {locale === "pt" ? "Comece a Ler" : "Start Reading"}
+              </h2>
+              <p className="font-body text-lg text-white/80 mb-10 max-w-md mx-auto lg:mx-0">
+                {locale === "pt"
+                  ? "Mergulhe na experiência completa desta edição. Artigos, entrevistas e muito mais esperam por si."
+                  : "Dive into the complete experience of this issue. Articles, interviews, and more await you."}
+              </p>
+              <Link
+                href={`/read/${issue.slug}`}
+                className="inline-flex items-center gap-3 bg-white text-foreground px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-white/90 hover:scale-105"
+              >
+                <BookOpen className="w-5 h-5" />
+                {t("readIssue")}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Issue cover - overflowing at top with supporting number */}
+            <div className="hidden lg:flex justify-center items-center relative">
+              {/* Large issue number - peeking from behind cover */}
+              <span
+                className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
+                style={{ letterSpacing: "-0.05em" }}
+              >
+                {String(issue.issueNumber).padStart(2, "0")}
+              </span>
+
+              {/* Floating cover */}
+              <div className="relative -mt-24 transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10">
+                <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl" />
+                <div className="relative w-64 xl:w-80 shadow-2xl">
+                  <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
+                    <Image
+                      src={issue.cover}
+                      alt={translation.title}
+                      fill
+                      className="object-cover"
+                      sizes="320px"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
