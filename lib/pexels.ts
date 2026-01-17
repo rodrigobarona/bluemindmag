@@ -408,10 +408,19 @@ async function fetchFromPexels(
   } = {}
 ): Promise<PexelsSearchResponse | null> {
   if (!PEXELS_API_KEY) {
+    // #region agent log
+    console.log('[DEBUG-PEXELS] NO_API_KEY:', JSON.stringify({query}));
+    fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchFromPexels',message:'NO_API_KEY',data:{query},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'D'})}).catch(()=>{});
+    // #endregion
     return null;
   }
 
   const { perPage = 1, page = 1, orientation = 'landscape' } = options;
+
+  // #region agent log
+  console.log('[DEBUG-PEXELS] PEXELS_API_REQUEST:', JSON.stringify({query,perPage,page,orientation,fullUrl:`${PEXELS_BASE_URL}/search?query=${query}&per_page=${perPage}&page=${page}`}));
+  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchFromPexels:request',message:'PEXELS_API_REQUEST',data:{query,perPage,page,orientation,fullUrl:`${PEXELS_BASE_URL}/search?query=${query}&per_page=${perPage}&page=${page}`},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'C,D'})}).catch(()=>{});
+  // #endregion
 
   try {
     const params = new URLSearchParams({
@@ -448,8 +457,49 @@ async function fetchFromPexels(
 // ============================================
 
 /**
+ * Internal function to fetch a POOL of images for a slot's category
+ * Fetches 15 images to provide variety, cached for 24h
+ */
+async function fetchImagePoolForCategory(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
+  const queries = CATEGORY_QUERIES[category];
+  const query = queries[queryIndex % queries.length];
+  
+  // Fetch 15 images to build a pool for random selection
+  const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
+
+  // #region agent log
+  console.log('[DEBUG-PEXELS] POOL_FETCH:', JSON.stringify({category,queryIndex,query,photoCount:response?.photos?.length||0}));
+  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchImagePoolForCategory',message:'POOL_FETCH',data:{category,queryIndex,query,photoCount:response?.photos?.length||0},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
+  // #endregion
+
+  if (response?.photos && response.photos.length > 0) {
+    return response.photos.map(photo => transformPhoto(photo, query));
+  }
+
+  // Return multiple fallbacks if API fails
+  return [getFallbackImage(category, 0)];
+}
+
+/**
+ * Get cached image pool for a category
+ * Pool is cached for 24h, but random selection happens on each render
+ */
+async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
+  const cachedFetch = unstable_cache(
+    async () => fetchImagePoolForCategory(category, queryIndex),
+    [`pexels-pool-${category}-${queryIndex}`],
+    { 
+      revalidate: 86400, // 24 hours - pool is cached
+      tags: ['pexels', `pexels-pool-${category}`]
+    }
+  );
+  
+  return cachedFetch();
+}
+
+/**
  * Internal function to fetch image for a slot
- * Uses page variation to get different results from Pexels for each slot
+ * Now selects RANDOMLY from a cached pool for variety on each visit
  */
 async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
   const config = IMAGE_SLOTS[slot];
@@ -458,80 +508,95 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
     return null;
   }
 
-  const queries = CATEGORY_QUERIES[config.category];
-  const query = queries[config.index % queries.length];
+  // Get the cached pool of images for this category
+  const pool = await getCachedImagePool(config.category, config.index);
   
-  // Use different page numbers based on slot index to get varied results
-  // This prevents all slots from getting the same "top result" from Pexels
-  const pageNumber = (config.index % 5) + 1;
+  // RANDOM SELECTION: Pick a random image from the pool each time
+  const randomIndex = Math.floor(Math.random() * pool.length);
+  const selectedImage = pool[randomIndex];
 
-  const response = await fetchFromPexels(query, { perPage: 1, page: pageNumber });
+  // #region agent log
+  console.log('[DEBUG-PEXELS] RANDOM_SELECT:', JSON.stringify({slot,category:config.category,poolSize:pool.length,randomIndex,selectedPhotoPreview:selectedImage?.src?.substring(0,60)||null}));
+  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:fetchImageForSlotInternal',message:'RANDOM_SELECT',data:{slot,category:config.category,poolSize:pool.length,randomIndex},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
+  // #endregion
 
-  if (response?.photos[0]) {
-    return transformPhoto(response.photos[0], query);
-  }
-
-  return getFallbackImage(config.category, config.index);
+  return selectedImage || getFallbackImage(config.category, config.index);
 }
 
 /**
- * Get image for a specific slot with 24-hour caching
+ * Get image for a specific slot with FRESH random selection
  * 
  * Slots are formatted as 'page:section', e.g.:
  * - 'home:hero'
  * - 'about:quote'
  * - 'contact:newsletter'
  * 
- * Each slot gets its own unique cache key to ensure no cache collisions.
+ * The image POOL is cached (24h), but selection is random on each render
+ * for a fresh feel on every visit.
  */
 export async function getImageForSlot(slot: string): Promise<ImageResult | null> {
-  const cachedFetch = unstable_cache(
-    async () => fetchImageForSlotInternal(slot),
-    [`pexels-slot-${slot}`],  // Explicit unique cache key per slot
-    { 
-      revalidate: 86400, // 24 hours
-      tags: ['pexels', `pexels-${slot}`]  // Slot-specific tag for granular invalidation
-    }
-  );
+  // #region agent log
+  console.log('[DEBUG-PEXELS] SLOT_REQUEST_START:', JSON.stringify({slot,note:'NO_CACHE_ON_SELECTION'}));
+  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:getImageForSlot',message:'SLOT_REQUEST_START',data:{slot,note:'NO_CACHE_ON_SELECTION'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
+  // #endregion
+
+  // NO unstable_cache here - we want fresh random selection each time
+  // The pool fetch inside is cached, but the random pick is not
+  const result = await fetchImageForSlotInternal(slot);
   
-  return cachedFetch();
+  // #region agent log
+  console.log('[DEBUG-PEXELS] SLOT_REQUEST_RESULT:', JSON.stringify({slot,hasSrc:!!result?.src,photographer:result?.photographer||null,avgColor:result?.avgColor||null,srcPreview:result?.src?.substring(0,80)||null}));
+  fetch('http://127.0.0.1:7244/ingest/883f54ad-f78b-46b3-b134-6db15539d91d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'pexels.ts:getImageForSlot:result',message:'SLOT_REQUEST_RESULT',data:{slot,hasSrc:!!result?.src,photographer:result?.photographer||null,avgColor:result?.avgColor||null,srcPreview:result?.src?.substring(0,80)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'FIX'})}).catch(()=>{});
+  // #endregion
+  
+  return result;
 }
 
 /**
- * Internal function to fetch section image for issue highlights
- * Uses page variation based on index to get different results
+ * Internal function to fetch a POOL of images for a section
+ * Fetches 15 images to provide variety, cached for 24h
  */
-async function fetchSectionImageInternal(section: string, index: number): Promise<ImageResult | null> {
+async function fetchSectionImagePool(section: string, queryIndex: number): Promise<ImageResult[]> {
   const queries = SECTION_QUERIES[section] || HERO_QUERIES;
-  const query = queries[index % queries.length];
+  const query = queries[queryIndex % queries.length];
   
-  // Use different page numbers to get varied results
-  const pageNumber = (index % 5) + 1;
+  // Fetch 15 images to build a pool for random selection
+  const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
-  const response = await fetchFromPexels(query, { perPage: 1, page: pageNumber });
-
-  if (response?.photos[0]) {
-    return transformPhoto(response.photos[0], query);
+  if (response?.photos && response.photos.length > 0) {
+    return response.photos.map(photo => transformPhoto(photo, query));
   }
 
-  return getFallbackImage('hero', index);
+  return [getFallbackImage('hero', 0)];
 }
 
 /**
- * Get image for issue section highlights with 24-hour caching
- * Each section gets its own unique cache key.
+ * Get cached image pool for a section
  */
-export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
+async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
   const cachedFetch = unstable_cache(
-    async () => fetchSectionImageInternal(section, index),
-    [`pexels-section-${section}-${index}`],  // Explicit unique cache key
+    async () => fetchSectionImagePool(section, queryIndex),
+    [`pexels-section-pool-${section}-${queryIndex}`],
     { 
-      revalidate: 86400, // 24 hours
-      tags: ['pexels', `pexels-section-${section}`]
+      revalidate: 86400, // 24 hours - pool is cached
+      tags: ['pexels', `pexels-section-pool-${section}`]
     }
   );
   
   return cachedFetch();
+}
+
+/**
+ * Get image for issue section highlights with FRESH random selection
+ * Pool is cached (24h), but random selection happens each render.
+ */
+export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
+  // Get the cached pool
+  const pool = await getCachedSectionPool(section, index);
+  
+  // RANDOM SELECTION from the pool
+  const randomIndex = Math.floor(Math.random() * pool.length);
+  return pool[randomIndex] || getFallbackImage('hero', index);
 }
 
 /**
