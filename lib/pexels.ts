@@ -4,11 +4,11 @@
  * 
  * Features:
  * - Slot-based deterministic image assignment (no repeats across pages)
- * - Multi-layer caching with unstable_cache (24h TTL)
+ * - Next.js 16 "use cache" directive for serverless-compatible caching
  * - Blur placeholder generation for instant loading feedback
  */
 
-import { unstable_cache } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.PEXELS_API_URL;
 const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
@@ -448,10 +448,14 @@ async function fetchFromPexels(
 // ============================================
 
 /**
- * Internal function to fetch a POOL of images for a slot's category
- * Fetches 15 images to provide variety, cached for 24h
+ * Get cached image pool for a category using Next.js 16 "use cache"
+ * Pool is cached for 24h (revalidates daily), works in Vercel serverless
  */
-async function fetchImagePoolForCategory(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
+async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
+  'use cache';
+  cacheLife('days'); // Revalidate after 1 day, expire after 1 week
+  cacheTag('pexels', `pexels-pool-${category}`);
+  
   const queries = CATEGORY_QUERIES[category];
   const query = queries[queryIndex % queries.length];
   
@@ -464,23 +468,6 @@ async function fetchImagePoolForCategory(category: ImageCategory, queryIndex: nu
 
   // Return multiple fallbacks if API fails
   return [getFallbackImage(category, 0)];
-}
-
-/**
- * Get cached image pool for a category
- * Pool is cached for 24h, but random selection happens on each render
- */
-async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
-  const cachedFetch = unstable_cache(
-    async () => fetchImagePoolForCategory(category, queryIndex),
-    [`pexels-pool-${category}-${queryIndex}`],
-    { 
-      revalidate: 86400, // 24 hours - pool is cached
-      tags: ['pexels', `pexels-pool-${category}`]
-    }
-  );
-  
-  return cachedFetch();
 }
 
 /**
@@ -522,10 +509,14 @@ export async function getImageForSlot(slot: string): Promise<ImageResult | null>
 }
 
 /**
- * Internal function to fetch a POOL of images for a section
- * Fetches 15 images to provide variety, cached for 24h
+ * Get cached image pool for a section using Next.js 16 "use cache"
+ * Pool is cached for 24h (revalidates daily), works in Vercel serverless
  */
-async function fetchSectionImagePool(section: string, queryIndex: number): Promise<ImageResult[]> {
+async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
+  'use cache';
+  cacheLife('days'); // Revalidate after 1 day, expire after 1 week
+  cacheTag('pexels', `pexels-section-pool-${section}`);
+  
   const queries = SECTION_QUERIES[section] || HERO_QUERIES;
   const query = queries[queryIndex % queries.length];
   
@@ -537,22 +528,6 @@ async function fetchSectionImagePool(section: string, queryIndex: number): Promi
   }
 
   return [getFallbackImage('hero', 0)];
-}
-
-/**
- * Get cached image pool for a section
- */
-async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
-  const cachedFetch = unstable_cache(
-    async () => fetchSectionImagePool(section, queryIndex),
-    [`pexels-section-pool-${section}-${queryIndex}`],
-    { 
-      revalidate: 86400, // 24 hours - pool is cached
-      tags: ['pexels', `pexels-section-pool-${section}`]
-    }
-  );
-  
-  return cachedFetch();
 }
 
 /**
