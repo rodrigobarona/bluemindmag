@@ -125,10 +125,19 @@ export default async function IssueDetailPage({ params }: Props) {
               </p>
 
               {/* Primary Action - Read Issue */}
-              <ReadIssueButton
-                issueSlug={issue.slug}
-                label={t("readIssue")}
-              />
+              <div className="flex flex-wrap items-center gap-6">
+                <ReadIssueButton
+                  issueSlug={issue.slug}
+                  label={t("readIssue")}
+                />
+                <a
+                  href="#features"
+                  className="font-ui text-sm font-medium transition-colors hover:opacity-70"
+                  style={{ color: issue.accentColor }}
+                >
+                  {locale === "pt" ? "Ver Conteúdo" : "Preview Issue"} ↓
+                </a>
+              </div>
 
               {/* Sections - styled with accent color */}
               <div className="mt-12 pt-8 border-t border-border/50">
