@@ -387,6 +387,12 @@
     line-height: 0.75;
   }
 
+  /* Issue accent color hover states */
+  .issue-secondary-cta:hover {
+    border-color: var(--hover-color);
+    color: var(--hover-color);
+  }
+
   /* Aspect ratios for magazine covers */
   .aspect-magazine-cover {
     aspect-ratio: 210 / 297; /* A4 ratio */

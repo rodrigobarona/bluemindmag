@@ -115,7 +115,15 @@ export default async function IssuesPage({ params }: Props) {
 
       {/* Current Issue Showcase - 3D Tilt Parallax */}
       {currentIssue && (
-        <section className="border-b border-border">
+        <section className="py-20 md:py-28 border-b border-border">
+          <div className="container-editorial mb-8 md:mb-12">
+            <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
+              {locale === 'pt' ? 'Em Destaque' : 'Featured'}
+            </span>
+            <h2 className="font-headline text-3xl md:text-4xl">
+              {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
+            </h2>
+          </div>
           <IssueShowcase
             issue={currentIssue}
             translation={issueTranslations[currentIssue.id]}

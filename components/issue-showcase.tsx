@@ -1,11 +1,15 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
-import type { Issue, IssueTranslation, IssueHighlightTranslation } from '@/content/types/content';
+import { useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import type {
+  Issue,
+  IssueTranslation,
+  IssueHighlightTranslation,
+} from "@/content/types/content";
 
 interface IssueShowcaseProps {
   issue: Issue;
@@ -13,7 +17,11 @@ interface IssueShowcaseProps {
   locale: string;
 }
 
-export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps) {
+export function IssueShowcase({
+  issue,
+  translation,
+  locale,
+}: IssueShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -23,26 +31,44 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
 
   // Smooth spring animation for the tilt
   const springConfig = { damping: 25, stiffness: 150 };
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [12, -12]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-12, 12]), springConfig);
+  const rotateX = useSpring(
+    useTransform(mouseY, [-0.5, 0.5], [12, -12]),
+    springConfig
+  );
+  const rotateY = useSpring(
+    useTransform(mouseX, [-0.5, 0.5], [-12, 12]),
+    springConfig
+  );
 
   // Parallax layers
-  const glowX = useSpring(useTransform(mouseX, [-0.5, 0.5], [-20, 20]), springConfig);
-  const glowY = useSpring(useTransform(mouseY, [-0.5, 0.5], [-20, 20]), springConfig);
-  const shadowX = useSpring(useTransform(mouseX, [-0.5, 0.5], [30, -30]), springConfig);
-  const shadowY = useSpring(useTransform(mouseY, [-0.5, 0.5], [30, -30]), springConfig);
+  const glowX = useSpring(
+    useTransform(mouseX, [-0.5, 0.5], [-20, 20]),
+    springConfig
+  );
+  const glowY = useSpring(
+    useTransform(mouseY, [-0.5, 0.5], [-20, 20]),
+    springConfig
+  );
+  const shadowX = useSpring(
+    useTransform(mouseX, [-0.5, 0.5], [30, -30]),
+    springConfig
+  );
+  const shadowY = useSpring(
+    useTransform(mouseY, [-0.5, 0.5], [30, -30]),
+    springConfig
+  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
-    
+
     const rect = containerRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     // Normalize to -0.5 to 0.5
     const normalizedX = (e.clientX - centerX) / rect.width;
     const normalizedY = (e.clientY - centerY) / rect.height;
-    
+
     mouseX.set(normalizedX);
     mouseY.set(normalizedY);
   };
@@ -54,15 +80,18 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
   };
 
   // Get first 3 highlights for display
-  const highlightKeys = issue.highlights?.slice(0, 3).map(h => h.id) || [];
+  const highlightKeys = issue.highlights?.slice(0, 3).map((h) => h.id) || [];
   const highlightTranslations = highlightKeys
-    .map(key => translation.highlights?.[key])
+    .map((key) => translation.highlights?.[key])
     .filter(Boolean) as IssueHighlightTranslation[];
 
   return (
-    <div className="relative py-16 md:py-24">
+    <div
+      className="relative"
+      style={{ "--issue-accent": issue.accentColor } as React.CSSProperties}
+    >
       {/* Background ambient glow */}
-      <div 
+      <div
         className="absolute inset-0 opacity-30 blur-3xl pointer-events-none"
         style={{
           background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${issue.accentColor}20 0%, transparent 70%)`,
@@ -81,17 +110,25 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
             style={{ perspective: 1200 }}
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
+            {/* Large issue number behind cover - using issue accent color */}
+            <div
+              className="absolute -top-16 -left-8 text-display-number pointer-events-none select-none hidden lg:block opacity-[0.08]"
+              style={{ color: issue.accentColor }}
+            >
+              {String(issue.issueNumber).padStart(2, "0")}
+            </div>
+
             {/* Floating shadow layer */}
             <motion.div
-              className="absolute inset-4 -z-10 opacity-40"
+              className="absolute inset-4 -z-20 opacity-40"
               style={{
                 x: shadowX,
                 y: shadowY,
                 background: `linear-gradient(135deg, ${issue.accentColor}40 0%, transparent 60%)`,
-                filter: 'blur(40px)',
+                filter: "blur(40px)",
               }}
             />
 
@@ -101,10 +138,10 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
               style={{
                 rotateX,
                 rotateY,
-                transformStyle: 'preserve-3d',
+                transformStyle: "preserve-3d",
               }}
             >
-              <Link href={`/issues/${issue.slug}`} className="group block">
+              <Link href={`/read/${issue.slug}`} className="group block">
                 {/* The actual cover */}
                 <div className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
                   <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
@@ -116,7 +153,7 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                       priority
                     />
-                    
+
                     {/* Glossy reflection effect */}
                     <motion.div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-slow pointer-events-none"
@@ -129,31 +166,17 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
 
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
-                    
+
                     {/* CTA on hover */}
                     <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
                       <span className="inline-flex items-center gap-2 font-ui text-sm font-medium text-white">
                         <BookOpen className="w-4 h-4" />
-                        {locale === 'pt' ? 'Ler Agora' : 'Read Now'}
+                        {locale === "pt" ? "Ler Agora" : "Read Now"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
                       </span>
                     </div>
                   </div>
 
-                  {/* Current issue badge */}
-                  {issue.isCurrent && (
-                    <motion.div
-                      className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-xs font-semibold uppercase tracking-wider"
-                      style={{
-                        backgroundColor: issue.accentColor,
-                        color: '#ffffff',
-                        transform: 'translateZ(40px)',
-                      }}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
-                    </motion.div>
-                  )}
                 </div>
 
                 {/* Floating decorative elements */}
@@ -168,7 +191,7 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
                 <motion.div
                   className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-10 blur-2xl pointer-events-none"
                   style={{
-                    background: 'var(--warm)',
+                    background: "var(--warm)",
                     x: useTransform(mouseX, [-0.5, 0.5], [-15, 15]),
                     y: useTransform(mouseY, [-0.5, 0.5], [-15, 15]),
                   }}
@@ -184,7 +207,7 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
               transition={{ duration: 0.3 }}
             >
               <Sparkles className="w-3 h-3" />
-              {locale === 'pt' ? 'Mova o cursor' : 'Move cursor'}
+              {locale === "pt" ? "Mova o cursor" : "Move cursor"}
             </motion.div>
           </motion.div>
 
@@ -193,27 +216,20 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
             className="text-center lg:text-left"
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Issue number - large decorative */}
-            <div className="mb-6">
-              <span 
-                className="inline-block font-headline text-8xl md:text-9xl opacity-10"
-                style={{ color: issue.accentColor }}
-              >
-                {String(issue.issueNumber).padStart(2, '0')}
-              </span>
-            </div>
-
-            <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-3 block">
+            <span
+              className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-3 block"
+              style={{ color: issue.accentColor }}
+            >
               {translation.subtitle}
             </span>
-            
+
             <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-6">
               {translation.title}
             </h2>
-            
+
             <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0">
               {translation.description}
             </p>
@@ -222,7 +238,7 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
             {highlightTranslations.length > 0 && (
               <div className="mb-10">
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4 block">
-                  {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
+                  {locale === "pt" ? "Nesta Edição" : "In This Issue"}
                 </span>
                 <div className="space-y-3">
                   {highlightTranslations.map((highlight, index) => (
@@ -234,7 +250,7 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
                       viewport={{ once: true }}
                       transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
                     >
-                      <span 
+                      <span
                         className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"
                         style={{ backgroundColor: issue.accentColor }}
                       />
@@ -252,33 +268,8 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
               </div>
             )}
 
-            {/* Sections preview */}
-            {issue.sections && issue.sections.length > 0 && (
-              <motion.div 
-                className="flex flex-wrap gap-2 justify-center lg:justify-start mb-10"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-              >
-                {issue.sections.slice(0, 4).map((section, index) => (
-                  <span
-                    key={index}
-                    className="font-ui text-xs px-3 py-1.5 border border-border text-muted-foreground"
-                  >
-                    {section}
-                  </span>
-                ))}
-                {issue.sections.length > 4 && (
-                  <span className="font-ui text-xs px-3 py-1.5 text-muted-foreground">
-                    +{issue.sections.length - 4} {locale === 'pt' ? 'mais' : 'more'}
-                  </span>
-                )}
-              </motion.div>
-            )}
-
             {/* CTA */}
-            <motion.div 
+            <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -286,19 +277,25 @@ export function IssueShowcase({ issue, translation, locale }: IssueShowcaseProps
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               <Link
-                href={`/issues/${issue.slug}`}
-                className="inline-flex items-center justify-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand group"
+                href={`/read/${issue.slug}`}
+                className="inline-flex items-center justify-center gap-3 text-white px-8 py-4 font-ui text-sm font-medium transition-slow group hover:brightness-110"
+                style={{ backgroundColor: issue.accentColor }}
               >
                 <BookOpen className="w-4 h-4" />
-                {locale === 'pt' ? 'Ler Edição' : 'Read Issue'}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
+                {locale === "pt" ? "Ler Edição" : "Read Issue"}
               </Link>
-              
+
               <Link
-                href={`/issues/${issue.slug}#flipbook`}
-                className="inline-flex items-center justify-center gap-3 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow hover:border-brand hover:text-brand"
+                href={`/issues/${issue.slug}`}
+                className="inline-flex items-center justify-center gap-3 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow group issue-secondary-cta"
+                style={
+                  {
+                    "--hover-color": issue.accentColor,
+                  } as React.CSSProperties
+                }
               >
-                {locale === 'pt' ? 'Abrir Flipbook' : 'Open Flipbook'}
+                {locale === "pt" ? "Ver Detalhes" : "View Details"}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
               </Link>
             </motion.div>
           </motion.div>

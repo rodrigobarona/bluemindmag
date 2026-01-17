@@ -77,10 +77,13 @@ export default async function HomePage({ params }: Props) {
                 className="lg:col-span-5"
               >
                 <div className="relative">
-                  {/* Issue number as giant background text */}
-                  <div className="absolute -top-16 -left-8 text-display-number text-foreground/5 pointer-events-none select-none hidden lg:block">
+                  {/* Issue number as giant background text - using accent color */}
+                  <div
+                    className="absolute -top-16 -left-8 text-display-number pointer-events-none select-none hidden lg:block opacity-[0.08]"
+                    style={{ color: currentIssue.accentColor }}
+                  >
                     {currentIssue.issueNumber.toString().padStart(2, '0')}
-            </div>
+                  </div>
 
                   <IssueCardFeatured
                     issue={currentIssue}
@@ -98,19 +101,15 @@ export default async function HomePage({ params }: Props) {
               >
                 <div className="lg:py-8">
                   <span
-                    className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block"
+                    className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-3 block"
                     style={{ color: currentIssue.accentColor }}
                   >
-                    {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
+                    {issueTranslations[currentIssue.id].subtitle}
                   </span>
 
-                  <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-6">
-                      {issueTranslations[currentIssue.id].title}
+                  <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-8">
+                    {issueTranslations[currentIssue.id].title}
                   </h2>
-
-                  <p className="tagline text-muted-foreground mb-8">
-                      {issueTranslations[currentIssue.id].subtitle}
-                    </p>
 
                   <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl">
                     {issueTranslations[currentIssue.id].description}
@@ -120,7 +119,8 @@ export default async function HomePage({ params }: Props) {
                   <div className="flex flex-wrap gap-4">
                     <Link
                       href={`/read/${currentIssue.slug}`}
-                      className="group inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
+                      className="group inline-flex items-center gap-3 text-white px-8 py-4 font-ui text-sm font-medium transition-slow hover:brightness-110"
+                      style={{ backgroundColor: currentIssue.accentColor }}
                     >
                       <BookOpen className="w-5 h-5" />
                       {locale === 'pt' ? 'Ler Edição' : 'Read Issue'}
@@ -128,7 +128,8 @@ export default async function HomePage({ params }: Props) {
 
                     <Link
                       href={`/issues/${currentIssue.slug}`}
-                      className="inline-flex items-center gap-2 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow hover:border-foreground"
+                      className="inline-flex items-center gap-2 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow issue-secondary-cta"
+                      style={{ '--hover-color': currentIssue.accentColor } as React.CSSProperties}
                     >
                       {locale === 'pt' ? 'Ver Detalhes' : 'View Details'}
                       <ArrowRight className="w-4 h-4" />
