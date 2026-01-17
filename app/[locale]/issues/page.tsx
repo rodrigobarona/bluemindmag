@@ -1,10 +1,15 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { SiteLayout } from '@/components/site-layout';
 import { IssueCard } from '@/components/issue-card';
+import { IssueShowcase } from '@/components/issue-showcase';
+import { ScrollReveal } from '@/components/scroll-reveal';
+import { StaggerList } from '@/components/stagger-list';
 import { getAllIssues } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import { getCtaImage, getHeroImage } from '@/lib/pexels';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -26,31 +31,148 @@ export default async function IssuesPage({ params }: Props) {
 
   const t = await getTranslations('Issues');
   const issues = getAllIssues();
+  
+  // Fetch Pexels images
+  const [newsletterImage, heroImage] = await Promise.all([
+    getCtaImage(),
+    getHeroImage(),
+  ]);
 
   // Get translations based on locale
   const issueTranslations =
     locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
 
+  // Separate current issue from past issues
+  const currentIssue = issues.find((issue) => issue.isCurrent);
+  const pastIssues = issues.filter((issue) => !issue.isCurrent);
+
   return (
-    <SiteLayout>
-      {/* Hero Section */}
-      <section className="py-20 md:py-32 border-b border-border">
-        <div className="container-editorial">
-          <div className="max-w-3xl">
-            <p className="text-brand font-medium uppercase tracking-widest mb-4">
+    <SiteLayout newsletterImage={newsletterImage}>
+      {/* Hero Section - With background image */}
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
+        {/* Background image */}
+        {heroImage && (
+          <>
+            <Image
+              src={heroImage.srcLarge || heroImage.src}
+              alt={heroImage.alt}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+              quality={85}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+            
+            {/* Photo credit */}
+            {heroImage.photographer && (
+              <div className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
+                Photo:{' '}
+                {heroImage.photographerUrl ? (
+                  <a
+                    href={heroImage.photographerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white/50 transition-colors"
+                  >
+                    {heroImage.photographer}
+                  </a>
+                ) : (
+                  heroImage.photographer
+                )}
+                {' / Pexels'}
+              </div>
+            )}
+          </>
+        )}
+        
+        {/* Fallback gradient */}
+        {!heroImage && <div className="absolute inset-0 bg-secondary" />}
+
+        <div className="container-editorial relative z-10">
+          <ScrollReveal className="max-w-3xl">
+            <span 
+              className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${heroImage ? 'text-white/70' : 'text-brand'}`}
+              style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.3)' } : undefined}
+            >
               {t('subtitle')}
+            </span>
+            <h1 
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}
+              style={heroImage ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
+            >
+              {t('title')}
+            </h1>
+            <p 
+              className={`font-body text-xl leading-relaxed max-w-2xl ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
+              style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
+            >
+              {t('description')}
             </p>
-            <h1 className="headline text-5xl md:text-7xl mb-6">{t('title')}</h1>
-            <p className="text-xl text-muted-foreground">{t('description')}</p>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* Issues Grid */}
-      <section className="py-20 md:py-32">
-        <div className="container-editorial">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-            {issues.map((issue, index) => (
+      {/* Current Issue Showcase - 3D Tilt Parallax */}
+      {currentIssue && (
+        <section className="py-20 md:py-28 border-b border-border">
+          <div className="container-editorial mb-8 md:mb-12">
+            <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
+              {locale === 'pt' ? 'Em Destaque' : 'Featured'}
+            </span>
+            <h2 className="font-headline text-3xl md:text-4xl">
+              {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
+            </h2>
+          </div>
+          <IssueShowcase
+            issue={currentIssue}
+            translation={issueTranslations[currentIssue.id]}
+            locale={locale}
+          />
+        </section>
+      )}
+
+      {/* Past Issues Grid */}
+      {pastIssues.length > 0 && (
+        <section className="py-20 md:py-28">
+          <div className="container-editorial">
+            <ScrollReveal className="mb-16">
+              <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
+                {locale === 'pt' ? 'Edições Anteriores' : 'Past Issues'}
+              </span>
+              <h2 className="font-headline text-3xl md:text-4xl">
+                {locale === 'pt' ? 'Arquivo' : 'Archive'}
+              </h2>
+            </ScrollReveal>
+
+            <StaggerList
+              staggerDelay={0.1}
+              direction="up"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
+            >
+              {pastIssues.map((issue, index) => (
+                <IssueCard
+                  key={issue.id}
+                  issue={issue}
+                  translation={issueTranslations[issue.id]}
+                  priority={index < 3}
+                />
+              ))}
+            </StaggerList>
+          </div>
+        </section>
+      )}
+
+      {/* All Issues (if no current/past separation) */}
+      {!currentIssue && pastIssues.length === 0 && issues.length > 0 && (
+        <section className="py-20 md:py-28">
+          <div className="container-editorial">
+            <StaggerList
+              staggerDelay={0.1}
+              direction="up"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
+            >
+              {issues.map((issue, index) => (
               <IssueCard
                 key={issue.id}
                 issue={issue}
@@ -58,19 +180,23 @@ export default async function IssuesPage({ params }: Props) {
                 priority={index < 3}
               />
             ))}
+            </StaggerList>
           </div>
+        </section>
+      )}
 
           {/* Empty state */}
           {issues.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-muted-foreground text-lg">
-                No issues available yet. Check back soon!
+        <section className="py-32">
+          <div className="container-editorial text-center">
+            <p className="font-body text-muted-foreground text-xl">
+              {locale === 'pt'
+                ? 'Ainda não há edições disponíveis. Volte em breve!'
+                : 'No issues available yet. Check back soon!'}
               </p>
             </div>
+        </section>
           )}
-        </div>
-      </section>
     </SiteLayout>
   );
 }
-

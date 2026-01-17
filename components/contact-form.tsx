@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { IconSend, IconCheck, IconX } from '@tabler/icons-react';
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { IconSend, IconCheck, IconX } from "@tabler/icons-react";
 
 interface FormData {
   name: string;
@@ -11,17 +11,17 @@ interface FormData {
   message: string;
 }
 
-type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
+type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
-  const t = useTranslations('Contact.form');
+  const t = useTranslations("Contact.form");
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
-  const [status, setStatus] = useState<FormStatus>('idle');
+  const [status, setStatus] = useState<FormStatus>("idle");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,84 +32,87 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('submitting');
+    setStatus("submitting");
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
+      const response = await fetch("/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error("Failed to send message");
       }
 
-      setStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setStatus("success");
+      setFormData({ name: "", email: "", subject: "", message: "" });
 
       // Reset success message after 5 seconds
-      setTimeout(() => setStatus('idle'), 5000);
+      setTimeout(() => setStatus("idle"), 5000);
     } catch (error) {
-      console.error('Contact form error:', error);
-      setStatus('error');
+      console.error("Contact form error:", error);
+      setStatus("error");
 
       // Reset error message after 5 seconds
-      setTimeout(() => setStatus('idle'), 5000);
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Name */}
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium mb-2"
-        >
-          {t('name')}
-        </label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          placeholder={t('namePlaceholder')}
-          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Name & Email Row */}
+      <div className="grid sm:grid-cols-2 gap-6">
+        {/* Name */}
+        <div className="group">
+          <label
+            htmlFor="name"
+            className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
+          >
+            {t("name")}
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            placeholder={t("namePlaceholder")}
+            className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors placeholder:text-muted-foreground/50"
+          />
+        </div>
 
-      {/* Email */}
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium mb-2"
-        >
-          {t('email')}
-        </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          placeholder={t('emailPlaceholder')}
-          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
-        />
+        {/* Email */}
+        <div className="group">
+          <label
+            htmlFor="email"
+            className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
+          >
+            {t("email")}
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder={t("emailPlaceholder")}
+            className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors placeholder:text-muted-foreground/50"
+          />
+        </div>
       </div>
 
       {/* Subject */}
-      <div>
+      <div className="group">
         <label
           htmlFor="subject"
-          className="block text-sm font-medium mb-2"
+          className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
         >
-          {t('subject')}
+          {t("subject")}
         </label>
         <input
           type="text"
@@ -118,18 +121,18 @@ export function ContactForm() {
           value={formData.subject}
           onChange={handleChange}
           required
-          placeholder={t('subjectPlaceholder')}
-          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all placeholder:text-muted-foreground"
+          placeholder={t("subjectPlaceholder")}
+          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors placeholder:text-muted-foreground/50"
         />
       </div>
 
       {/* Message */}
-      <div>
+      <div className="group">
         <label
           htmlFor="message"
-          className="block text-sm font-medium mb-2"
+          className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
         >
-          {t('message')}
+          {t("message")}
         </label>
         <textarea
           id="message"
@@ -137,46 +140,47 @@ export function ContactForm() {
           value={formData.message}
           onChange={handleChange}
           required
-          rows={6}
-          placeholder={t('messagePlaceholder')}
-          className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all resize-none placeholder:text-muted-foreground"
+          rows={5}
+          placeholder={t("messagePlaceholder")}
+          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors resize-none placeholder:text-muted-foreground/50"
         />
       </div>
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={status === 'submitting'}
-        className="w-full flex items-center justify-center gap-2 bg-brand text-brand-foreground px-6 py-4 rounded-full font-medium transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {status === 'submitting' ? (
-          <>
-            <div className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            {t('submitting')}
-          </>
-        ) : (
-          <>
-            <IconSend className="h-5 w-5" />
-            {t('submit')}
-          </>
-        )}
-      </button>
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="group inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-brand cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {status === "submitting" ? (
+            <>
+              <div className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              {t("submitting")}
+            </>
+          ) : (
+            <>
+              <IconSend className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              {t("submit")}
+            </>
+          )}
+        </button>
+      </div>
 
       {/* Status Messages */}
-      {status === 'success' && (
-        <div className="flex items-center gap-2 p-4 bg-green-500/10 text-green-500 rounded-lg">
-          <IconCheck className="h-5 w-5" />
-          <p>{t('success')}</p>
+      {status === "success" && (
+        <div className="flex items-center gap-3 p-5 bg-green-500/10 border border-green-500/20">
+          <IconCheck className="h-5 w-5 text-green-600 shrink-0" />
+          <p className="text-green-600">{t("success")}</p>
         </div>
       )}
 
-      {status === 'error' && (
-        <div className="flex items-center gap-2 p-4 bg-red-500/10 text-red-500 rounded-lg">
-          <IconX className="h-5 w-5" />
-          <p>{t('error')}</p>
+      {status === "error" && (
+        <div className="flex items-center gap-3 p-5 bg-red-500/10 border border-red-500/20">
+          <IconX className="h-5 w-5 text-red-600 shrink-0" />
+          <p className="text-red-600">{t("error")}</p>
         </div>
       )}
     </form>
   );
 }
-
