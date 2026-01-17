@@ -3,16 +3,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  IconMail,
   IconBrandInstagram,
   IconBrandLinkedin,
-  IconPencil,
   IconArrowRight,
+  IconWaveSine,
+  IconCalendar,
+  IconCoffee,
 } from "@tabler/icons-react";
 import { SiteLayout } from "@/components/site-layout";
 import { ContactForm } from "@/components/contact-form";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { socialLinks, siteConfig } from "@/content/data/navigation";
+import { getTeamMemberById } from "@/content/data/team";
 import { getCtaImage, getQuoteImage } from "@/lib/pexels";
 
 type Props = {
@@ -34,6 +36,7 @@ export default async function ContactPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Contact");
+  const editor = getTeamMemberById("pedro-seixas");
 
   // Fetch Pexels images
   const [newsletterImage, heroImage] = await Promise.all([
@@ -105,7 +108,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("subtitle")}
+              {locale === "pt" ? "Vamos Conversar" : "Let's Talk"}
             </span>
             <h1
               className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? "text-white" : ""}`}
@@ -115,7 +118,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("title")}
+              {locale === "pt" ? "Olá!" : "Say Hello"}
             </h1>
             <p
               className={`font-body text-xl leading-relaxed ${heroImage ? "text-white/80" : "text-muted-foreground"}`}
@@ -125,7 +128,9 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("description")}
+              {locale === "pt"
+                ? "A Blue Mind Magazine é um projeto de paixão. Se tens uma história para contar, uma ideia para partilhar, ou simplesmente queres dizer olá — adoraria ouvir-te."
+                : "Blue Mind Magazine is a passion project. If you have a story to tell, an idea to share, or just want to say hi — I'd love to hear from you."}
             </p>
           </ScrollReveal>
         </div>
@@ -139,18 +144,15 @@ export default async function ContactPage({ params }: Props) {
             <div className="lg:col-span-7">
               {/* Form Header */}
               <div className="mb-10">
-                <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-3 block">
-                  {locale === "pt" ? "Envie uma mensagem" : "Send a Message"}
-                </span>
                 <h2 className="font-headline text-3xl md:text-4xl mb-4">
                   {locale === "pt"
-                    ? "Adoramos ouvir de si"
-                    : "We'd Love to Hear From You"}
+                    ? "Envia-me uma mensagem"
+                    : "Drop me a message"}
                 </h2>
-                <p className="text-muted-foreground max-w-lg">
+                <p className="text-muted-foreground max-w-lg leading-relaxed">
                   {locale === "pt"
-                    ? "Tem uma pergunta, sugestão ou quer colaborar connosco? Preencha o formulário abaixo e entraremos em contacto em breve."
-                    : "Have a question, suggestion, or want to collaborate with us? Fill out the form below and we'll get back to you soon."}
+                    ? "Seja uma pergunta, sugestão, proposta de colaboração, ou apenas para partilhar a tua última sessão de surf — respondo a todas as mensagens pessoalmente."
+                    : "Whether it's a question, suggestion, collaboration idea, or just to share your latest surf session — I personally read and reply to every message."}
                 </p>
               </div>
 
@@ -158,40 +160,94 @@ export default async function ContactPage({ params }: Props) {
               <ContactForm />
             </div>
 
-            {/* Sidebar */}
+            {/* Sidebar - Personal Touch */}
             <div className="lg:col-span-5">
               <div className="lg:sticky lg:top-28 space-y-10">
-                {/* Direct Contact */}
-                <div>
-                  <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
-                    {locale === "pt" ? "Contacto direto" : "Direct Contact"}
-                  </h3>
+                {/* Personal Note from Pedro */}
+                <div className="relative">
+                  <div className="flex items-start gap-4">
+                    {/* Avatar */}
+                    <div className="shrink-0">
+                      <div className="w-16 h-16 rounded-full overflow-hidden bg-muted">
+                        {editor?.image ? (
+                          <Image
+                            src={editor.image}
+                            alt="Pedro Seixas"
+                            width={64}
+                            height={64}
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground font-headline text-xl">
+                            PS
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
-                  <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="group flex items-start gap-4 p-5 -mx-5 rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="shrink-0 p-3 bg-brand/10 rounded-lg group-hover:bg-brand/20 transition-colors">
-                      <IconMail className="h-6 w-6 text-brand" />
-                    </div>
                     <div>
-                      <p className="font-medium mb-1 group-hover:text-brand transition-colors">
-                        {siteConfig.email}
-                      </p>
+                      <p className="font-medium mb-1">Pedro Seixas</p>
                       <p className="text-sm text-muted-foreground">
-                        {t("info.response")}
+                        {locale === "pt"
+                          ? "Editor & Fundador"
+                          : "Editor & Founder"}
                       </p>
                     </div>
-                  </a>
+                  </div>
+
+                  <div className="mt-6 pl-0">
+                    <IconWaveSine className="h-8 w-8 text-brand/30 mb-3" />
+                    <p className="font-accent italic text-muted-foreground leading-relaxed">
+                      {locale === "pt"
+                        ? '"A Blue Mind nasceu da paixão pelo surf e pela ciência. Cada mensagem que recebo é uma oportunidade de conectar com alguém que partilha esta visão. Não hesites em escrever!"'
+                        : '"Blue Mind was born from a passion for surf and science. Every message I receive is a chance to connect with someone who shares this vision. Don\'t hesitate to reach out!"'}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Divider */}
                 <div className="h-px bg-border" />
 
-                {/* Social Links */}
+                {/* Book a Chat */}
                 <div>
-                  <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6">
-                    {locale === "pt" ? "Redes sociais" : "Social Media"}
+                  <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4">
+                    {locale === "pt" ? "Preferes conversar?" : "Prefer to chat?"}
+                  </h3>
+
+                  <a
+                    href="https://cal.com/pedroseixas/15min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-4 p-4 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all"
+                  >
+                    <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
+                      <IconCoffee className="h-5 w-5 text-brand" />
+                    </div>
+                    <div>
+                      <p className="font-medium group-hover:text-brand transition-colors">
+                        {locale === "pt" ? "Marca um café virtual" : "Book a virtual coffee"}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {locale === "pt" ? "15 min • Grátis" : "15 min • Free"}
+                      </p>
+                    </div>
+                    <IconCalendar className="h-5 w-5 text-muted-foreground ml-auto group-hover:text-brand transition-colors" />
+                  </a>
+
+                  <p className="text-sm text-muted-foreground mt-3">
+                    {locale === "pt"
+                      ? "Para conversas rápidas, colaborações ou só para trocar ideias sobre surf e ciência."
+                      : "For quick chats, collaborations, or just to talk surf and science."}
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div className="h-px bg-border" />
+
+                {/* Connect on Social */}
+                <div>
+                  <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
+                    {locale === "pt" ? "Acompanha nas redes" : "Follow along"}
                   </h3>
 
                   <div className="flex gap-3">
@@ -201,52 +257,44 @@ export default async function ContactPage({ params }: Props) {
                         href={social.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-4 bg-muted/50 rounded-lg hover:bg-brand hover:text-white transition-all group"
+                        className="p-3 bg-muted/50 rounded-full hover:bg-brand hover:text-white transition-all"
                         aria-label={social.label}
                       >
                         {getSocialIcon(social.platform)}
                       </a>
                     ))}
                   </div>
+
+                  <p className="text-sm text-muted-foreground mt-3">
+                    {locale === "pt"
+                      ? "Partilho bastidores, novidades e boas ondas"
+                      : "Behind the scenes, updates, and good vibes"}
+                  </p>
                 </div>
 
                 {/* Divider */}
                 <div className="h-px bg-border" />
 
-                {/* Contribute CTA */}
-                <div className="p-6 bg-brand/5 border border-brand/10 rounded-lg">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="shrink-0 p-2 bg-brand/10 rounded-lg">
-                      <IconPencil className="h-5 w-5 text-brand" />
-                    </div>
-                    <div>
-                      <h3 className="font-headline text-xl mb-2">
-                        {locale === "pt"
-                          ? "Quer contribuir?"
-                          : "Want to Contribute?"}
-                      </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {locale === "pt"
-                          ? "Estamos sempre à procura de investigadores, escritores e surfistas que queiram partilhar as suas histórias."
-                          : "We're always looking for researchers, writers, and surfers who want to share their stories."}
-                      </p>
-                    </div>
-                  </div>
+                {/* Want to Contribute */}
+                <div className="p-6 bg-brand/5 rounded-xl border border-brand/10">
+                  <h3 className="font-headline text-lg mb-2">
+                    {locale === "pt"
+                      ? "Queres escrever para a revista?"
+                      : "Want to write for the magazine?"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    {locale === "pt"
+                      ? "Se és investigador, surfista, ou apenas apaixonado pelo oceano com uma história para contar — envia-me as tuas ideias!"
+                      : "If you're a researcher, surfer, or just ocean-passionate with a story to tell — send me your ideas!"}
+                  </p>
                   <Link
-                    href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(locale === "pt" ? "Proposta de Colaboração" : "Collaboration Proposal")}`}
+                    href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(locale === "pt" ? "Proposta de Artigo para Blue Mind" : "Article Pitch for Blue Mind")}`}
                     className="inline-flex items-center gap-2 text-sm font-medium text-brand hover:underline"
                   >
-                    {locale === "pt" ? "Enviar proposta" : "Send a proposal"}
+                    {locale === "pt" ? "Enviar proposta" : "Pitch an idea"}
                     <IconArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
-
-                {/* Quick Response Note */}
-                <p className="text-xs text-muted-foreground/70 text-center">
-                  {locale === "pt"
-                    ? "Normalmente respondemos dentro de 24-48 horas"
-                    : "We typically respond within 24-48 hours"}
-                </p>
               </div>
             </div>
           </div>
