@@ -112,12 +112,12 @@ export function Footer({ newsletterImage }: FooterProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-8">
           {/* Brand Column */}
           <div className="col-span-2">
-              <Link href="/" className="inline-block mb-6">
-                <span className="font-headline text-2xl tracking-wider">
+              <Link href="/" className="inline-block mb-4">
+                <span className="font-headline text-4xl md:text-5xl tracking-wider">
                 BLUE MIND
               </span>
             </Link>
-              <p className="tagline text-background/60 max-w-xs mb-8">
+              <p className="font-accent text-base md:text-lg text-background/60 max-w-xs mb-8">
               {siteConfig.tagline}
             </p>
               {/* Social Links & Language */}
