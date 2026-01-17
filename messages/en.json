@@ -28,7 +28,9 @@
     "newsletter": "Newsletter",
     "privacy": "Privacy Policy",
     "cookies": "Cookie Policy",
-    "terms": "Terms of Use"
+    "terms": "Terms of Use",
+    "subscribe": "Subscribe",
+    "language": "Language"
   },
   "Footer": {
     "newsletter": {
