@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useRef, useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
+import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
 
 interface IssueCoverTiltProps {
   cover: string;
@@ -23,7 +23,7 @@ export function IssueCoverTilt({
   slug,
   accentColor,
   isCurrent = false,
-  currentLabel = 'Current Issue',
+  currentLabel = "Current Issue",
   showHint = true,
   priority = true,
 }: IssueCoverTiltProps) {
@@ -104,7 +104,7 @@ export function IssueCoverTilt({
           x: shadowX,
           y: shadowY,
           background: `linear-gradient(135deg, ${accentColor}40 0%, transparent 60%)`,
-          filter: 'blur(40px)',
+          filter: "blur(40px)",
         }}
       />
 
@@ -114,7 +114,7 @@ export function IssueCoverTilt({
         style={{
           rotateX,
           rotateY,
-          transformStyle: 'preserve-3d',
+          transformStyle: "preserve-3d",
         }}
       >
         <Link href={`/read/${slug}`} className="group block">
@@ -159,7 +159,7 @@ export function IssueCoverTilt({
                 className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
                 style={{
                   backgroundColor: accentColor,
-                  color: '#ffffff',
+                  color: "#ffffff",
                 }}
               >
                 {currentLabel}
@@ -194,4 +194,3 @@ export function IssueCoverTilt({
     </motion.div>
   );
 }
-
