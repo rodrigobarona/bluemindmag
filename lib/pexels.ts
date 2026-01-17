@@ -17,7 +17,7 @@ const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
 // IMAGE CATEGORIES & QUERIES
 // ============================================
 
-type ImageCategory = 'hero' | 'quote' | 'science' | 'surfer' | 'portugal' | 'cta';
+type ImageCategory = 'hero' | 'quote' | 'science' | 'surfer' | 'portugal' | 'cta' | 'contact';
 
 // Hero images - Dramatic, cinematic ocean/surf
 const HERO_QUERIES = [
@@ -33,16 +33,16 @@ const HERO_QUERIES = [
   'pacific ocean sunset',
 ];
 
-// Quote/atmosphere backgrounds - Subtle, textural
+// Quote/atmosphere backgrounds - Soft, misty, ethereal (NOT dramatic)
 const QUOTE_QUERIES = [
-  'ocean horizon minimal',
-  'calm sea sunset',
-  'beach fog morning',
-  'ocean mist',
-  'water texture abstract',
-  'sea calm blue',
-  'sunrise ocean peaceful',
-  'dusk beach waves',
+  'misty ocean morning',
+  'foggy beach sunrise',
+  'soft waves pastel sky',
+  'ocean haze calm',
+  'peaceful sea dawn light',
+  'dreamy ocean horizon',
+  'gentle waves golden hour',
+  'serene beach mist',
 ];
 
 // Science/research themed
@@ -65,22 +65,36 @@ const SURFER_QUERIES = [
   'surfer dawn patrol',
 ];
 
-// Portugal/Atlantic specific
+// Portugal/Atlantic specific - Dramatic cliffs and rugged coastline
 const PORTUGAL_QUERIES = [
-  'portugal coast',
-  'atlantic ocean waves',
-  'nazare waves portugal',
-  'ericeira portugal surf',
-  'portuguese beach',
+  'atlantic coast cliffs',
+  'rocky coastline dramatic',
+  'portugal algarve cliffs',
+  'coastal rocks waves crashing',
+  'rugged atlantic shore',
+  'lighthouse coast storm',
 ];
 
-// Newsletter/CTA backgrounds
+// Newsletter/CTA backgrounds - Dark, dramatic, contrasts with lighter quote sections
 const CTA_QUERIES = [
-  'ocean blue gradient',
-  'beach aerial view',
-  'ocean waves pattern',
-  'blue water texture',
-  'sea surface ripples',
+  'dark ocean waves',
+  'deep sea underwater',
+  'stormy ocean dramatic',
+  'night ocean moonlight',
+  'underwater dark blue',
+  'ocean depth darkness',
+  'turbulent sea waves',
+  'dramatic ocean sky',
+];
+
+// Contact page - Warm, inviting, human connection (distinct from ocean imagery)
+const CONTACT_QUERIES = [
+  'beach sunset golden',
+  'tropical palm trees sunset',
+  'warm sunset beach silhouette',
+  'golden hour coast',
+  'beach bonfire evening',
+  'sunset pier ocean',
 ];
 
 // Category to queries mapping
@@ -91,6 +105,7 @@ const CATEGORY_QUERIES: Record<ImageCategory, string[]> = {
   surfer: SURFER_QUERIES,
   portugal: PORTUGAL_QUERIES,
   cta: CTA_QUERIES,
+  contact: CONTACT_QUERIES,
 };
 
 // ============================================
@@ -116,8 +131,8 @@ const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = 
   'about:surfer': { category: 'surfer', index: 0 },
   'about:newsletter': { category: 'cta', index: 1 },
   
-  // Contact page
-  'contact:hero': { category: 'quote', index: 2 },
+  // Contact page - Warm sunset imagery (distinct from dark CTA footer)
+  'contact:hero': { category: 'contact', index: 0 },
   'contact:newsletter': { category: 'cta', index: 2 },
   
   // Issues pages

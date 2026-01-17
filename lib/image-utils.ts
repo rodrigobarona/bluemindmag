@@ -160,3 +160,4 @@ export const BLUR_PLACEHOLDERS = {
   dark: generateBlurPlaceholder('#1a1a2e'),
 } as const;
 
+
