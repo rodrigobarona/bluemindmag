@@ -323,6 +323,18 @@ const FALLBACK_IMAGES: Record<ImageCategory, ImageResult[]> = {
       blurDataURL: generateBlurPlaceholder('#d4a574'),
     },
   ],
+  contact: [
+    {
+      src: '/images/hero/beach-golden-hour.jpg',
+      srcLarge: '/images/hero/beach-golden-hour.jpg',
+      srcMedium: '/images/hero/beach-golden-hour.jpg',
+      srcSmall: '/images/hero/beach-golden-hour.jpg',
+      photographer: 'Blue Mind',
+      alt: 'Beach sunset golden hour',
+      avgColor: '#d4a574',
+      blurDataURL: generateBlurPlaceholder('#d4a574'),
+    },
+  ],
 };
 
 // ============================================
