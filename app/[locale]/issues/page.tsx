@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { SiteLayout } from '@/components/site-layout';
 import { IssueCard } from '@/components/issue-card';
+import { IssueShowcase } from '@/components/issue-showcase';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { StaggerList } from '@/components/stagger-list';
 import { getAllIssues } from '@/content/data/issues';
@@ -112,27 +113,14 @@ export default async function IssuesPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Current Issue Feature */}
+      {/* Current Issue Showcase - 3D Tilt Parallax */}
       {currentIssue && (
-        <section className="py-20 md:py-28 border-b border-border">
-        <div className="container-editorial">
-            <ScrollReveal className="mb-12">
-              <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
-              </span>
-              <h2 className="font-headline text-3xl md:text-4xl">
-                {issueTranslations[currentIssue.id].title}
-              </h2>
-            </ScrollReveal>
-
-            <div className="max-w-sm mx-auto md:max-w-md">
-              <IssueCard
-                issue={currentIssue}
-                translation={issueTranslations[currentIssue.id]}
-                priority
-              />
-            </div>
-          </div>
+        <section className="border-b border-border">
+          <IssueShowcase
+            issue={currentIssue}
+            translation={issueTranslations[currentIssue.id]}
+            locale={locale}
+          />
         </section>
       )}
 
