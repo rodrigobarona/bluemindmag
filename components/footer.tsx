@@ -1,16 +1,22 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { Instagram, Linkedin } from 'lucide-react';
+import { Instagram, Linkedin, ArrowRight } from 'lucide-react';
 import {
   footerNavLinks,
   socialLinks,
   siteConfig,
 } from '@/content/data/navigation';
-import { LanguageSwitcher } from './language-switcher';
+import { LanguageDropdown } from './language-dropdown';
+import type { ImageResult } from '@/lib/pexels';
 
-export function Footer() {
+interface FooterProps {
+  newsletterImage?: ImageResult | null;
+}
+
+export function Footer({ newsletterImage }: FooterProps) {
   const t = useTranslations('Navigation');
   const tFooter = useTranslations('Footer');
 
@@ -29,6 +35,77 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border">
+      {/* Newsletter Section - With Background Image */}
+      <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
+        {/* Background image */}
+        {newsletterImage && (
+          <>
+            <Image
+              src={newsletterImage.srcLarge || newsletterImage.src}
+              alt={newsletterImage.alt}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              quality={80}
+            />
+            <div className="absolute inset-0 bg-black/60" />
+            
+            {/* Photo credit */}
+            {newsletterImage.photographer && (
+              <div className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
+                Photo:{' '}
+                {newsletterImage.photographerUrl ? (
+                  <a
+                    href={newsletterImage.photographerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white/50 transition-colors"
+                  >
+                    {newsletterImage.photographer}
+                  </a>
+                ) : (
+                  newsletterImage.photographer
+                )}
+                {' / Pexels'}
+              </div>
+            )}
+          </>
+        )}
+        
+        {/* Fallback gradient if no image */}
+        {!newsletterImage && (
+          <div className="absolute inset-0 bg-gradient-to-br from-warm/20 via-foreground to-brand/10" />
+        )}
+        
+        <div className="container-narrow relative z-10">
+          <div className="text-center">
+            <span className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${newsletterImage ? 'text-white/60' : 'text-background/60'}`}>
+              Newsletter
+            </span>
+            
+            <h2 className={`font-headline text-4xl md:text-5xl lg:text-6xl mb-6 ${newsletterImage ? 'text-white' : 'text-background'}`}>
+              {tFooter('newsletter.title')}
+            </h2>
+            
+            <p className={`tagline mb-10 max-w-lg mx-auto ${newsletterImage ? 'text-white/80' : 'text-background/70'}`}>
+              {tFooter('newsletter.description')}
+            </p>
+
+            <Link
+              href="/newsletter"
+              className={`inline-flex items-center gap-3 px-10 py-5 font-ui text-sm font-medium transition-slow ${
+                newsletterImage 
+                  ? 'bg-white text-black hover:bg-brand hover:text-white' 
+                  : 'bg-background text-foreground hover:bg-brand hover:text-white'
+              }`}
+            >
+              {tFooter('newsletter.cta')}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Main Footer */}
       <div className="bg-foreground text-background">
         <div className="container-editorial py-16 md:py-20">
@@ -118,8 +195,8 @@ export function Footer() {
               © {currentYear} {siteConfig.name}. {tFooter('rights')}
             </p>
             
-            {/* Language Switcher */}
-            <LanguageSwitcher variant="footer" />
+            {/* Language Dropdown */}
+            <LanguageDropdown />
             
             <p>
               {tFooter('publishedBy')}{' '}

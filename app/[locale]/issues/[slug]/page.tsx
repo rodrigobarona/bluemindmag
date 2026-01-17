@@ -11,6 +11,7 @@ import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
 import { getSponsorsByIds } from "@/content/data/sponsors";
 import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
 import { issueTranslations as ptIssueTranslations } from "@/content/i18n/pt/issues";
+import { getCtaImage } from "@/lib/pexels";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -71,8 +72,11 @@ export default async function IssueDetailPage({ params }: Props) {
   const allIssues = getAllIssues();
   const otherIssues = allIssues.filter((i) => i.id !== issue.id).slice(0, 3);
 
+  // Fetch newsletter image for footer
+  const newsletterImage = await getCtaImage();
+
   return (
-    <SiteLayout>
+    <SiteLayout newsletterImage={newsletterImage}>
       {/* Hero Section - Clean and minimal */}
       <section className="py-16 md:py-24 lg:py-32">
         <div className="container-editorial">

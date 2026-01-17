@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { IconMenu2 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -15,7 +15,6 @@ import {
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
-import { LanguageSwitcher } from './language-switcher';
 import { mainNavLinks } from '@/content/data/navigation';
 
 export function Header() {
@@ -118,38 +117,34 @@ export function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-4">
-            <LanguageSwitcher />
-            <Button
-              asChild
-              size="sm"
+            <Link
+              href="/newsletter"
               className={cn(
+                buttonVariants({ size: 'sm' }),
                 'font-ui text-sm font-medium rounded-full transition-all',
                 isTransparent
                   ? 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm border border-white/30'
                   : 'bg-foreground text-background hover:bg-brand'
               )}
             >
-              <Link href="/newsletter">{t('subscribe')}</Link>
-            </Button>
+              {t('subscribe')}
+            </Link>
           </div>
 
           {/* Mobile Menu */}
           <div className="lg:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={cn(
-                    'transition-colors',
-                    isTransparent
-                      ? 'text-white hover:bg-white/10'
-                      : 'text-foreground hover:bg-muted'
-                  )}
-                  aria-label="Open navigation menu"
-                >
-                  <IconMenu2 className="h-6 w-6" />
-                </Button>
+              <SheetTrigger
+                className={cn(
+                  buttonVariants({ variant: 'ghost', size: 'icon' }),
+                  'transition-colors',
+                  isTransparent
+                    ? 'text-white hover:bg-white/10'
+                    : 'text-foreground hover:bg-muted'
+                )}
+                aria-label="Open navigation menu"
+              >
+                <IconMenu2 className="h-6 w-6" />
               </SheetTrigger>
               <SheetContent side="right" className="w-full sm:w-[400px] p-0">
                 <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
@@ -165,18 +160,20 @@ export function Header() {
                   <ul className="space-y-1">
                     {mainNavLinks.map((link) => (
                       <li key={link.key}>
-                        <SheetClose asChild>
-                          <Link
-                            href={link.href}
-                            className={cn(
-                              'flex items-center py-3 px-4 rounded-full text-base font-medium transition-colors',
-                              isActiveLink(link.href)
-                                ? 'bg-muted text-foreground'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                            )}
-                          >
-                            {t(link.key)}
-                          </Link>
+                        <SheetClose
+                          render={
+                            <Link
+                              href={link.href}
+                              className={cn(
+                                'flex items-center py-3 px-4 rounded-full text-base font-medium transition-colors',
+                                isActiveLink(link.href)
+                                  ? 'bg-muted text-foreground'
+                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                              )}
+                            />
+                          }
+                        >
+                          {t(link.key)}
                         </SheetClose>
                       </li>
                     ))}
@@ -187,17 +184,15 @@ export function Header() {
 
                   {/* Mobile Actions */}
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between px-4">
-                      <span className="text-sm text-muted-foreground">
-                        {t('language')}
-                      </span>
-                      <LanguageSwitcher variant="minimal" />
-                    </div>
-
-                    <SheetClose asChild>
-                      <Button asChild className="w-full rounded-full" size="lg">
-                        <Link href="/newsletter">{t('subscribe')}</Link>
-                      </Button>
+                    <SheetClose
+                      render={
+                        <Link
+                          href="/newsletter"
+                          className={cn(buttonVariants({ size: 'lg' }), 'w-full rounded-full')}
+                        />
+                      }
+                    >
+                      {t('subscribe')}
                     </SheetClose>
                   </div>
                 </nav>

@@ -2,8 +2,9 @@
 
 import { motion, useScroll, useTransform } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRef } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 
 interface HeroImmersiveProps {
   heroImage?: {
@@ -18,6 +19,9 @@ interface HeroImmersiveProps {
   tagline?: string;
   issueNumber?: string;
   issueDate?: string;
+  issueSlug?: string;
+  issueCover?: string;
+  issueTitle?: string;
 }
 
 /**
@@ -29,6 +33,9 @@ export function HeroImmersive({
   tagline = 'Where Surf & Science Meet',
   issueNumber = '0',
   issueDate = 'January 2026',
+  issueSlug,
+  issueCover,
+  issueTitle,
 }: HeroImmersiveProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -119,21 +126,59 @@ export function HeroImmersive({
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="tagline text-white/90 text-center max-w-md mb-8"
+          className="tagline text-white/90 text-center max-w-md mb-10"
         >
           &ldquo;{tagline}&rdquo;
         </motion.p>
 
-        {/* Issue info */}
+        {/* Current Issue Card - Clickable with thumbnail */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
-          className="flex items-center gap-4 font-ui text-sm text-white/60"
         >
-          <span className="tracking-widest uppercase">Issue {issueNumber}</span>
-          <span className="w-8 h-px bg-white/30" />
-          <span className="tracking-wider">{issueDate}</span>
+          {issueSlug ? (
+            <Link
+              href={`/issues/${issueSlug}`}
+              className="group flex items-center gap-5 bg-white/10 backdrop-blur-md rounded-lg px-5 py-4 border border-white/20 hover:bg-white/20 hover:border-white/30 transition-all duration-300"
+            >
+              {/* Cover Thumbnail */}
+              {issueCover && (
+                <div className="relative w-14 h-20 flex-shrink-0 overflow-hidden rounded shadow-lg group-hover:shadow-xl transition-shadow">
+                  <Image
+                    src={issueCover}
+                    alt={issueTitle || `Issue ${issueNumber}`}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="56px"
+                  />
+                </div>
+              )}
+              
+              {/* Issue Info */}
+              <div className="flex flex-col">
+                <span className="font-ui text-xs tracking-[0.2em] uppercase text-white/60 mb-1">
+                  Current Issue
+                </span>
+                <span className="font-headline text-lg text-white tracking-wide">
+                  Issue {issueNumber}
+                </span>
+                <span className="font-ui text-xs text-white/50 mt-0.5">
+                  {issueDate}
+                </span>
+              </div>
+              
+              {/* Arrow */}
+              <ArrowRight className="w-5 h-5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all ml-2" />
+            </Link>
+          ) : (
+            // Fallback if no issue slug (just display info)
+            <div className="flex items-center gap-4 font-ui text-sm text-white/60">
+              <span className="tracking-widest uppercase">Issue {issueNumber}</span>
+              <span className="w-8 h-px bg-white/30" />
+              <span className="tracking-wider">{issueDate}</span>
+            </div>
+          )}
         </motion.div>
       </motion.div>
 
@@ -206,4 +251,3 @@ export function HeroImmersiveStatic({
     />
   );
 }
-

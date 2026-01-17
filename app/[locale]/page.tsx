@@ -28,7 +28,7 @@ export default async function HomePage({ params }: Props) {
   const currentIssue = getCurrentIssue();
 
   // Fetch dynamic Pexels images
-  const [heroImage, quoteImage, ctaImage] = await Promise.all([
+  const [heroImage, quoteImage, newsletterImage] = await Promise.all([
     getHeroImage(),
     getQuoteImage(),
     getCtaImage(),
@@ -46,7 +46,7 @@ export default async function HomePage({ params }: Props) {
   const pastIssues = issues.filter((issue) => !issue.isCurrent);
 
   return (
-    <SiteLayout>
+    <SiteLayout newsletterImage={newsletterImage}>
       {/* Section 1: Immersive Hero - Full viewport */}
       <HeroImmersive
         heroImage={heroImage}
@@ -60,6 +60,9 @@ export default async function HomePage({ params }: Props) {
               )
             : 'January 2026'
         }
+        issueSlug={currentIssue?.slug}
+        issueCover={currentIssue?.cover}
+        issueTitle={currentIssue ? issueTranslations[currentIssue.id]?.title : undefined}
       />
 
       {/* Section 2: Current Issue Feature - Asymmetric layout */}
@@ -307,80 +310,7 @@ export default async function HomePage({ params }: Props) {
         </section>
       )}
 
-      {/* Section 6: Newsletter CTA - With Background Image */}
-      <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
-        {/* Background image from Pexels */}
-        {ctaImage && (
-          <>
-            <Image
-              src={ctaImage.srcLarge || ctaImage.src}
-              alt={ctaImage.alt}
-              fill
-              className="object-cover"
-              sizes="100vw"
-              quality={80}
-            />
-            <div className="absolute inset-0 bg-black/60" />
-            
-            {/* Photo credit */}
-            {ctaImage.photographer && (
-              <div className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
-                Photo:{' '}
-                {ctaImage.photographerUrl ? (
-                  <a
-                    href={ctaImage.photographerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-white/50 transition-colors"
-                  >
-                    {ctaImage.photographer}
-                  </a>
-                ) : (
-                  ctaImage.photographer
-                )}
-                {' / Pexels'}
-              </div>
-            )}
-          </>
-        )}
-        
-        {/* Fallback gradient if no image */}
-        {!ctaImage && (
-          <div className="absolute inset-0 bg-gradient-to-br from-warm/10 via-secondary to-brand/5" />
-        )}
-        
-        <div className="container-narrow relative z-10">
-          <ScrollReveal className="text-center">
-            <span className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${ctaImage ? 'text-white/60' : 'text-muted-foreground'}`}>
-              {locale === 'pt' ? 'Newsletter' : 'Newsletter'}
-            </span>
-            
-            <h2 className={`font-headline text-4xl md:text-5xl lg:text-6xl mb-6 ${ctaImage ? 'text-white' : ''}`}>
-              {locale === 'pt' ? 'Fique no Lineup' : 'Stay in the Lineup'}
-            </h2>
-            
-            <p className={`tagline mb-10 max-w-lg mx-auto ${ctaImage ? 'text-white/80' : 'text-muted-foreground'}`}>
-              {locale === 'pt'
-                ? 'Receba cada nova edição diretamente na sua caixa de entrada.'
-                : 'Get each new issue delivered directly to your inbox.'}
-            </p>
-
-            <Link
-              href="/newsletter"
-              className={`inline-flex items-center gap-3 px-10 py-5 font-ui text-sm font-medium transition-slow ${
-                ctaImage 
-                  ? 'bg-white text-black hover:bg-brand hover:text-white' 
-                  : 'bg-foreground text-background hover:bg-brand'
-              }`}
-            >
-              {locale === 'pt' ? 'Subscrever' : 'Subscribe'}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Section 7: About Teaser */}
+      {/* Section 6: About Teaser */}
       <section className="py-24 md:py-32 border-t border-border">
         <div className="container-narrow">
           <ScrollReveal className="text-center">

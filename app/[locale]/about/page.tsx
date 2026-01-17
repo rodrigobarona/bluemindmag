@@ -10,10 +10,10 @@ import {
 import { ArrowRight } from 'lucide-react';
 import { SiteLayout } from '@/components/site-layout';
 import { ScrollReveal } from '@/components/scroll-reveal';
-import { PullQuoteImage, PullQuoteDark } from '@/components/pull-quote';
+import { PullQuoteImage } from '@/components/pull-quote';
 import { getTeamMemberById } from '@/content/data/team';
 import { getSponsorById } from '@/content/data/sponsors';
-import { getQuoteImage, getPortugalImage, getSurferImage } from '@/lib/pexels';
+import { getQuoteImage, getPortugalImage, getSurferImage, getCtaImage } from '@/lib/pexels';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -39,14 +39,15 @@ export default async function AboutPage({ params }: Props) {
   const smi = getSponsorById('surfing-medicine-international');
 
   // Fetch Pexels images for visual sections
-  const [quoteImage, heroImage, surferImage] = await Promise.all([
+  const [quoteImage, heroImage, surferImage, newsletterImage] = await Promise.all([
     getQuoteImage(),
     getPortugalImage(),
     getSurferImage(),
+    getCtaImage(),
   ]);
 
   return (
-    <SiteLayout>
+    <SiteLayout newsletterImage={newsletterImage}>
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
         {/* Background image */}
@@ -90,13 +91,22 @@ export default async function AboutPage({ params }: Props) {
 
         <div className="container-editorial relative z-10">
           <ScrollReveal className="max-w-3xl">
-            <span className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${heroImage ? 'text-brand' : 'text-brand'}`}>
+            <span 
+              className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${heroImage ? 'text-white/70' : 'text-brand'}`}
+              style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.3)' } : undefined}
+            >
               {t('subtitle')}
             </span>
-            <h1 className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}>
+            <h1 
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}
+              style={heroImage ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
+            >
               {t('title')}
             </h1>
-            <p className={`font-body text-xl leading-relaxed ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}>
+            <p 
+              className={`font-body text-xl leading-relaxed ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
+              style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
+            >
               {t('magazine.description')}
             </p>
           </ScrollReveal>
@@ -340,37 +350,73 @@ export default async function AboutPage({ params }: Props) {
         </div>
       </section>
 
-      {/* CTA Section with Dark Quote Style */}
-      <PullQuoteDark
-        quote={
-          locale === 'pt'
-            ? 'Quer colaborar connosco?'
-            : 'Want to collaborate with us?'
-        }
-        attribution={
-          locale === 'pt'
-            ? 'Contacte-nos para partilhar a sua história'
-            : 'Get in touch to share your story'
-        }
-      />
-
-      {/* Final CTA */}
-      <section className="py-24 md:py-32">
+      {/* Collaboration CTA */}
+      <section className="py-20 md:py-28 bg-warm/5">
         <div className="container-editorial">
-          <ScrollReveal className="max-w-2xl mx-auto text-center">
-            <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
-              {locale === 'pt'
-                ? 'Estamos sempre à procura de investigadores, escritores e surfistas que queiram partilhar as suas histórias e conhecimentos.'
-                : "We're always looking for researchers, writers, and surfers who want to share their stories and insights."}
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-3 bg-foreground text-background px-10 py-5 font-ui text-sm font-medium transition-slow hover:bg-brand"
-            >
-              {locale === 'pt' ? 'Contacte-nos' : 'Get in Touch'}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </ScrollReveal>
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+            {/* Text content */}
+            <ScrollReveal>
+              <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
+                {locale === 'pt' ? 'Colabore Connosco' : 'Collaborate With Us'}
+              </span>
+              <h2 className="font-headline text-3xl md:text-4xl mb-4">
+                {locale === 'pt'
+                  ? 'Partilhe a sua história'
+                  : 'Share your story'}
+              </h2>
+              <p className="font-body text-lg text-muted-foreground mb-8 leading-relaxed">
+                {locale === 'pt'
+                  ? 'Estamos sempre à procura de investigadores, escritores e surfistas que queiram partilhar as suas histórias e conhecimentos.'
+                  : "We're always looking for researchers, writers, and surfers who want to share their stories and insights."}
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
+              >
+                {locale === 'pt' ? 'Contacte-nos' : 'Get in Touch'}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </ScrollReveal>
+            
+            {/* Visual element - Pexels image */}
+            <ScrollReveal delay={0.2} className="hidden md:block">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                {surferImage && (
+                  <>
+                    <Image
+                      src={surferImage.srcLarge || surferImage.src}
+                      alt={surferImage.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    {/* Photo credit */}
+                    {surferImage.photographer && (
+                      <div className="absolute bottom-3 right-3 font-ui text-xs text-white/50 z-10">
+                        Photo:{' '}
+                        {surferImage.photographerUrl ? (
+                          <a
+                            href={surferImage.photographerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-white/70 transition-colors"
+                          >
+                            {surferImage.photographer}
+                          </a>
+                        ) : (
+                          surferImage.photographer
+                        )}
+                        {' / Pexels'}
+                      </div>
+                    )}
+                  </>
+                )}
+                {!surferImage && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand/20 via-brand/10 to-warm/20" />
+                )}
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
     </SiteLayout>

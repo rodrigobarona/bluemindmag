@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Check, Sparkles } from 'lucide-react';
 import { SiteLayout } from '@/components/site-layout';
 import { NewsletterForm } from '@/components/newsletter-form';
+import { getCtaImage } from '@/lib/pexels';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -24,9 +25,10 @@ export default async function NewsletterPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Newsletter');
+  const newsletterImage = await getCtaImage();
 
   return (
-    <SiteLayout>
+    <SiteLayout newsletterImage={newsletterImage}>
       {/* Hero Section */}
       <section className="py-20 md:py-32 relative overflow-hidden">
         {/* Background gradient */}
