@@ -70,12 +70,12 @@ export function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 transition-opacity hover:opacity-80"
+            className="flex items-center gap-3 transition-opacity hover:opacity-80"
             aria-label="Blue Mind Magazine - Home"
           >
             <span
               className={cn(
-                'font-headline text-xl md:text-2xl tracking-wider transition-colors',
+                'font-headline text-2xl md:text-3xl tracking-wider transition-colors',
                 isTransparent ? 'text-white' : 'text-foreground'
               )}
               style={isTransparent ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
@@ -84,7 +84,7 @@ export function Header() {
             </span>
             <span
               className={cn(
-                'hidden sm:inline font-ui text-[10px] uppercase tracking-[0.2em] transition-colors',
+                'hidden sm:inline font-ui text-xs uppercase tracking-[0.2em] transition-colors',
                 isTransparent ? 'text-white/80' : 'text-muted-foreground'
               )}
             >
@@ -149,7 +149,7 @@ export function Header() {
               <SheetContent side="right" className="w-full sm:w-[400px] p-0">
                 <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
                   <SheetTitle className="text-left">
-                    <span className="font-headline text-2xl tracking-wider">
+                    <span className="font-headline text-3xl tracking-wider">
                       BLUE MIND
                     </span>
                   </SheetTitle>
