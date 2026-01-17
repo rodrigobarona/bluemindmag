@@ -126,9 +126,9 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body className="min-h-screen bg-background font-sans antialiased overflow-x-hidden">
         <ThemeProvider>
-          <NextIntlClientProvider>
-            <CookieConsentProvider>{children}</CookieConsentProvider>
-          </NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <CookieConsentProvider>{children}</CookieConsentProvider>
+        </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>

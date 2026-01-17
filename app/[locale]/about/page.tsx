@@ -160,9 +160,9 @@ export default async function AboutPage({ params }: Props) {
             <ScrollReveal direction="left" className="order-2 lg:order-1">
               <div className="relative">
                 <div className="aspect-square relative bg-secondary overflow-hidden shadow-float">
-                  {editor?.image ? (
-                    <Image
-                      src={editor.image}
+                {editor?.image ? (
+                  <Image
+                    src={editor.image}
                       alt={t('editor.name')}
                       fill
                       className="object-cover object-center"
@@ -173,25 +173,25 @@ export default async function AboutPage({ params }: Props) {
                     <>
                       <Image
                         src={surferImage.srcLarge || surferImage.src}
-                        alt={t('editor.name')}
-                        fill
-                        className="object-cover"
-                      />
+                    alt={t('editor.name')}
+                    fill
+                    className="object-cover"
+                  />
                       {surferImage.photographer && (
                         <div className="absolute bottom-2 left-2 font-ui text-xs text-white/40 bg-black/30 px-2 py-1">
                           Photo: {surferImage.photographer} / Pexels
                         </div>
                       )}
                     </>
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
                       <span className="font-headline text-8xl text-muted-foreground/20">
-                        PS
-                      </span>
-                    </div>
-                  )}
-                </div>
+                      PS
+                    </span>
+                  </div>
+                )}
               </div>
+            </div>
             </ScrollReveal>
 
             {/* Info */}
@@ -365,19 +365,19 @@ export default async function AboutPage({ params }: Props) {
                 {locale === 'pt'
                   ? 'Partilhe a sua história'
                   : 'Share your story'}
-              </h2>
+            </h2>
               <p className="font-body text-lg text-muted-foreground mb-8 leading-relaxed">
                 {locale === 'pt'
                   ? 'Estamos sempre à procura de investigadores, escritores e surfistas que queiram partilhar as suas histórias e conhecimentos.'
                   : "We're always looking for researchers, writers, and surfers who want to share their stories and insights."}
-              </p>
-              <Link
-                href="/contact"
+            </p>
+            <Link
+              href="/contact"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
-              >
+            >
                 {locale === 'pt' ? 'Contacte-nos' : 'Get in Touch'}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+            </Link>
             </ScrollReveal>
             
             {/* Visual element - Pexels image */}

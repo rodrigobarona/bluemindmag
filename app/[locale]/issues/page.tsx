@@ -115,7 +115,7 @@ export default async function IssuesPage({ params }: Props) {
       {/* Current Issue Feature */}
       {currentIssue && (
         <section className="py-20 md:py-28 border-b border-border">
-          <div className="container-editorial">
+        <div className="container-editorial">
             <ScrollReveal className="mb-12">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                 {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
@@ -177,30 +177,30 @@ export default async function IssuesPage({ params }: Props) {
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
             >
               {issues.map((issue, index) => (
-                <IssueCard
-                  key={issue.id}
-                  issue={issue}
-                  translation={issueTranslations[issue.id]}
-                  priority={index < 3}
-                />
-              ))}
+              <IssueCard
+                key={issue.id}
+                issue={issue}
+                translation={issueTranslations[issue.id]}
+                priority={index < 3}
+              />
+            ))}
             </StaggerList>
           </div>
         </section>
       )}
 
-      {/* Empty state */}
-      {issues.length === 0 && (
+          {/* Empty state */}
+          {issues.length === 0 && (
         <section className="py-32">
           <div className="container-editorial text-center">
             <p className="font-body text-muted-foreground text-xl">
               {locale === 'pt'
                 ? 'Ainda não há edições disponíveis. Volte em breve!'
                 : 'No issues available yet. Check back soon!'}
-            </p>
-          </div>
+              </p>
+            </div>
         </section>
-      )}
+          )}
     </SiteLayout>
   );
 }

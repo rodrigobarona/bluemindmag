@@ -15,40 +15,40 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
       <motion.article 
-        className="relative"
+          className="relative"
         whileHover={{ y: -8 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      >
+        >
         {/* Cover container with dramatic shadow */}
         <div className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
-          {/* Cover Image */}
+            {/* Cover Image */}
           <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
-            <Image
-              src={issue.cover}
-              alt={`${translation.title} cover`}
-              fill
+              <Image
+                src={issue.cover}
+                alt={`${translation.title} cover`}
+                fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              priority={priority}
-            />
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={priority}
+              />
             
             {/* Warm overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
-          {/* Current issue badge */}
-          {issue.isCurrent && (
-            <div
-              className="absolute top-4 right-4 z-10 px-3 py-1.5 font-ui text-xs font-semibold uppercase tracking-wider"
-              style={{
-                backgroundColor: issue.accentColor,
-                color: '#ffffff',
-              }}
-            >
-              Current
             </div>
-          )}
-        </div>
+
+            {/* Current issue badge */}
+            {issue.isCurrent && (
+              <div
+              className="absolute top-4 right-4 z-10 px-3 py-1.5 font-ui text-xs font-semibold uppercase tracking-wider"
+                style={{
+                  backgroundColor: issue.accentColor,
+                  color: '#ffffff',
+                }}
+              >
+                Current
+              </div>
+            )}
+          </div>
 
         {/* Issue info */}
         <div className="mt-6 text-center">
@@ -69,40 +69,40 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
       <motion.article 
-        className="relative"
+          className="relative"
         whileHover={{ y: -12 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      >
+        >
         {/* Cover container with floating shadow */}
         <div className="relative overflow-hidden shadow-float">
-          {/* Cover Image */}
+            {/* Cover Image */}
           <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
-            <Image
-              src={issue.cover}
-              alt={`${translation.title} cover`}
-              fill
+              <Image
+                src={issue.cover}
+                alt={`${translation.title} cover`}
+                fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority={priority}
-            />
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={priority}
+              />
             
             {/* Warm gradient overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-
-          {/* Current issue badge */}
-          {issue.isCurrent && (
-            <div
-              className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
-              style={{
-                backgroundColor: issue.accentColor,
-                color: '#ffffff',
-              }}
-            >
-              Current Issue
             </div>
-          )}
-        </div>
+
+            {/* Current issue badge */}
+            {issue.isCurrent && (
+              <div
+              className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
+                style={{
+                  backgroundColor: issue.accentColor,
+                  color: '#ffffff',
+                }}
+              >
+                Current Issue
+              </div>
+            )}
+          </div>
       </motion.article>
     </Link>
   );

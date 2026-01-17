@@ -165,59 +165,59 @@ export default async function IssueDetailPage({ params }: Props) {
         <div className="container-editorial pb-16">
           <div className="space-y-16">
             {issue.highlights.map((highlight, index) => {
-              const highlightTranslation = translation.highlights[highlight.id];
-              if (!highlightTranslation) return null;
+            const highlightTranslation = translation.highlights[highlight.id];
+            if (!highlightTranslation) return null;
 
               const isEven = index % 2 === 0;
 
-              return (
-                <article
-                  key={highlight.id}
+            return (
+              <article
+                key={highlight.id}
                   className={`grid md:grid-cols-2 gap-8 items-center ${
                     isEven ? "" : "md:flex-row-reverse"
                   }`}
-                >
+              >
                   {/* Image */}
                   <div className={`${isEven ? "" : "md:order-2"}`}>
                     <div className="aspect-4/3 relative overflow-hidden shadow-editorial">
-                      <Image
-                        src={highlight.image}
-                        alt={highlightTranslation.title}
-                        fill
+                  <Image
+                    src={highlight.image}
+                    alt={highlightTranslation.title}
+                    fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 50vw"
-                      />
+                  />
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className={`${isEven ? "" : "md:order-1"}`}>
-                    {/* Page Number */}
-                    <p
+                        {/* Page Number */}
+                        <p
                       className="font-ui text-sm font-medium uppercase tracking-widest mb-3"
-                      style={{ color: issue.accentColor }}
-                    >
-                      {t("page")} {highlight.page}
-                    </p>
+                          style={{ color: issue.accentColor }}
+                        >
+                          {t("page")} {highlight.page}
+                        </p>
 
-                    {/* Title */}
+                        {/* Title */}
                     <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-4">
-                      {highlightTranslation.title}
-                    </h3>
+                          {highlightTranslation.title}
+                        </h3>
 
-                    {/* Excerpt */}
+                        {/* Excerpt */}
                     <p className="font-body text-muted-foreground text-base md:text-lg mb-4 leading-relaxed">
-                      {highlightTranslation.excerpt}
-                    </p>
+                          {highlightTranslation.excerpt}
+                        </p>
 
-                    {/* Author */}
+                        {/* Author */}
                     <p className="font-accent italic text-muted-foreground text-sm">
-                      {t("by")} {highlightTranslation.author}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
+                          {t("by")} {highlightTranslation.author}
+                        </p>
+                </div>
+              </article>
+            );
+          })}
           </div>
         </div>
       </section>

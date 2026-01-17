@@ -1,4 +1,4 @@
-import type { Issue } from '../types/content';
+import type { Issue } from "../types/content";
 
 // ============================================
 // BLUE MIND MAGAZINE - ISSUES DATA
@@ -6,52 +6,52 @@ import type { Issue } from '../types/content';
 
 export const issues: Issue[] = [
   {
-    id: 'issue-0',
-    slug: 'issue-0-january-2026',
+    id: "issue-0",
+    slug: "issue-0-january-2026",
     issueNumber: 0,
-    date: '2026-01-01',
-    accentColor: '#0097B2', // Dark Turquoise
-    cover: '/images/issues/issue-0/cover.png',
+    date: "2026-01-01",
+    accentColor: "#0097B2", // Dark Turquoise
+    cover: "/images/issues/issue-0/cover.png",
     flipbook: {
-      en: 'https://publuu.com/flip-book/1032681/2310890/page/1?embed',
-      pt: 'https://publuu.com/flip-book/1032681/2310467/page/1?embed',
+      en: "https://publuu.com/flip-book/1032681/2310890/page/1?embed",
+      pt: "https://publuu.com/flip-book/1032681/2310467/page/1?embed",
     },
-    sponsors: ['surfing-medicine-international'],
+    sponsors: ["surfing-medicine-international"],
     highlights: [
       {
-        id: 'editors-note',
+        id: "editors-note",
         page: 4,
-        image: '/images/issues/issue-0/editors-note.jpg',
+        image: "/images/issues/issue-0/editors-note.jpg",
       },
       {
-        id: 'meet-the-scientist',
+        id: "meet-the-scientist",
         page: 12,
-        image: '/images/issues/issue-0/meet-scientist.jpg',
+        image: "/images/issues/issue-0/meet-scientist.jpg",
       },
       {
-        id: 'students-peak',
+        id: "students-peak",
         page: 20,
-        image: '/images/issues/issue-0/students-peak.jpg',
+        image: "/images/issues/issue-0/students-peak.jpg",
       },
       {
-        id: 'surf-science-explained',
+        id: "surf-science-explained",
         page: 28,
-        image: '/images/issues/issue-0/surf-science.jpg',
+        image: "/images/issues/issue-0/surf-science.jpg",
       },
       {
-        id: 'meet-the-surfer',
+        id: "meet-the-surfer",
         page: 36,
-        image: '/images/issues/issue-0/meet-surfer.jpg',
+        image: "/images/issues/issue-0/meet-surfer.jpg",
       },
     ],
     sections: [
-      'Meet the Scientist',
+      "Meet the Scientist",
       "Student's Peak",
-      'Surf Science Explained',
-      'Meet the Surfer',
-      'Tips & Tricks',
-      'Community Projects',
-      'Surfing Medicine International',
+      "Surf Science Explained",
+      "Meet the Surfer",
+      "Tips & Tricks",
+      "Community Projects",
+      "Surfing Medicine International",
     ],
     isCurrent: true,
   },
@@ -79,4 +79,3 @@ export function getAllIssues(): Issue[] {
 export function getIssueCount(): number {
   return issues.length;
 }
-

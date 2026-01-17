@@ -162,8 +162,8 @@ export function Header() {
                       <li key={link.key}>
                         <SheetClose
                           render={
-                            <Link
-                              href={link.href}
+                    <Link
+                      href={link.href}
                               className={cn(
                                 'flex items-center py-3 px-4 rounded-full text-base font-medium transition-colors',
                                 isActiveLink(link.href)
@@ -172,22 +172,22 @@ export function Header() {
                               )}
                             />
                           }
-                        >
-                          {t(link.key)}
+                    >
+                      {t(link.key)}
                         </SheetClose>
                       </li>
-                    ))}
+                ))}
                   </ul>
 
                   {/* Divider */}
                   <div className="my-6 border-t border-border" />
 
-                  {/* Mobile Actions */}
+              {/* Mobile Actions */}
                   <div className="space-y-4">
                     <SheetClose
                       render={
-                        <Link
-                          href="/newsletter"
+                <Link
+                  href="/newsletter"
                           className={cn(buttonVariants({ size: 'lg' }), 'w-full rounded-full')}
                         />
                       }
@@ -198,9 +198,9 @@ export function Header() {
                 </nav>
               </SheetContent>
             </Sheet>
-          </div>
+              </div>
         </nav>
-      </div>
+            </div>
     </header>
   );
 }

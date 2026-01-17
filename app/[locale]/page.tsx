@@ -66,7 +66,7 @@ export default async function HomePage({ params }: Props) {
       />
 
       {/* Section 2: Current Issue Feature - Asymmetric layout */}
-      {currentIssue && (
+                {currentIssue && (
         <section className="py-24 md:py-32 lg:py-40">
           <div className="container-editorial">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -80,8 +80,8 @@ export default async function HomePage({ params }: Props) {
                   {/* Issue number as giant background text */}
                   <div className="absolute -top-16 -left-8 text-display-number text-foreground/5 pointer-events-none select-none hidden lg:block">
                     {currentIssue.issueNumber.toString().padStart(2, '0')}
-                  </div>
-                  
+            </div>
+
                   <IssueCardFeatured
                     issue={currentIssue}
                     translation={issueTranslations[currentIssue.id]}
@@ -105,12 +105,12 @@ export default async function HomePage({ params }: Props) {
                   </span>
 
                   <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-6">
-                    {issueTranslations[currentIssue.id].title}
+                      {issueTranslations[currentIssue.id].title}
                   </h2>
 
                   <p className="tagline text-muted-foreground mb-8">
-                    {issueTranslations[currentIssue.id].subtitle}
-                  </p>
+                      {issueTranslations[currentIssue.id].subtitle}
+                    </p>
 
                   <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl">
                     {issueTranslations[currentIssue.id].description}
@@ -136,9 +136,9 @@ export default async function HomePage({ params }: Props) {
                   </div>
                 </div>
               </ScrollReveal>
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
       )}
 
       {/* Section 3: Editorial Sections - Horizontal scroll on mobile */}
@@ -151,7 +151,7 @@ export default async function HomePage({ params }: Props) {
               </span>
               <h2 className="font-headline text-3xl md:text-4xl">
                 {locale === 'pt' ? 'Destaques' : 'Featured'}
-              </h2>
+            </h2>
             </ScrollReveal>
           </div>
 
@@ -169,7 +169,7 @@ export default async function HomePage({ params }: Props) {
 
                 return (
                   <HorizontalScrollItem key={highlight.id}>
-                    <Link
+            <Link
                       href={`/issues/${currentIssue.slug}#features`}
                       className="group block relative h-[350px] overflow-hidden bg-card"
                     >
@@ -241,12 +241,12 @@ export default async function HomePage({ params }: Props) {
                         {highlightTranslation.excerpt}
                       </p>
                     </div>
-                  </Link>
+            </Link>
                 );
               })}
             </StaggerList>
-          </div>
-        </section>
+        </div>
+      </section>
       )}
 
       {/* Section 4: Pull Quote with Beautiful Image */}
