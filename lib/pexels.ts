@@ -139,8 +139,8 @@ const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = 
   'issues:hero': { category: 'hero', index: 1 },
   'issues:newsletter': { category: 'cta', index: 3 },
   
-  // Newsletter page
-  'newsletter:hero': { category: 'hero', index: 2 },
+  // Newsletter page - Use sunny beach hero (not underwater, to contrast with dark CTA)
+  'newsletter:hero': { category: 'hero', index: 3 },
   'newsletter:newsletter': { category: 'cta', index: 4 },
   
   // Legal pages (share same images)
