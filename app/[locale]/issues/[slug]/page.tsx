@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/site-layout";
 import { ReadIssueButton } from "@/components/read-issue-button";
 import { IssueCard } from "@/components/issue-card";
+import { IssueCoverTilt } from "@/components/issue-cover-tilt";
 import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
 import { getSponsorsByIds } from "@/content/data/sponsors";
 import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
@@ -77,37 +78,33 @@ export default async function IssueDetailPage({ params }: Props) {
 
   return (
     <SiteLayout newsletterImage={newsletterImage}>
-      {/* Hero Section - Clean and minimal */}
-      <section className="py-16 md:py-24 lg:py-32">
-        <div className="container-editorial">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            {/* Cover Image */}
-            <div className="relative flex justify-center lg:sticky lg:top-24">
-              <div className="relative w-full max-w-sm">
-                {/* Cover */}
-                <div className="aspect-magazine-cover relative overflow-hidden shadow-cover">
-                  <Image
-                    src={issue.cover}
-                    alt={`${translation.title} cover`}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
+      {/* Hero Section - With accent color background */}
+      <section
+        className="py-16 md:py-24 lg:py-32 relative overflow-hidden"
+        style={{
+          background: `linear-gradient(135deg, ${issue.accentColor}08 0%, ${issue.accentColor}03 50%, transparent 100%)`,
+        }}
+      >
+        {/* Ambient glow */}
+        <div
+          className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 80% 50% at 30% 50%, ${issue.accentColor}15 0%, transparent 70%)`,
+          }}
+        />
 
-                {/* Current issue badge */}
-                {issue.isCurrent && (
-                  <div
-                    className="absolute -top-3 -right-3 px-4 py-1.5 font-ui text-xs font-semibold uppercase tracking-wider"
-                    style={{
-                      backgroundColor: issue.accentColor,
-                      color: "#ffffff",
-                    }}
-                  >
-                    {t("current")}
-                  </div>
-                )}
-              </div>
+        <div className="container-editorial relative">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+            {/* Cover Image with 3D Tilt Effect */}
+            <div className="relative flex justify-center lg:sticky lg:top-24 pt-8 pb-12">
+              <IssueCoverTilt
+                cover={issue.cover}
+                title={translation.title}
+                slug={issue.slug}
+                accentColor={issue.accentColor}
+                isCurrent={issue.isCurrent}
+                currentLabel={t("current")}
+              />
             </div>
 
             {/* Issue Info */}
