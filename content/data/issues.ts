@@ -16,7 +16,20 @@ export const issues: Issue[] = [
       en: "https://publuu.com/flip-book/1032681/2310890/page/1?embed",
       pt: "https://publuu.com/flip-book/1032681/2310467/page/1?embed",
     },
-    sponsors: ["surfing-medicine-international"],
+    sponsors: [
+      "surfing-medicine-international",
+      "ocean-wellness",
+      "blue-wave-foundation",
+      "surf-science-labs",
+      "coastal-research",
+      "wave-therapy",
+      "marine-health",
+      "surf-academy",
+      "ocean-mind",
+      "blue-therapy",
+      "wave-riders",
+      "surf-wellness",
+    ],
     highlights: [
       {
         id: "editors-note",

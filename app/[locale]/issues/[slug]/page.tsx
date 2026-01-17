@@ -8,6 +8,7 @@ import { SiteLayout } from "@/components/site-layout";
 import { ReadIssueButton } from "@/components/read-issue-button";
 import { IssueCard } from "@/components/issue-card";
 import { IssueCoverTilt } from "@/components/issue-cover-tilt";
+import { SponsorsCarousel } from "@/components/sponsors-carousel";
 import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
 import { getSponsorsByIds } from "@/content/data/sponsors";
 import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
@@ -386,34 +387,14 @@ export default async function IssueDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Sponsors Section */}
+      {/* Sponsors Section - Carousel */}
       {sponsors.length > 0 && (
-        <section className="py-12 border-t border-border">
+        <section className="py-16 md:py-20 border-t border-border overflow-hidden">
           <div className="container-editorial">
-            <div className="text-center">
-              <p className="font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-6">
-                {t("supportedBy")}
-              </p>
-              <div className="flex flex-wrap justify-center items-center gap-8">
-                {sponsors.map((sponsor) => (
-                  <a
-                    key={sponsor.id}
-                    href={sponsor.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="opacity-50 hover:opacity-100 transition-base grayscale hover:grayscale-0"
-                  >
-                    <Image
-                      src={sponsor.logo}
-                      alt={sponsor.name}
-                      width={120}
-                      height={48}
-                      className="h-10 w-auto object-contain"
-                    />
-                  </a>
-                ))}
-              </div>
-            </div>
+            <SponsorsCarousel
+              sponsors={sponsors}
+              title={locale === "pt" ? "Apoiado Por" : "Supported By"}
+            />
           </div>
         </section>
       )}

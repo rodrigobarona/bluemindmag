@@ -18,6 +18,8 @@
     "@vercel/og": "^0.8.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
     "motion": "^12.26.2",
