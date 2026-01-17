@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   League_Gothic,
   Source_Serif_4,
@@ -126,9 +127,11 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body className="min-h-screen bg-background font-sans antialiased overflow-x-hidden">
         <ThemeProvider>
-        <NextIntlClientProvider>
-          <CookieConsentProvider>{children}</CookieConsentProvider>
-        </NextIntlClientProvider>
+          <NextIntlClientProvider>
+            <Suspense fallback={null}>
+              <CookieConsentProvider>{children}</CookieConsentProvider>
+            </Suspense>
+          </NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
