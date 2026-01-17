@@ -36,7 +36,8 @@
     "newsletter": {
       "title": "Mantenha-se Informado",
       "description": "Onde surf e ciência se encontram, entregue na sua caixa de correio.",
-      "cta": "Subscrever Newsletter"
+      "cta": "Subscrever Newsletter",
+      "learnMore": "Saber mais sobre a newsletter →"
     },
     "tagline": "Onde surf e ciência se encontram.",
     "navigation": "Navegação",

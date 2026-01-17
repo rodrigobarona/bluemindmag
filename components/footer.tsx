@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { Instagram, Linkedin, ArrowRight } from 'lucide-react';
+import { Instagram, Linkedin } from 'lucide-react';
 import {
   footerNavLinks,
   socialLinks,
   siteConfig,
 } from '@/content/data/navigation';
 import { LanguageDropdown } from './language-dropdown';
+import { NewsletterForm } from './newsletter-form';
 import type { ImageResult } from '@/lib/pexels';
 
 interface FooterProps {
@@ -91,16 +92,21 @@ export function Footer({ newsletterImage }: FooterProps) {
               {tFooter('newsletter.description')}
             </p>
 
+            {/* Newsletter Form */}
+            <div className="max-w-md mx-auto mb-6">
+              <NewsletterForm variant="footer" />
+            </div>
+
+            {/* Learn more link */}
             <Link
               href="/newsletter"
-              className={`inline-flex items-center gap-3 px-10 py-5 font-ui text-sm font-medium transition-slow ${
+              className={`inline-flex items-center gap-2 font-ui text-sm transition-colors ${
                 newsletterImage 
-                  ? 'bg-white text-black hover:bg-brand hover:text-white' 
-                  : 'bg-background text-foreground hover:bg-brand hover:text-white'
+                  ? 'text-white/60 hover:text-white' 
+                  : 'text-background/60 hover:text-background'
               }`}
             >
-              {tFooter('newsletter.cta')}
-              <ArrowRight className="w-4 h-4" />
+              {tFooter('newsletter.learnMore')}
             </Link>
           </div>
         </div>

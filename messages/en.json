@@ -36,7 +36,8 @@
     "newsletter": {
       "title": "Stay in the Loop",
       "description": "Where surf & science meet, delivered to your inbox.",
-      "cta": "Subscribe to Newsletter"
+      "cta": "Subscribe to Newsletter",
+      "learnMore": "Learn more about our newsletter →"
     },
     "tagline": "Where surf and science meet.",
     "navigation": "Navigation",
