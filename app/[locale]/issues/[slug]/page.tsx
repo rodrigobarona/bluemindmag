@@ -82,14 +82,14 @@ export default async function IssueDetailPage({ params }: Props) {
       <section
         className="py-16 md:py-24 lg:py-32 relative overflow-hidden"
         style={{
-          background: `linear-gradient(135deg, ${issue.accentColor}08 0%, ${issue.accentColor}03 50%, transparent 100%)`,
+          background: `linear-gradient(135deg, ${issue.accentColor}25 0%, ${issue.accentColor}18 50%, ${issue.accentColor}08 100%)`,
         }}
       >
         {/* Ambient glow */}
         <div
-          className="absolute inset-0 opacity-20 blur-3xl pointer-events-none"
+          className="absolute inset-0 opacity-60 blur-3xl pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse 80% 50% at 30% 50%, ${issue.accentColor}15 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse 120% 100% at 15% 20%, ${issue.accentColor}40 0%, transparent 50%)`,
           }}
         />
 
@@ -130,16 +130,23 @@ export default async function IssueDetailPage({ params }: Props) {
                 label={t("readIssue")}
               />
 
-              {/* Sections */}
-              <div className="mt-12 pt-8 border-t border-border">
-                <p className="font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
+              {/* Sections - styled with accent color */}
+              <div className="mt-12 pt-8 border-t border-border/50">
+                <p
+                  className="font-ui text-xs font-medium uppercase tracking-wider mb-4"
+                  style={{ color: issue.accentColor }}
+                >
                   {t("sections")}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {issue.sections.map((section) => (
                     <span
                       key={section}
-                      className="px-3 py-1.5 font-ui text-sm bg-muted"
+                      className="px-3 py-1.5 font-ui text-sm border"
+                      style={{
+                        borderColor: `${issue.accentColor}40`,
+                        backgroundColor: `${issue.accentColor}10`,
+                      }}
                     >
                       {section}
                     </span>
@@ -151,70 +158,147 @@ export default async function IssueDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Features/Highlights Section - Clean vertical flow */}
-      <section id="features" className="border-t border-border">
-        {/* Section Header */}
-        <div className="container-editorial py-12">
-          <h2 className="font-headline text-3xl md:text-4xl">{t("features")}</h2>
-        </div>
+      {/* Features/Highlights Section - Magazine editorial style */}
+      <section id="features" className="py-20 md:py-28 border-t border-border">
+        <div className="container-editorial">
+          {/* Section Header */}
+          <div className="mb-16 md:mb-20">
+            <span
+              className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block"
+              style={{ color: issue.accentColor }}
+            >
+              {locale === "pt" ? "Nesta Edição" : "In This Issue"}
+            </span>
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl">
+              {t("features")}
+            </h2>
+          </div>
 
-        {/* Feature Cards - Clean layout without gradient overlays */}
-        <div className="container-editorial pb-16">
-          <div className="space-y-16">
+          {/* Feature Cards - Editorial magazine layout */}
+          <div className="space-y-24 md:space-y-32">
             {issue.highlights.map((highlight, index) => {
-            const highlightTranslation = translation.highlights[highlight.id];
-            if (!highlightTranslation) return null;
+              const highlightTranslation = translation.highlights[highlight.id];
+              if (!highlightTranslation) return null;
 
+              const isFirst = index === 0;
               const isEven = index % 2 === 0;
 
-            return (
-              <article
-                key={highlight.id}
-                  className={`grid md:grid-cols-2 gap-8 items-center ${
-                    isEven ? "" : "md:flex-row-reverse"
-                  }`}
-              >
-                  {/* Image */}
-                  <div className={`${isEven ? "" : "md:order-2"}`}>
-                    <div className="aspect-4/3 relative overflow-hidden shadow-editorial">
-                  <Image
-                    src={highlight.image}
-                    alt={highlightTranslation.title}
-                    fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                  />
+              // First article: Hero style full-width
+              if (isFirst) {
+                return (
+                  <article key={highlight.id} className="group">
+                    {/* Large hero image */}
+                    <div className="relative mb-8 md:mb-12">
+                      <div className="aspect-[21/9] md:aspect-[2.5/1] relative overflow-hidden">
+                        <Image
+                          src={highlight.image}
+                          alt={highlightTranslation.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          sizes="100vw"
+                        />
+                        {/* Gradient overlay */}
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background: `linear-gradient(to top, ${issue.accentColor}90 0%, transparent 50%)`,
+                          }}
+                        />
+                        {/* Page number badge */}
+                        <div
+                          className="absolute top-6 left-6 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
+                          style={{
+                            backgroundColor: issue.accentColor,
+                            color: "#ffffff",
+                          }}
+                        >
+                          {t("page")} {highlight.page}
+                        </div>
+                        {/* Title on image */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12">
+                          <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4">
+                            {highlightTranslation.title}
+                          </h3>
+                          <p className="font-accent italic text-white/80 text-lg">
+                            {t("by")} {highlightTranslation.author}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Excerpt below */}
+                    <div className="max-w-3xl">
+                      <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed">
+                        {highlightTranslation.excerpt}
+                      </p>
+                    </div>
+                  </article>
+                );
+              }
+
+              // Other articles: Side-by-side with large images
+              return (
+                <article
+                  key={highlight.id}
+                  className="group grid lg:grid-cols-12 gap-8 lg:gap-12 items-center"
+                >
+                  {/* Image - larger, with hover effect */}
+                  <div
+                    className={`lg:col-span-7 ${isEven ? "" : "lg:order-2"}`}
+                  >
+                    <div className="relative overflow-hidden">
+                      <div className="aspect-[4/3] relative">
+                        <Image
+                          src={highlight.image}
+                          alt={highlightTranslation.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          sizes="(max-width: 1024px) 100vw, 60vw"
+                        />
+                      </div>
+                      {/* Accent color frame on hover */}
+                      <div
+                        className="absolute inset-0 border-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                        style={{ borderColor: issue.accentColor }}
+                      />
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className={`${isEven ? "" : "md:order-1"}`}>
-                        {/* Page Number */}
-                        <p
-                      className="font-ui text-sm font-medium uppercase tracking-widest mb-3"
-                          style={{ color: issue.accentColor }}
-                        >
-                          {t("page")} {highlight.page}
-                        </p>
+                  <div
+                    className={`lg:col-span-5 ${isEven ? "" : "lg:order-1"}`}
+                  >
+                    {/* Page Number with accent line */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <div
+                        className="w-12 h-0.5"
+                        style={{ backgroundColor: issue.accentColor }}
+                      />
+                      <p
+                        className="font-ui text-sm font-medium uppercase tracking-widest"
+                        style={{ color: issue.accentColor }}
+                      >
+                        {t("page")} {highlight.page}
+                      </p>
+                    </div>
 
-                        {/* Title */}
-                    <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-4">
-                          {highlightTranslation.title}
-                        </h3>
+                    {/* Title */}
+                    <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-6 group-hover:text-foreground/80 transition-colors">
+                      {highlightTranslation.title}
+                    </h3>
 
-                        {/* Excerpt */}
-                    <p className="font-body text-muted-foreground text-base md:text-lg mb-4 leading-relaxed">
-                          {highlightTranslation.excerpt}
-                        </p>
+                    {/* Excerpt */}
+                    <p className="font-body text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
+                      {highlightTranslation.excerpt}
+                    </p>
 
-                        {/* Author */}
-                    <p className="font-accent italic text-muted-foreground text-sm">
-                          {t("by")} {highlightTranslation.author}
-                        </p>
-                </div>
-              </article>
-            );
-          })}
+                    {/* Author */}
+                    <p className="font-accent italic text-muted-foreground">
+                      {t("by")} {highlightTranslation.author}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
