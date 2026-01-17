@@ -88,7 +88,7 @@ export function Footer({ newsletterImage }: FooterProps) {
               {tFooter('newsletter.title')}
             </h2>
             
-            <p className={`tagline mb-10 max-w-lg mx-auto ${newsletterImage ? 'text-white/80' : 'text-background/70'}`}>
+            <p className={`tagline mb-10 max-w-lg mx-auto text-balance ${newsletterImage ? 'text-white/80' : 'text-background/70'}`}>
               {tFooter('newsletter.description')}
             </p>
 

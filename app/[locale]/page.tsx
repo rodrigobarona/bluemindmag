@@ -142,112 +142,84 @@ export default async function HomePage({ params }: Props) {
       </section>
       )}
 
-      {/* Section 3: Editorial Sections - Horizontal scroll on mobile */}
+      {/* Section 3: Quick Preview - Compact teaser cards */}
       {currentIssue && currentIssue.highlights.length > 0 && (
-        <section className="py-20 md:py-28 bg-secondary">
-          <div className="container-editorial mb-12">
-            <ScrollReveal>
-              <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
-              </span>
-              <h2 className="font-headline text-3xl md:text-4xl">
-                {locale === 'pt' ? 'Destaques' : 'Featured'}
-            </h2>
+        <section className="py-16 md:py-20 bg-secondary">
+          <div className="container-editorial">
+            {/* Header with CTA */}
+            <ScrollReveal className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+              <div>
+                <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-3 block">
+                  {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
+                </span>
+                <h2 className="font-headline text-2xl md:text-3xl">
+                  {locale === 'pt' ? 'Destaques' : 'Featured'}
+                </h2>
+              </div>
+              <Link
+                href={`/issues/${currentIssue.slug}#features`}
+                className="font-ui text-sm font-medium transition-colors hover:opacity-70 flex items-center gap-2"
+                style={{ color: currentIssue.accentColor }}
+              >
+                {locale === 'pt' ? 'Ver Todos' : 'View All'}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </ScrollReveal>
-          </div>
 
-          {/* Mobile: Horizontal scroll */}
-          <div className="md:hidden">
-            <HorizontalScroll className="container-editorial">
-              {currentIssue.highlights.map((highlight) => {
+            {/* Compact Grid */}
+            <StaggerList
+              staggerDelay={0.08}
+              direction="up"
+              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6"
+            >
+              {currentIssue.highlights.slice(0, 5).map((highlight) => {
                 const highlightTranslation =
                   issueTranslations[currentIssue.id].highlights[highlight.id];
                 if (!highlightTranslation) return null;
 
-                // Use Pexels image if local doesn't exist, otherwise use local
                 const pexelsImage = sectionImages.get(highlight.id);
                 const imageSrc = highlight.image || pexelsImage?.srcMedium || '/images/hero/ocean-aerial.jpg';
-
-                return (
-                  <HorizontalScrollItem key={highlight.id}>
-            <Link
-                      href={`/issues/${currentIssue.slug}#features`}
-                      className="group block relative h-[350px] overflow-hidden bg-card"
-                    >
-                      <Image
-                        src={imageSrc}
-                        alt={highlightTranslation.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                        <span
-                          className="font-ui text-xs uppercase tracking-widest mb-2 block"
-                          style={{ color: currentIssue.accentColor }}
-                        >
-                          {locale === 'pt' ? 'Página' : 'Page'} {highlight.page}
-                        </span>
-                        <h3 className="font-headline text-xl">
-                          {highlightTranslation.title}
-                        </h3>
-                      </div>
-                    </Link>
-                  </HorizontalScrollItem>
-                );
-              })}
-            </HorizontalScroll>
-          </div>
-
-          {/* Desktop: Grid */}
-          <div className="hidden md:block container-editorial">
-            <StaggerList
-              staggerDelay={0.1}
-              direction="up"
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {currentIssue.highlights.slice(0, 3).map((highlight) => {
-                const highlightTranslation =
-                  issueTranslations[currentIssue.id].highlights[highlight.id];
-                if (!highlightTranslation) return null;
-
-                // Use Pexels image if local doesn't exist, otherwise use local
-                const pexelsImage = sectionImages.get(highlight.id);
-                const imageSrc = highlight.image || pexelsImage?.srcLarge || '/images/hero/ocean-aerial.jpg';
 
                 return (
                   <Link
                     key={highlight.id}
                     href={`/issues/${currentIssue.slug}#features`}
-                    className="group block relative h-[400px] overflow-hidden bg-card"
+                    className="group block"
                   >
-                    <Image
-                      src={imageSrc}
-                      alt={highlightTranslation.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                      <span
-                        className="font-ui text-xs uppercase tracking-widest mb-3 block opacity-70"
-                        style={{ color: currentIssue.accentColor }}
-                      >
-                        {locale === 'pt' ? 'Página' : 'Page'} {highlight.page}
-                      </span>
-                      <h3 className="font-headline text-2xl mb-2 group-hover:text-brand transition-colors">
-                        {highlightTranslation.title}
-                      </h3>
-                      <p className="font-body text-white/70 text-sm line-clamp-2">
-                        {highlightTranslation.excerpt}
-                      </p>
-                    </div>
-            </Link>
+                    <article className="relative overflow-hidden bg-card">
+                      {/* Image */}
+                      <div className="aspect-[4/5] relative overflow-hidden">
+                        <Image
+                          src={imageSrc}
+                          alt={highlightTranslation.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                        
+                        {/* Page number */}
+                        <span 
+                          className="absolute top-3 left-3 px-2 py-1 font-ui text-[10px] font-semibold uppercase tracking-wider"
+                          style={{ backgroundColor: currentIssue.accentColor, color: '#ffffff' }}
+                        >
+                          P.{highlight.page}
+                        </span>
+
+                        {/* Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4">
+                          <h3 className="font-headline text-sm md:text-base text-white leading-tight line-clamp-2 group-hover:text-white/90 transition-colors">
+                            {highlightTranslation.title}
+                          </h3>
+                        </div>
+                      </div>
+                    </article>
+                  </Link>
                 );
               })}
             </StaggerList>
-        </div>
-      </section>
+          </div>
+        </section>
       )}
 
       {/* Section 4: Pull Quote with Beautiful Image */}

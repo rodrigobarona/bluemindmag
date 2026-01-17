@@ -34,7 +34,7 @@ export function FlipbookViewer({
         {/* Fullscreen button */}
         <button
           onClick={() => setIsFullscreen(true)}
-          className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300"
+          className="cursor-pointer absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300"
           aria-label="View fullscreen"
           style={{
             '--tw-ring-color': accentColor,
@@ -56,7 +56,7 @@ export function FlipbookViewer({
             {/* Close button */}
             <button
               onClick={() => setIsFullscreen(false)}
-              className="absolute top-4 right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+              className="cursor-pointer absolute top-4 right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
               aria-label="Close fullscreen"
             >
               <IconX className="h-6 w-6" />

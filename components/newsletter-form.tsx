@@ -114,7 +114,7 @@ export function NewsletterForm({
             type="submit"
             disabled={isPending || !email}
             className={cn(
-              'absolute right-2 top-1/2 -translate-y-1/2',
+              'absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer',
               'flex h-10 w-10 items-center justify-center rounded-full',
               'bg-brand text-brand-foreground',
               'transition-all duration-200',
@@ -177,7 +177,7 @@ export function NewsletterForm({
             type="submit"
             disabled={isPending || !email}
             className={cn(
-              'inline-flex items-center justify-center gap-2 px-8 py-4',
+              'inline-flex items-center justify-center gap-2 px-8 py-4 cursor-pointer',
               'bg-white text-black font-ui text-sm font-medium',
               'transition-all duration-200',
               'hover:bg-brand hover:text-white',
@@ -244,7 +244,7 @@ export function NewsletterForm({
             type="submit"
             disabled={isPending || !email}
             className={cn(
-              'inline-flex items-center justify-center gap-2 px-6 py-3',
+              'inline-flex items-center justify-center gap-2 px-6 py-3 cursor-pointer',
               'bg-foreground text-background font-ui text-sm font-medium',
               'transition-all duration-200',
               'hover:bg-brand',
@@ -304,7 +304,7 @@ export function NewsletterForm({
           type="submit"
           disabled={isPending || !email}
           className={cn(
-            'flex h-9 w-9 items-center justify-center rounded-full',
+            'flex h-9 w-9 items-center justify-center rounded-full cursor-pointer',
             'bg-brand text-brand-foreground',
             'transition-all duration-200',
             'hover:opacity-90',
@@ -351,7 +351,7 @@ export function NewsletterForm({
           type="submit"
           disabled={isPending || !email}
           className={cn(
-            'inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3',
+            'inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 cursor-pointer',
             'bg-brand text-brand-foreground font-medium',
             'transition-all duration-200',
             'hover:opacity-90',

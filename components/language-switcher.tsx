@@ -54,7 +54,7 @@ export function LanguageSwitcher({
               aria-pressed={locale === loc.code}
               aria-label={`Switch language to ${loc.fullName}`}
               className={cn(
-                'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm',
+                'cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm',
                 locale === loc.code
                   ? 'text-foreground font-medium'
                   : 'text-muted-foreground hover:text-foreground',
@@ -94,7 +94,7 @@ export function LanguageSwitcher({
               aria-label={`Switch language to ${loc.fullName}`}
               tabIndex={isActive ? 0 : -1}
               className={cn(
-                'rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
+                'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2',
                 isActive
                   ? 'bg-background text-foreground shadow-sm'
@@ -133,7 +133,7 @@ export function LanguageSwitcher({
             aria-label={`Switch language to ${loc.fullName}`}
             tabIndex={isActive ? 0 : -1}
             className={cn(
-              'rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
+              'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isActive
                 ? 'bg-foreground text-background shadow-sm'
