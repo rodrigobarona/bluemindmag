@@ -12,9 +12,6 @@ import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issu
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 
-// ISR: Revalidate every hour
-export const revalidate = 3600;
-
 type Props = {
   params: Promise<{ locale: string }>;
 };

@@ -5,7 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
  * API Route: Revalidate Pexels Images Cache
  *
  * This endpoint allows on-demand revalidation of the Pexels image cache.
- * Useful when you want to refresh images without waiting for the 24-hour TTL.
+ * Useful when you want to refresh images without waiting for the cache TTL.
+ *
+ * Works with Next.js 16 "use cache" directive - revalidates the cached pools
+ * so new random selections will pull from fresh image pools.
  *
  * Usage:
  * POST /api/revalidate-images
@@ -13,8 +16,9 @@ import { NextRequest, NextResponse } from "next/server";
  *
  * Optional body:
  * { "tag": "pexels" } - Revalidate all Pexels images (default)
- * { "tag": "pexels-slot" } - Revalidate slot-based images only
- * { "tag": "pexels-section" } - Revalidate section images only
+ * { "tag": "pexels-pool-hero" } - Revalidate hero image pool only
+ * { "tag": "pexels-pool-cta" } - Revalidate CTA image pool only
+ * { "tag": "pexels-section-pool-meet-the-scientist" } - Revalidate specific section
  */
 export async function POST(request: NextRequest) {
   try {
@@ -43,9 +47,8 @@ export async function POST(request: NextRequest) {
     try {
       const body = await request.json();
       if (body.tag && typeof body.tag === "string") {
-        // Only allow specific tags
-        const allowedTags = ["pexels", "pexels-slot", "pexels-section"];
-        if (allowedTags.includes(body.tag)) {
+        // Allow pexels tags and pool-specific tags
+        if (body.tag.startsWith("pexels")) {
           tag = body.tag;
         }
       }
@@ -53,8 +56,9 @@ export async function POST(request: NextRequest) {
       // No body or invalid JSON - use default tag
     }
 
-    // Revalidate the cache tag with 'max' profile for stale-while-revalidate semantics
-    revalidateTag(tag, "max");
+    // Revalidate the cache tag - invalidates all "use cache" entries with this tag
+    // Second argument is the cacheLife profile for stale-while-revalidate behavior
+    revalidateTag(tag, "days");
 
     return NextResponse.json({
       revalidated: true,
@@ -72,19 +76,29 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * GET handler for health check
+ * GET handler for health check and usage info
  */
 export async function GET() {
   return NextResponse.json({
     status: "ok",
     endpoint: "/api/revalidate-images",
     method: "POST",
-    description: "Revalidate Pexels image cache on demand",
+    description: "Revalidate Pexels image cache on demand (Next.js 16 'use cache' compatible)",
     requiredHeaders: {
       "x-revalidate-secret": "Your REVALIDATE_SECRET environment variable",
     },
     optionalBody: {
-      tag: "pexels | pexels-slot | pexels-section",
+      tag: "Tag to revalidate (default: 'pexels' for all)",
+    },
+    availableTags: {
+      "pexels": "All Pexels image pools",
+      "pexels-pool-hero": "Hero images only",
+      "pexels-pool-quote": "Quote backgrounds only",
+      "pexels-pool-science": "Science/underwater images only",
+      "pexels-pool-surfer": "Surfer lifestyle images only",
+      "pexels-pool-portugal": "Portugal/cliff images only",
+      "pexels-pool-cta": "CTA/newsletter backgrounds only",
+      "pexels-pool-contact": "Contact page images only",
     },
   });
 }

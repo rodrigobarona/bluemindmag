@@ -14,9 +14,6 @@ import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
 
-// ISR: Revalidate every hour
-export const revalidate = 3600;
-
 type Props = {
   params: Promise<{ locale: string }>;
 };

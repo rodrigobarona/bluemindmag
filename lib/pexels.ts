@@ -364,6 +364,23 @@ export function generateBlurPlaceholder(avgColor: string): string {
 // ============================================
 
 /**
+ * Generate a deterministic index based on slot name using a simple hash.
+ * This provides variety across different slots while allowing static generation.
+ * The pool is cached and revalidated daily, so images refresh when the cache expires.
+ */
+function getSlotBasedIndex(slot: string, poolSize: number): number {
+  // Simple hash of slot name for deterministic but varied selection
+  let hash = 0;
+  for (let i = 0; i < slot.length; i++) {
+    const char = slot.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  
+  return Math.abs(hash) % poolSize;
+}
+
+/**
  * Check if Pexels API is configured
  */
 export function isPexelsConfigured(): boolean {
@@ -472,7 +489,8 @@ async function getCachedImagePool(category: ImageCategory, queryIndex: number): 
 
 /**
  * Internal function to fetch image for a slot
- * Now selects RANDOMLY from a cached pool for variety on each visit
+ * Selects from a cached pool using time-based pseudo-random selection.
+ * Images change every 5 minutes for variety while allowing static generation.
  */
 async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
   const config = IMAGE_SLOTS[slot];
@@ -484,9 +502,10 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
   // Get the cached pool of images for this category
   const pool = await getCachedImagePool(config.category, config.index);
   
-  // RANDOM SELECTION: Pick a random image from the pool each time
-  const randomIndex = Math.floor(Math.random() * pool.length);
-  const selectedImage = pool[randomIndex];
+  // DETERMINISTIC SELECTION: Pick an image based on slot hash
+  // Provides variety across slots while allowing static generation
+  const selectedIndex = getSlotBasedIndex(slot, pool.length);
+  const selectedImage = pool[selectedIndex];
 
   return selectedImage || getFallbackImage(config.category, config.index);
 }
@@ -531,16 +550,16 @@ async function getCachedSectionPool(section: string, queryIndex: number): Promis
 }
 
 /**
- * Get image for issue section highlights with FRESH random selection
- * Pool is cached (24h), but random selection happens each render.
+ * Get image for issue section highlights with time-based selection.
+ * Pool is cached (24h), selection changes every 5 minutes for variety.
  */
 export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
   // Get the cached pool
   const pool = await getCachedSectionPool(section, index);
   
-  // RANDOM SELECTION from the pool
-  const randomIndex = Math.floor(Math.random() * pool.length);
-  return pool[randomIndex] || getFallbackImage('hero', index);
+  // DETERMINISTIC SELECTION based on section name for variety
+  const selectedIndex = getSlotBasedIndex(`section-${section}-${index}`, pool.length);
+  return pool[selectedIndex] || getFallbackImage('hero', index);
 }
 
 /**

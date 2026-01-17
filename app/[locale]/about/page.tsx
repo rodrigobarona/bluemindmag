@@ -16,9 +16,6 @@ import { getSponsorById } from '@/content/data/sponsors';
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 
-// ISR: Revalidate every 24 hours (static content)
-export const revalidate = 86400;
-
 type Props = {
   params: Promise<{ locale: string }>;
 };

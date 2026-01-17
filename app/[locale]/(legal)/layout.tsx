@@ -1,9 +1,6 @@
 import { SiteLayout } from '@/components/site-layout';
 import { getImageForSlot } from '@/lib/pexels';
 
-// ISR: Revalidate every 24 hours (static content)
-export const revalidate = 86400;
-
 export default async function LegalLayout({
   children,
 }: {
