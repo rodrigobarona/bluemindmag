@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BookOpen } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { IssueCoverTilt } from "@/components/issue-cover-tilt";
 import { ReadIssueButton } from "@/components/read-issue-button";
 import {
@@ -16,6 +16,15 @@ import {
   LineDraw,
 } from "@/components/animations/scroll-reveal";
 import type { Issue, IssueTranslation } from "@/content/types/content";
+
+// Hook to prevent hydration mismatch
+function useMounted() {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  return isMounted;
+}
 
 interface IssueDetailAnimatedProps {
   issue: Issue;
@@ -37,6 +46,7 @@ export function IssueDetailHero({
   locale,
   labels,
 }: IssueDetailAnimatedProps) {
+  const isMounted = useMounted();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -110,22 +120,24 @@ export function IssueDetailHero({
             {/* Primary Action - Read Issue */}
             <StaggerItem className="flex flex-wrap items-center gap-6">
               <ReadIssueButton issueSlug={issue.slug} label={labels.readIssue} />
-              <motion.a
+              <a
                 href="#features"
                 className="font-ui text-sm font-medium transition-colors hover:opacity-70"
                 style={{ color: issue.accentColor }}
-                whileHover={{ x: 3 }}
-                transition={{ type: "spring", stiffness: 400 }}
               >
                 {locale === "pt" ? "Ver Conteúdo" : "Preview Issue"}{" "}
-                <motion.span
-                  animate={{ y: [0, 3, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="inline-block"
-                >
-                  ↓
-                </motion.span>
-              </motion.a>
+                {isMounted ? (
+                  <motion.span
+                    animate={{ y: [0, 3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="inline-block"
+                  >
+                    ↓
+                  </motion.span>
+                ) : (
+                  <span className="inline-block">↓</span>
+                )}
+              </a>
             </StaggerItem>
 
             {/* Sections - styled with accent color */}
@@ -137,26 +149,39 @@ export function IssueDetailHero({
                 {labels.sections}
               </p>
               <div className="flex flex-wrap gap-2">
-                {issue.sections.map((section, index) => (
-                  <motion.span
-                    key={section}
-                    className="px-3 py-1.5 font-ui text-sm border"
-                    style={{
-                      borderColor: `${issue.accentColor}40`,
-                      backgroundColor: `${issue.accentColor}10`,
-                    }}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + index * 0.05, duration: 0.3 }}
-                    whileHover={{
-                      scale: 1.05,
-                      backgroundColor: `${issue.accentColor}20`,
-                    }}
-                  >
-                    {section}
-                  </motion.span>
-                ))}
+                {issue.sections.map((section, index) =>
+                  isMounted ? (
+                    <motion.span
+                      key={section}
+                      className="px-3 py-1.5 font-ui text-sm border"
+                      style={{
+                        borderColor: `${issue.accentColor}40`,
+                        backgroundColor: `${issue.accentColor}10`,
+                      }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 + index * 0.05, duration: 0.3 }}
+                      whileHover={{
+                        scale: 1.05,
+                        backgroundColor: `${issue.accentColor}20`,
+                      }}
+                    >
+                      {section}
+                    </motion.span>
+                  ) : (
+                    <span
+                      key={section}
+                      className="px-3 py-1.5 font-ui text-sm border"
+                      style={{
+                        borderColor: `${issue.accentColor}40`,
+                        backgroundColor: `${issue.accentColor}10`,
+                      }}
+                    >
+                      {section}
+                    </span>
+                  )
+                )}
               </div>
             </StaggerItem>
           </StaggerContainer>
@@ -172,6 +197,8 @@ export function IssueDetailFeatures({
   locale,
   labels,
 }: IssueDetailAnimatedProps) {
+  const isMounted = useMounted();
+
   return (
     <section id="features" className="py-20 md:py-28 border-t border-border">
       <div className="container-editorial">
@@ -223,21 +250,33 @@ export function IssueDetailFeatures({
                       transition={{ duration: 0.6 }}
                     >
                       <div className="aspect-[21/9] md:aspect-[2.5/1] relative overflow-hidden">
-                        <motion.div
-                          className="absolute inset-0"
-                          whileInView={{ scale: 1 }}
-                          initial={{ scale: 1.1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1.2, ease: "easeOut" }}
-                        >
-                          <Image
-                            src={highlight.image}
-                            alt={highlightTranslation.title}
-                            fill
-                            className="object-cover"
-                            sizes="100vw"
-                          />
-                        </motion.div>
+                        {isMounted ? (
+                          <motion.div
+                            className="absolute inset-0"
+                            whileInView={{ scale: 1 }}
+                            initial={{ scale: 1.1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.2, ease: "easeOut" }}
+                          >
+                            <Image
+                              src={highlight.image}
+                              alt={highlightTranslation.title}
+                              fill
+                              className="object-cover"
+                              sizes="100vw"
+                            />
+                          </motion.div>
+                        ) : (
+                          <div className="absolute inset-0">
+                            <Image
+                              src={highlight.image}
+                              alt={highlightTranslation.title}
+                              fill
+                              className="object-cover"
+                              sizes="100vw"
+                            />
+                          </div>
+                        )}
                         {/* Gradient overlay */}
                         <div
                           className="absolute inset-0"
@@ -246,39 +285,64 @@ export function IssueDetailFeatures({
                           }}
                         />
                         {/* Page number badge */}
-                        <motion.div
-                          className="absolute top-6 left-6 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
-                          style={{
-                            backgroundColor: issue.accentColor,
-                            color: "#ffffff",
-                          }}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.4, duration: 0.5 }}
-                        >
-                          {labels.page} {highlight.page}
-                        </motion.div>
+                        {isMounted ? (
+                          <motion.div
+                            className="absolute top-6 left-6 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
+                            style={{
+                              backgroundColor: issue.accentColor,
+                              color: "#ffffff",
+                            }}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4, duration: 0.5 }}
+                          >
+                            {labels.page} {highlight.page}
+                          </motion.div>
+                        ) : (
+                          <div
+                            className="absolute top-6 left-6 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
+                            style={{
+                              backgroundColor: issue.accentColor,
+                              color: "#ffffff",
+                            }}
+                          >
+                            {labels.page} {highlight.page}
+                          </div>
+                        )}
                         {/* Title on image */}
                         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12">
-                          <motion.h3
-                            className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.3, duration: 0.6 }}
-                          >
-                            {highlightTranslation.title}
-                          </motion.h3>
-                          <motion.p
-                            className="font-accent italic text-white/80 text-lg"
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5, duration: 0.5 }}
-                          >
-                            {labels.by} {highlightTranslation.author}
-                          </motion.p>
+                          {isMounted ? (
+                            <>
+                              <motion.h3
+                                className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.3, duration: 0.6 }}
+                              >
+                                {highlightTranslation.title}
+                              </motion.h3>
+                              <motion.p
+                                className="font-accent italic text-white/80 text-lg"
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.5, duration: 0.5 }}
+                              >
+                                {labels.by} {highlightTranslation.author}
+                              </motion.p>
+                            </>
+                          ) : (
+                            <>
+                              <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4">
+                                {highlightTranslation.title}
+                              </h3>
+                              <p className="font-accent italic text-white/80 text-lg">
+                                {labels.by} {highlightTranslation.author}
+                              </p>
+                            </>
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -311,29 +375,38 @@ export function IssueDetailFeatures({
                       transition={{ duration: 0.4 }}
                     >
                       <div className="aspect-[4/3] relative overflow-hidden">
-                        <motion.div
-                          className="absolute inset-0"
-                          whileInView={{ scale: 1 }}
-                          initial={{ scale: 1.1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, ease: "easeOut" }}
-                        >
-                          <Image
-                            src={highlight.image}
-                            alt={highlightTranslation.title}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 1024px) 100vw, 60vw"
-                          />
-                        </motion.div>
+                        {isMounted ? (
+                          <motion.div
+                            className="absolute inset-0"
+                            whileInView={{ scale: 1 }}
+                            initial={{ scale: 1.1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                          >
+                            <Image
+                              src={highlight.image}
+                              alt={highlightTranslation.title}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 1024px) 100vw, 60vw"
+                            />
+                          </motion.div>
+                        ) : (
+                          <div className="absolute inset-0">
+                            <Image
+                              src={highlight.image}
+                              alt={highlightTranslation.title}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 1024px) 100vw, 60vw"
+                            />
+                          </div>
+                        )}
                       </div>
                       {/* Accent color frame on hover */}
-                      <motion.div
-                        className="absolute inset-0 border-4 pointer-events-none"
+                      <div
+                        className="absolute inset-0 border-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{ borderColor: issue.accentColor }}
-                        initial={{ opacity: 0 }}
-                        whileHover={{ opacity: 1 }}
-                        transition={{ duration: 0.3 }}
                       />
                     </motion.div>
                   </div>
@@ -347,16 +420,25 @@ export function IssueDetailFeatures({
                         style={{ backgroundColor: issue.accentColor }}
                         delay={0.2}
                       />
-                      <motion.p
-                        className="font-ui text-sm font-medium uppercase tracking-widest"
-                        style={{ color: issue.accentColor }}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.3 }}
-                      >
-                        {labels.page} {highlight.page}
-                      </motion.p>
+                      {isMounted ? (
+                        <motion.p
+                          className="font-ui text-sm font-medium uppercase tracking-widest"
+                          style={{ color: issue.accentColor }}
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.3 }}
+                        >
+                          {labels.page} {highlight.page}
+                        </motion.p>
+                      ) : (
+                        <p
+                          className="font-ui text-sm font-medium uppercase tracking-widest"
+                          style={{ color: issue.accentColor }}
+                        >
+                          {labels.page} {highlight.page}
+                        </p>
+                      )}
                     </div>
 
                     {/* Title */}
@@ -396,6 +478,8 @@ export function IssueDetailCTA({
   locale,
   labels,
 }: IssueDetailAnimatedProps) {
+  const isMounted = useMounted();
+
   return (
     <section
       className="py-16 md:py-20 relative"
@@ -450,12 +534,16 @@ export function IssueDetailCTA({
               >
                 <BookOpen className="w-5 h-5" />
                 {labels.readIssue}
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
+                {isMounted ? (
+                  <motion.span
+                    animate={{ x: [0, 4, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.span>
+                ) : (
                   <ArrowRight className="w-4 h-4" />
-                </motion.span>
+                )}
               </Link>
             </StaggerItem>
           </StaggerContainer>
@@ -468,25 +556,29 @@ export function IssueDetailCTA({
             className="hidden lg:flex justify-center items-center relative"
           >
             {/* Large issue number - animated */}
-            <motion.span
-              className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
-              style={{ letterSpacing: "-0.05em" }}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              {String(issue.issueNumber).padStart(2, "0")}
-            </motion.span>
+            {isMounted ? (
+              <motion.span
+                className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
+                style={{ letterSpacing: "-0.05em" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+              >
+                {String(issue.issueNumber).padStart(2, "0")}
+              </motion.span>
+            ) : (
+              <span
+                className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
+                style={{ letterSpacing: "-0.05em" }}
+              >
+                {String(issue.issueNumber).padStart(2, "0")}
+              </span>
+            )}
 
             {/* Floating cover with hover interaction */}
             <Floating duration={6} distance={8}>
-              <motion.div
-                className="relative -mt-24 z-10"
-                initial={{ rotate: 3 }}
-                whileHover={{ rotate: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div className="relative -mt-24 z-10 transition-transform duration-500 hover:rotate-0" style={{ transform: "rotate(3deg)" }}>
                 <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl" />
                 <div className="relative w-64 xl:w-80 shadow-2xl">
                   <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
@@ -499,7 +591,7 @@ export function IssueDetailCTA({
                     />
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </Floating>
           </ScrollReveal>
         </div>

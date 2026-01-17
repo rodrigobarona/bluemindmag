@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
@@ -29,6 +29,11 @@ export function IssueCoverTilt({
 }: IssueCoverTiltProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Mouse position values
   const mouseX = useMotionValue(0);
@@ -136,7 +141,7 @@ export function IssueCoverTilt({
               />
 
               {/* Hover overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
 
               {/* CTA on hover */}
               <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
@@ -175,10 +180,10 @@ export function IssueCoverTilt({
       </motion.div>
 
       {/* Interactive hint */}
-      {showHint && (
+      {showHint && isMounted && (
         <motion.div
           className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-ui text-xs text-muted-foreground/60 flex items-center gap-2"
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: isHovering ? 0 : 1 }}
           transition={{ duration: 0.3 }}
         >

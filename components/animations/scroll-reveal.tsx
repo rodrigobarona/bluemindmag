@@ -1,7 +1,16 @@
 "use client";
 
 import { motion, type Variants } from "motion/react";
-import { type ReactNode } from "react";
+import { type ReactNode, useState, useEffect } from "react";
+
+// Hook to prevent hydration mismatch
+function useMounted() {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  return isMounted;
+}
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -24,6 +33,8 @@ export function ScrollReveal({
   once = true,
   threshold = 0.2,
 }: ScrollRevealProps) {
+  const isMounted = useMounted();
+
   const getInitialPosition = () => {
     switch (direction) {
       case "up":
@@ -56,6 +67,10 @@ export function ScrollReveal({
     },
   };
 
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -85,6 +100,8 @@ export function StaggerContainer({
   once = true,
   threshold = 0.2,
 }: StaggerContainerProps) {
+  const isMounted = useMounted();
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -95,6 +112,10 @@ export function StaggerContainer({
       },
     },
   };
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
@@ -169,6 +190,12 @@ interface ParallaxProps {
 }
 
 export function Parallax({ children, className, speed = 0.5 }: ParallaxProps) {
+  const isMounted = useMounted();
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -196,6 +223,12 @@ export function Floating({
   duration = 6,
   distance = 15,
 }: FloatingProps) {
+  const isMounted = useMounted();
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -227,6 +260,12 @@ export function ScaleReveal({
   delay = 0,
   once = true,
 }: ScaleRevealProps) {
+  const isMounted = useMounted();
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -260,7 +299,12 @@ export function LineDraw({
   duration = 0.8,
   style,
 }: LineDrawProps) {
+  const isMounted = useMounted();
   const isHorizontal = direction === "horizontal";
+
+  if (!isMounted) {
+    return <div className={className} style={style} />;
+  }
 
   return (
     <motion.div
@@ -285,7 +329,17 @@ interface TextRevealProps {
   delay?: number;
 }
 
-export function TextReveal({ children, className, delay = 0 }: TextRevealProps) {
+export function TextReveal({
+  children,
+  className,
+  delay = 0,
+}: TextRevealProps) {
+  const isMounted = useMounted();
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
       className={className}
@@ -302,4 +356,3 @@ export function TextReveal({ children, className, delay = 0 }: TextRevealProps) 
     </motion.div>
   );
 }
-
