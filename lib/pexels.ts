@@ -8,7 +8,8 @@
  * - Blur placeholder generation for instant loading feedback
  */
 
-import { cacheLife, cacheTag } from 'next/cache';
+// Note: 'use cache' directive removed due to SSR bailout issues in Next.js 16
+// Caching is now handled at fetch level with next.revalidate
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.PEXELS_API_URL;
 const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
@@ -465,20 +466,17 @@ async function fetchFromPexels(
 // ============================================
 
 /**
- * Get cached image pool for a category using Next.js 16 "use cache"
- * Pool is cached for 24h (revalidates daily), works in Vercel serverless
- * Wrapped in try-catch to prevent SSR bailout on errors
+ * Get image pool for a category
+ * Uses fetch-level caching via next.revalidate instead of 'use cache' directive
+ * to avoid SSR bailout issues in Next.js 16
  */
 async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
-  'use cache';
-  cacheLife('days'); // Revalidate after 1 day, expire after 1 week
-  cacheTag('pexels', `pexels-pool-${category}`);
-  
   try {
     const queries = CATEGORY_QUERIES[category];
     const query = queries[queryIndex % queries.length];
     
     // Fetch 15 images to build a pool for random selection
+    // Caching is handled at the fetch level in fetchFromPexels
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
@@ -535,20 +533,17 @@ export async function getImageForSlot(slot: string): Promise<ImageResult | null>
 }
 
 /**
- * Get cached image pool for a section using Next.js 16 "use cache"
- * Pool is cached for 24h (revalidates daily), works in Vercel serverless
- * Wrapped in try-catch to prevent SSR bailout on errors
+ * Get image pool for a section
+ * Uses fetch-level caching via next.revalidate instead of 'use cache' directive
+ * to avoid SSR bailout issues in Next.js 16
  */
 async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
-  'use cache';
-  cacheLife('days'); // Revalidate after 1 day, expire after 1 week
-  cacheTag('pexels', `pexels-section-pool-${section}`);
-  
   try {
     const queries = SECTION_QUERIES[section] || HERO_QUERIES;
     const query = queries[queryIndex % queries.length];
     
     // Fetch 15 images to build a pool for random selection
+    // Caching is handled at the fetch level in fetchFromPexels
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
