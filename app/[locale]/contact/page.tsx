@@ -13,10 +13,12 @@ import {
 import { SiteLayout } from "@/components/site-layout";
 import { ContactForm } from "@/components/contact-form";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { JsonLd } from "@/components/json-ld";
 import { socialLinks, siteConfig } from "@/content/data/navigation";
 import { getTeamMemberById } from "@/content/data/team";
 import { getImageForSlot } from "@/lib/pexels";
 import { generateBlurPlaceholder } from "@/lib/image-utils";
+import { generateContactPageSchema } from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -26,9 +28,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Contact" });
 
+  const title = t("title");
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: "website",
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === "pt" ? "Vamos Conversar" : "Let's Talk")}`],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Blue Mind Magazine`,
+      description,
+    },
   };
 }
 
@@ -56,8 +72,14 @@ export default async function ContactPage({ params }: Props) {
     }
   };
 
+  // Generate JSON-LD schema for SEO
+  const contactSchema = generateContactPageSchema(locale);
+
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={contactSchema} />
+
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
         {/* Background image */}

@@ -168,3 +168,205 @@ export function generateBreadcrumbSchema(
   };
 }
 
+/**
+ * Generate CollectionPage schema for issues archive
+ */
+export function generateCollectionPageSchema(
+  locale: string,
+  title: string,
+  description: string
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description: description,
+    url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/issues`,
+    inLanguage: locale,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    about: {
+      '@type': 'Periodical',
+      name: siteConfig.name,
+    },
+  };
+}
+
+/**
+ * Generate ItemList schema for listing issues
+ */
+export function generateIssueListSchema(
+  issues: Issue[],
+  translations: Record<string, IssueTranslation>,
+  locale: string
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: `${siteConfig.name} Issues`,
+    numberOfItems: issues.length,
+    itemListElement: issues.map((issue, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'PublicationIssue',
+        issueNumber: issue.issueNumber.toString(),
+        name: translations[issue.id]?.title || `Issue ${issue.issueNumber}`,
+        url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}`,
+        image: `${siteConfig.url}${issue.cover}`,
+        datePublished: issue.date,
+      },
+    })),
+  };
+}
+
+/**
+ * Generate WebPage schema for generic pages
+ */
+export function generateWebPageSchema(
+  locale: string,
+  name: string,
+  description: string,
+  path: string
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: name,
+    description: description,
+    url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}${path}`,
+    inLanguage: locale,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  };
+}
+
+/**
+ * Generate NewsletterPage schema with subscription action
+ */
+export function generateNewsletterPageSchema(
+  locale: string,
+  title: string,
+  description: string
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description: description,
+    url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/newsletter`,
+    inLanguage: locale,
+    mainEntity: {
+      '@type': 'Service',
+      name: `${siteConfig.name} Newsletter`,
+      description: 'Free newsletter about surf science and ocean health',
+      provider: {
+        '@type': 'Organization',
+        name: siteConfig.name,
+        url: siteConfig.url,
+      },
+      serviceType: 'Newsletter subscription',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+      },
+    },
+    potentialAction: {
+      '@type': 'SubscribeAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/newsletter`,
+        actionPlatform: [
+          'https://schema.org/DesktopWebPlatform',
+          'https://schema.org/MobileWebPlatform',
+        ],
+      },
+    },
+  };
+}
+
+/**
+ * Generate ReadAction schema for flipbook reader
+ */
+export function generateReadIssueSchema(
+  issue: Issue,
+  translation: IssueTranslation,
+  locale: string
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: `Read ${translation.title}`,
+    description: `Read Blue Mind Magazine Issue ${issue.issueNumber} in our digital flipbook reader.`,
+    url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/read/${issue.slug}`,
+    inLanguage: locale,
+    mainEntity: {
+      '@type': 'PublicationIssue',
+      issueNumber: issue.issueNumber.toString(),
+      name: translation.title,
+      description: translation.description,
+      datePublished: issue.date,
+      image: `${siteConfig.url}${issue.cover}`,
+      isPartOf: {
+        '@type': 'Periodical',
+        name: siteConfig.name,
+      },
+    },
+    potentialAction: {
+      '@type': 'ReadAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/read/${issue.slug}`,
+      },
+    },
+  };
+}
+
+/**
+ * Generate FAQ schema for legal pages
+ */
+export function generateLegalPageSchema(
+  locale: string,
+  pageType: 'privacy' | 'cookies' | 'terms',
+  title: string,
+  lastUpdated: string = '2026-01-01'
+) {
+  const descriptions = {
+    privacy: 'Privacy policy explaining how Blue Mind Magazine collects, uses, and protects your personal information.',
+    cookies: 'Cookie policy explaining how Blue Mind Magazine uses cookies and similar technologies.',
+    terms: 'Terms of use for Blue Mind Magazine website and services.',
+  };
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description: descriptions[pageType],
+    url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/${pageType}`,
+    inLanguage: locale,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    about: {
+      '@type': 'Thing',
+      name: pageType === 'privacy' ? 'Privacy Policy' : pageType === 'cookies' ? 'Cookie Policy' : 'Terms of Service',
+    },
+    lastReviewed: lastUpdated,
+  };
+}
+

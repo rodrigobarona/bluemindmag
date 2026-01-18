@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { JsonLd } from '@/components/json-ld';
+import { generateLegalPageSchema } from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -10,9 +12,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Legal.cookies' });
 
+  const title = t('title');
+  const description = locale === 'pt'
+    ? 'Política de cookies da Blue Mind Magazine'
+    : 'Cookie policy for Blue Mind Magazine';
+
   return {
-    title: t('title'),
-    description: 'Cookie policy for Blue Mind Magazine',
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: 'website',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -23,8 +39,13 @@ export default async function CookiesPage({ params }: Props) {
   const t = await getTranslations('Legal.cookies');
   const lastUpdated = 'January 2026';
 
+  // Generate JSON-LD schema for SEO
+  const cookiesSchema = generateLegalPageSchema(locale, 'cookies', t('title'), '2026-01-01');
+
   return (
     <article className="py-20 md:py-32">
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={cookiesSchema} />
       <div className="container-narrow">
         {/* Header */}
         <header className="mb-12">

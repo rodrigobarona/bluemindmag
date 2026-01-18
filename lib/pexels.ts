@@ -75,16 +75,16 @@ const PORTUGAL_QUERIES = [
   'volcanic rocks ocean coast',
 ];
 
-// Newsletter/CTA backgrounds - Very dark, moody (storm, night, abyss)
+// Newsletter/CTA backgrounds - Blue ocean vibes (turquoise, vibrant, calming)
 const CTA_QUERIES = [
-  'storm clouds ocean dark dramatic',
-  'lightning ocean night',
-  'deep ocean abyss dark',
-  'underwater cave dark mysterious',
-  'moonlight ocean reflection night',
-  'thunderstorm sea dramatic waves',
-  'dark water texture abstract',
-  'black sand beach moody',
+  'turquoise ocean waves aerial',
+  'crystal clear water tropical beach',
+  'deep blue ocean calm surface',
+  'ocean waves texture blue gradient',
+  'caribbean sea turquoise water',
+  'maldives ocean blue lagoon',
+  'azure ocean horizon peaceful',
+  'teal ocean water texture',
 ];
 
 // Contact page - Warm, golden sunset tones (very warm, inviting)

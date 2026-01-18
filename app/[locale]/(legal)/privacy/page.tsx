@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { JsonLd } from '@/components/json-ld';
+import { generateLegalPageSchema } from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -10,9 +12,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Legal.privacy' });
 
+  const title = t('title');
+  const description = locale === 'pt'
+    ? 'Política de privacidade da Blue Mind Magazine'
+    : 'Privacy policy for Blue Mind Magazine';
+
   return {
-    title: t('title'),
-    description: 'Privacy policy for Blue Mind Magazine',
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: 'website',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -23,8 +39,13 @@ export default async function PrivacyPage({ params }: Props) {
   const t = await getTranslations('Legal.privacy');
   const lastUpdated = 'January 2026';
 
+  // Generate JSON-LD schema for SEO
+  const privacySchema = generateLegalPageSchema(locale, 'privacy', t('title'), '2026-01-01');
+
   return (
     <article className="py-20 md:py-32">
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={privacySchema} />
       <div className="container-narrow">
         {/* Header */}
         <header className="mb-12">

@@ -10,11 +10,17 @@ import {
   IssueDetailCTA,
   MoreIssuesAnimated,
 } from "@/components/issue-detail-animated";
+import { JsonLd } from "@/components/json-ld";
 import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
 import { getSponsorsByIds } from "@/content/data/sponsors";
 import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
 import { issueTranslations as ptIssueTranslations } from "@/content/i18n/pt/issues";
 import { getCtaImage } from "@/lib/pexels";
+import { siteConfig } from "@/content/data/navigation";
+import {
+  generateIssueSchema,
+  generateBreadcrumbSchema,
+} from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -41,6 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const issueTranslations =
     locale === "pt" ? ptIssueTranslations : enIssueTranslations;
   const translation = issueTranslations[issue.id];
+  const baseUrl = siteConfig.url;
 
   return {
     title: `${translation.title} - ${translation.subtitle}`,
@@ -50,6 +57,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: translation.description,
       type: "article",
       publishedTime: issue.date,
+      images: [
+        {
+          url: `${baseUrl}/api/og?title=${encodeURIComponent(translation.title)}&subtitle=${encodeURIComponent(translation.subtitle)}&type=issue`,
+          width: 1200,
+          height: 630,
+          alt: translation.title,
+        },
+        {
+          url: `${baseUrl}${issue.cover}`,
+          width: 800,
+          height: 1200,
+          alt: `${translation.title} Cover`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${translation.title} | Blue Mind Magazine`,
+      description: translation.description,
+      images: [`${baseUrl}/api/og?title=${encodeURIComponent(translation.title)}&subtitle=${encodeURIComponent(translation.subtitle)}&type=issue`],
     },
   };
 }
@@ -88,8 +115,24 @@ export default async function IssueDetailPage({ params }: Props) {
     current: t("current"),
   };
 
+  // Generate JSON-LD schemas for SEO
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: "Home", url: `${baseUrl}${locale === "pt" ? "/pt" : ""}` },
+    { name: locale === "pt" ? "Edições" : "Issues", url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues` },
+    { name: translation.title, url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues/${issue.slug}` },
+  ];
+
+  const schemas = [
+    generateIssueSchema(issue, translation, locale),
+    generateBreadcrumbSchema(breadcrumbItems),
+  ];
+
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={schemas} />
+
       {/* Animated Hero Section */}
       <IssueDetailHero
         issue={issue}

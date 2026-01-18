@@ -77,12 +77,25 @@ export function IssueDetailHero({
 
       <div className="container-editorial relative">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          {/* Cover Image with 3D Tilt Effect - Animated entrance */}
+          {/* Cover Image with 3D Tilt Effect */}
+          {/* Mobile: no animation, always visible */}
+          <div className="relative flex justify-center pt-8 pb-12 lg:hidden">
+            <IssueCoverTilt
+              cover={issue.cover}
+              title={translation.title}
+              slug={issue.slug}
+              accentColor={issue.accentColor}
+              isCurrent={issue.isCurrent}
+              currentLabel={labels.current}
+            />
+          </div>
+          {/* Desktop: animated entrance with sticky positioning */}
           <ScrollReveal
             direction="left"
-            distance={60}
+            distance={40}
             duration={0.8}
-            className="relative flex justify-center lg:sticky lg:top-24 pt-8 pb-12"
+            threshold={0.05}
+            className="relative hidden lg:flex justify-center lg:sticky lg:top-24 pt-8 pb-12"
           >
             <IssueCoverTilt
               cover={issue.cover}
@@ -551,9 +564,10 @@ export function IssueDetailCTA({
           {/* Issue cover - animated entrance with floating effect */}
           <ScrollReveal
             direction="right"
-            distance={80}
+            distance={40}
             duration={0.9}
-            className="hidden lg:flex justify-center items-center relative"
+            threshold={0.1}
+            className="hidden md:flex justify-center items-center relative"
           >
             {/* Large issue number - animated */}
             {isMounted ? (

@@ -13,9 +13,11 @@ import {
 import { SiteLayout } from "@/components/site-layout";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { JsonLd } from "@/components/json-ld";
 import { getImageForSlot } from "@/lib/pexels";
 import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { getTeamMemberById } from "@/content/data/team";
+import { generateNewsletterPageSchema } from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -25,9 +27,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Newsletter" });
 
+  const title = t("title");
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: "website",
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === "pt" ? "Newsletter Gratuita" : "Free Newsletter")}`],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Blue Mind Magazine`,
+      description,
+    },
   };
 }
 
@@ -43,6 +59,13 @@ export default async function NewsletterPage({ params }: Props) {
     getImageForSlot('newsletter:newsletter'),
     getImageForSlot('newsletter:hero'),
   ]);
+
+  // Generate JSON-LD schema for SEO
+  const title = locale === "pt" ? "Mantém-te Ligado" : "Stay in the Loop";
+  const description = locale === "pt"
+    ? "Onde surf e ciência se encontram, entregue na tua caixa de entrada."
+    : "Where surf & science meet, delivered to your inbox.";
+  const newsletterSchema = generateNewsletterPageSchema(locale, title, description);
 
   const features = [
     {
@@ -81,6 +104,9 @@ export default async function NewsletterPage({ params }: Props) {
 
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={newsletterSchema} />
+
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden">
         {/* Background image */}

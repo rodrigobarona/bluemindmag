@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "motion/react";
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode, useState, useEffect, useRef } from "react";
 
 // Hook to prevent hydration mismatch
 function useMounted() {
@@ -31,9 +31,38 @@ export function ScrollReveal({
   direction = "up",
   distance = 40,
   once = true,
-  threshold = 0.2,
+  threshold = 0.1,
 }: ScrollRevealProps) {
   const isMounted = useMounted();
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  // Check if element is in viewport on mount and trigger animation
+  useEffect(() => {
+    if (!isMounted || !elementRef.current) return;
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const rect = elementRef.current?.getBoundingClientRect();
+      if (rect) {
+        // If element is at least partially in viewport, animate immediately
+        const inViewport = rect.top < window.innerHeight && rect.bottom > 0;
+        if (inViewport) {
+          setShouldAnimate(true);
+        }
+      }
+    }, 50);
+
+    // Fallback: always show after 500ms if animation hasn't triggered
+    const fallbackTimer = setTimeout(() => {
+      setShouldAnimate(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(fallbackTimer);
+    };
+  }, [isMounted]);
 
   const getInitialPosition = () => {
     switch (direction) {
@@ -67,16 +96,20 @@ export function ScrollReveal({
     },
   };
 
+  // SSR fallback - return visible content
   if (!isMounted) {
     return <div className={className}>{children}</div>;
   }
 
   return (
     <motion.div
+      ref={elementRef}
       className={className}
       initial="hidden"
+      animate={shouldAnimate ? "visible" : undefined}
       whileInView="visible"
-      viewport={{ once, amount: threshold }}
+      onAnimationComplete={() => setShouldAnimate(true)}
+      viewport={{ once, amount: threshold, margin: "100px 0px -50px 0px" }}
       variants={variants}
     >
       {children}

@@ -6,11 +6,16 @@ import { IssueCard } from '@/components/issue-card';
 import { IssueShowcase } from '@/components/issue-showcase';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { StaggerList } from '@/components/stagger-list';
+import { JsonLd } from '@/components/json-ld';
 import { getAllIssues } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
+import {
+  generateCollectionPageSchema,
+  generateIssueListSchema,
+} from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -20,9 +25,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Issues' });
 
+  const title = t('title');
+  const description = t('description');
+
   return {
-    title: t('title'),
-    description: t('description'),
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: 'website',
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === 'pt' ? 'O Arquivo' : 'The Archive')}`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | Blue Mind Magazine`,
+      description,
+    },
   };
 }
 
@@ -47,8 +66,22 @@ export default async function IssuesPage({ params }: Props) {
   const currentIssue = issues.find((issue) => issue.isCurrent);
   const pastIssues = issues.filter((issue) => !issue.isCurrent);
 
+  // Generate JSON-LD schemas for SEO
+  const title = locale === 'pt' ? 'Edições' : 'Issues';
+  const description = locale === 'pt' 
+    ? 'Explore a nossa coleção de edições onde surf e ciência se encontram.'
+    : 'Explore our collection of issues where surf and science meet.';
+  
+  const schemas = [
+    generateCollectionPageSchema(locale, title, description),
+    generateIssueListSchema(issues, issueTranslations, locale),
+  ];
+
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={schemas} />
+
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
         {/* Background image */}

@@ -9,10 +9,16 @@ import { StaggerList } from '@/components/stagger-list';
 import { PullQuoteImage } from '@/components/pull-quote';
 import { IssueCardFeatured, IssueCardMini } from '@/components/issue-card';
 import { HorizontalScroll, HorizontalScrollItem } from '@/components/horizontal-scroll';
+import { JsonLd } from '@/components/json-ld';
 import { getImageForSlot, getSectionImages } from '@/lib/pexels';
 import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
 import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
 import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import {
+  generateWebSiteSchema,
+  generateOrganizationSchema,
+  generatePeriodicalSchema,
+} from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -45,8 +51,18 @@ export default async function HomePage({ params }: Props) {
   // Get past issues (excluding current)
   const pastIssues = issues.filter((issue) => !issue.isCurrent);
 
+  // Generate JSON-LD schemas for SEO
+  const schemas = [
+    generateWebSiteSchema(),
+    generateOrganizationSchema(),
+    generatePeriodicalSchema(),
+  ];
+
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={schemas} />
+
       {/* Section 1: Immersive Hero - Full viewport */}
       <HeroImmersive
         heroImage={heroImage}

@@ -11,10 +11,16 @@ import { ArrowRight } from 'lucide-react';
 import { SiteLayout } from '@/components/site-layout';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { PullQuoteImage } from '@/components/pull-quote';
+import { JsonLd } from '@/components/json-ld';
 import { getTeamMemberById } from '@/content/data/team';
 import { getSponsorById } from '@/content/data/sponsors';
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
+import {
+  generateAboutPageSchema,
+  generatePersonSchema,
+  generateOrganizationSchema,
+} from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -24,9 +30,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'About' });
 
+  const title = t('title');
+  const description = t('magazine.description');
+
   return {
-    title: t('title'),
-    description: t('magazine.description'),
+    title,
+    description,
+    openGraph: {
+      title: `${title} | Blue Mind Magazine`,
+      description,
+      type: 'website',
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === 'pt' ? 'A Nossa História' : 'Our Story')}`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | Blue Mind Magazine`,
+      description,
+    },
   };
 }
 
@@ -47,8 +67,18 @@ export default async function AboutPage({ params }: Props) {
     getImageForSlot('about:newsletter'),
   ]);
 
+  // Generate JSON-LD schemas for SEO
+  const schemas = [
+    generateAboutPageSchema(locale),
+    generatePersonSchema(),
+    generateOrganizationSchema(),
+  ];
+
   return (
     <SiteLayout newsletterImage={newsletterImage}>
+      {/* JSON-LD Structured Data */}
+      <JsonLd data={schemas} />
+
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">
         {/* Background image */}
