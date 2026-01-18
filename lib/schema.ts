@@ -4,13 +4,26 @@ import { siteConfig } from '@/content/data/navigation';
 // ============================================
 // JSON-LD SCHEMA.ORG STRUCTURED DATA GENERATORS
 // ============================================
+// Note: Nested schemas must NOT include @context.
+// Only top-level schemas (used directly in <script type="application/ld+json">)
+// should have @context. Internal helpers are prefixed with underscore.
 
 /**
- * Generate Organization schema
+ * Publisher organization (Surfisio) - for embedding only
  */
-export function generateOrganizationSchema() {
+function _publisherOrganization() {
   return {
-    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Surfisio',
+    url: 'https://surfisio.pt',
+  };
+}
+
+/**
+ * Blue Mind Magazine organization - for embedding only (no @context)
+ */
+function _organizationData() {
+  return {
     '@type': 'Organization',
     name: siteConfig.name,
     url: siteConfig.url,
@@ -20,11 +33,31 @@ export function generateOrganizationSchema() {
       'https://www.instagram.com/bluemindmag/',
       'https://www.linkedin.com/company/bluemindmag/',
     ],
-    publisher: {
-      '@type': 'Organization',
-      name: 'Surfisio',
-      url: 'https://surfisio.pt',
-    },
+    publisher: _publisherOrganization(),
+  };
+}
+
+/**
+ * Periodical data - for embedding only (no @context)
+ */
+function _periodicalData() {
+  return {
+    '@type': 'Periodical',
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: 'Surf Science: Where surf and science meet. From surfers, to surfers.',
+    publisher: _publisherOrganization(),
+    about: ['Surfing', 'Sports Science', 'Ocean Health', 'Surf Medicine'],
+  };
+}
+
+/**
+ * Generate Organization schema (standalone with @context)
+ */
+export function generateOrganizationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    ..._organizationData(),
   };
 }
 
@@ -39,7 +72,7 @@ export function generateWebSiteSchema() {
     url: siteConfig.url,
     description: 'Surf Science: Where surf and science meet.',
     inLanguage: ['en', 'pt'],
-    publisher: generateOrganizationSchema(),
+    publisher: _organizationData(),
     potentialAction: {
       '@type': 'SearchAction',
       target: `${siteConfig.url}/issues?q={search_term_string}`,
@@ -49,21 +82,12 @@ export function generateWebSiteSchema() {
 }
 
 /**
- * Generate Periodical schema for the magazine
+ * Generate Periodical schema for the magazine (standalone with @context)
  */
 export function generatePeriodicalSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Periodical',
-    name: siteConfig.name,
-    url: siteConfig.url,
-    description: 'Surf Science: Where surf and science meet. From surfers, to surfers.',
-    publisher: {
-      '@type': 'Organization',
-      name: 'Surfisio',
-      url: 'https://surfisio.pt',
-    },
-    about: ['Surfing', 'Sports Science', 'Ocean Health', 'Surf Medicine'],
+    ..._periodicalData(),
   };
 }
 
@@ -85,7 +109,7 @@ export function generateIssueSchema(
     url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}`,
     image: `${siteConfig.url}${issue.cover}`,
     inLanguage: locale,
-    isPartOf: generatePeriodicalSchema(),
+    isPartOf: _periodicalData(),
     about: [
       'Surfing',
       'Sports Science',
@@ -127,7 +151,7 @@ export function generateAboutPageSchema(locale: string) {
     url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/about`,
     description:
       'Learn about Blue Mind Magazine, our mission, and the team behind the publication.',
-    mainEntity: generateOrganizationSchema(),
+    mainEntity: _organizationData(),
   };
 }
 
