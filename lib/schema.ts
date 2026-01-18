@@ -227,6 +227,7 @@ export function generateCollectionPageSchema(
 
 /**
  * Generate ItemList schema for listing issues
+ * Note: ListItem uses either 'url' OR 'item', not both (mutually exclusive)
  */
 export function generateIssueListSchema(
   issues: Issue[],
@@ -243,7 +244,6 @@ export function generateIssueListSchema(
       return {
         '@type': 'ListItem',
         position: index + 1,
-        url: itemUrl,
         item: {
           '@type': 'PublicationIssue',
           '@id': itemUrl,
