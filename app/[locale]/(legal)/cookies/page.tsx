@@ -2,7 +2,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { JsonLd } from '@/components/json-ld';
-import { generateLegalPageSchema } from '@/lib/schema';
+import { generateLegalPageSchema, generateBreadcrumbSchema } from '@/lib/schema';
+import { siteConfig } from '@/content/data/navigation';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -40,12 +41,21 @@ export default async function CookiesPage({ params }: Props) {
   const lastUpdated = 'January 2026';
 
   // Generate JSON-LD schema for SEO
-  const cookiesSchema = generateLegalPageSchema(locale, 'cookies', t('title'), '2026-01-01');
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: t('title'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/cookies` },
+  ];
+
+  const schemas = [
+    generateLegalPageSchema(locale, 'cookies', t('title'), '2026-01-01'),
+    generateBreadcrumbSchema(breadcrumbItems),
+  ];
 
   return (
     <article className="py-20 md:py-32">
       {/* JSON-LD Structured Data */}
-      <JsonLd data={cookiesSchema} />
+      <JsonLd data={schemas} />
       <div className="container-narrow">
         {/* Header */}
         <header className="mb-12">

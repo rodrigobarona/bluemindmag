@@ -21,6 +21,7 @@ function _publisherOrganization() {
 
 /**
  * Blue Mind Magazine organization - for embedding only (no @context)
+ * Note: Organizations don't have publishers - removed to fix validation
  */
 function _organizationData() {
   return {
@@ -33,7 +34,7 @@ function _organizationData() {
       'https://www.instagram.com/bluemindmag/',
       'https://www.linkedin.com/company/bluemindmag/',
     ],
-    publisher: _publisherOrganization(),
+    // Note: parentOrganization could be used if needed, but publisher is for creative works only
   };
 }
 
@@ -53,11 +54,13 @@ function _periodicalData() {
 
 /**
  * Generate Organization schema (standalone with @context)
+ * Includes parentOrganization for Surfisio relationship
  */
 export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     ..._organizationData(),
+    parentOrganization: _publisherOrganization(),
   };
 }
 
@@ -75,7 +78,10 @@ export function generateWebSiteSchema() {
     publisher: _organizationData(),
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${siteConfig.url}/issues?q={search_term_string}`,
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteConfig.url}/issues?q={search_term_string}`,
+      },
       'query-input': 'required name=search_term_string',
     },
   };
@@ -232,18 +238,23 @@ export function generateIssueListSchema(
     '@type': 'ItemList',
     name: `${siteConfig.name} Issues`,
     numberOfItems: issues.length,
-    itemListElement: issues.map((issue, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'PublicationIssue',
-        issueNumber: issue.issueNumber.toString(),
-        name: translations[issue.id]?.title || `Issue ${issue.issueNumber}`,
-        url: `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}`,
-        image: `${siteConfig.url}${issue.cover}`,
-        datePublished: issue.date,
-      },
-    })),
+    itemListElement: issues.map((issue, index) => {
+      const itemUrl = `${siteConfig.url}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}`;
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        url: itemUrl,
+        item: {
+          '@type': 'PublicationIssue',
+          '@id': itemUrl,
+          issueNumber: issue.issueNumber.toString(),
+          name: translations[issue.id]?.title || `Issue ${issue.issueNumber}`,
+          url: itemUrl,
+          image: `${siteConfig.url}${issue.cover}`,
+          datePublished: issue.date,
+        },
+      };
+    }),
   };
 }
 

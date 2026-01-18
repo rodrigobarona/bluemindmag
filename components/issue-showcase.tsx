@@ -103,7 +103,7 @@ export function IssueShowcase({
           {/* Cover with 3D Tilt Effect */}
           <motion.div
             ref={containerRef}
-            className="relative mx-auto lg:mx-0 max-w-sm lg:max-w-md"
+            className="relative w-full mx-auto lg:mx-0 max-w-sm lg:max-w-md"
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={handleMouseLeave}
@@ -134,16 +134,16 @@ export function IssueShowcase({
 
             {/* Main cover container */}
             <motion.div
-              className="relative"
+              className="relative w-full"
               style={{
                 rotateX,
                 rotateY,
                 transformStyle: "preserve-3d",
               }}
             >
-              <Link href={`/read/${issue.slug}`} className="group block">
+              <Link href={`/read/${issue.slug}`} className="group block w-full">
                 {/* The actual cover */}
-                <div className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
+                <div className="relative w-full overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
                   <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
                     <Image
                       src={issue.cover}

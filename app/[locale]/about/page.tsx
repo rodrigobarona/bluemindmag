@@ -20,7 +20,9 @@ import {
   generateAboutPageSchema,
   generatePersonSchema,
   generateOrganizationSchema,
+  generateBreadcrumbSchema,
 } from '@/lib/schema';
+import { siteConfig } from '@/content/data/navigation';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -68,10 +70,17 @@ export default async function AboutPage({ params }: Props) {
   ]);
 
   // Generate JSON-LD schemas for SEO
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: locale === 'pt' ? 'Sobre' : 'About', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/about` },
+  ];
+
   const schemas = [
     generateAboutPageSchema(locale),
     generatePersonSchema(),
     generateOrganizationSchema(),
+    generateBreadcrumbSchema(breadcrumbItems),
   ];
 
   return (

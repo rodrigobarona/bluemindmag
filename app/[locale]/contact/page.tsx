@@ -18,7 +18,7 @@ import { socialLinks, siteConfig } from "@/content/data/navigation";
 import { getTeamMemberById } from "@/content/data/team";
 import { getImageForSlot } from "@/lib/pexels";
 import { generateBlurPlaceholder } from "@/lib/image-utils";
-import { generateContactPageSchema } from "@/lib/schema";
+import { generateContactPageSchema, generateBreadcrumbSchema } from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -73,12 +73,21 @@ export default async function ContactPage({ params }: Props) {
   };
 
   // Generate JSON-LD schema for SEO
-  const contactSchema = generateContactPageSchema(locale);
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: locale === 'pt' ? 'Contacto' : 'Contact', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/contact` },
+  ];
+  
+  const schemas = [
+    generateContactPageSchema(locale),
+    generateBreadcrumbSchema(breadcrumbItems),
+  ];
 
   return (
     <SiteLayout newsletterImage={newsletterImage}>
       {/* JSON-LD Structured Data */}
-      <JsonLd data={contactSchema} />
+      <JsonLd data={schemas} />
 
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden">

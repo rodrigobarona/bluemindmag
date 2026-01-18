@@ -17,7 +17,8 @@ import { JsonLd } from "@/components/json-ld";
 import { getImageForSlot } from "@/lib/pexels";
 import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { getTeamMemberById } from "@/content/data/team";
-import { generateNewsletterPageSchema } from "@/lib/schema";
+import { generateNewsletterPageSchema, generateBreadcrumbSchema } from "@/lib/schema";
+import { siteConfig } from "@/content/data/navigation";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -65,7 +66,17 @@ export default async function NewsletterPage({ params }: Props) {
   const description = locale === "pt"
     ? "Onde surf e ciência se encontram, entregue na tua caixa de entrada."
     : "Where surf & science meet, delivered to your inbox.";
-  const newsletterSchema = generateNewsletterPageSchema(locale, title, description);
+  
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: 'Newsletter', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/newsletter` },
+  ];
+
+  const schemas = [
+    generateNewsletterPageSchema(locale, title, description),
+    generateBreadcrumbSchema(breadcrumbItems),
+  ];
 
   const features = [
     {
@@ -105,7 +116,7 @@ export default async function NewsletterPage({ params }: Props) {
   return (
     <SiteLayout newsletterImage={newsletterImage}>
       {/* JSON-LD Structured Data */}
-      <JsonLd data={newsletterSchema} />
+      <JsonLd data={schemas} />
 
       {/* Hero Section - With background image */}
       <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 overflow-hidden">

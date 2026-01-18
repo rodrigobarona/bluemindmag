@@ -146,17 +146,17 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
 
       {/* Main cover container with 3D transform */}
       <motion.div
-        className="relative"
+        className="relative w-full"
         style={{
           rotateX,
           rotateY,
           transformStyle: 'preserve-3d',
         }}
       >
-        <Link href={`/read/${issue.slug}`} className="group block">
-          <article className="relative">
+        <Link href={`/read/${issue.slug}`} className="group block w-full">
+          <article className="relative w-full">
             {/* Cover container with floating shadow */}
-            <div className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
+            <div className="relative w-full overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
               {/* Cover Image */}
               <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
                 <Image

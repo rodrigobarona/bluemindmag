@@ -15,7 +15,9 @@ import { generateBlurPlaceholder } from '@/lib/image-utils';
 import {
   generateCollectionPageSchema,
   generateIssueListSchema,
+  generateBreadcrumbSchema,
 } from '@/lib/schema';
+import { siteConfig } from '@/content/data/navigation';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -72,9 +74,16 @@ export default async function IssuesPage({ params }: Props) {
     ? 'Explore a nossa coleção de edições onde surf e ciência se encontram.'
     : 'Explore our collection of issues where surf and science meet.';
   
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: title, url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues` },
+  ];
+
   const schemas = [
     generateCollectionPageSchema(locale, title, description),
     generateIssueListSchema(issues, issueTranslations, locale),
+    generateBreadcrumbSchema(breadcrumbItems),
   ];
 
   return (

@@ -8,7 +8,7 @@ import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issu
 import { IconX } from '@tabler/icons-react';
 import { JsonLd } from '@/components/json-ld';
 import { siteConfig } from '@/content/data/navigation';
-import { generateReadIssueSchema } from '@/lib/schema';
+import { generateReadIssueSchema, generateBreadcrumbSchema } from '@/lib/schema';
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -90,12 +90,23 @@ export default async function ReadIssuePage({ params }: Props) {
   const flipbookUrl = issue.flipbook[locale as 'en' | 'pt'] || issue.flipbook.en;
 
   // Generate JSON-LD schema for SEO
-  const readSchema = generateReadIssueSchema(issue, translation, locale);
+  const baseUrl = siteConfig.url;
+  const breadcrumbItems = [
+    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: locale === 'pt' ? 'Edições' : 'Issues', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues` },
+    { name: translation.title, url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}` },
+    { name: locale === 'pt' ? 'Ler' : 'Read', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/read/${issue.slug}` },
+  ];
+
+  const schemas = [
+    generateReadIssueSchema(issue, translation, locale),
+    generateBreadcrumbSchema(breadcrumbItems),
+  ];
 
   return (
     <div className="flipbook-reader">
       {/* JSON-LD Structured Data */}
-      <JsonLd data={readSchema} />
+      <JsonLd data={schemas} />
 
       {/* Header with close button and issue indicator */}
       <header className="flipbook-reader__header">
