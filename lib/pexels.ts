@@ -33,46 +33,46 @@ const HERO_QUERIES = [
   'pacific ocean sunset',
 ];
 
-// Quote/atmosphere backgrounds - Soft, calm (NOT ocean-focused, use nature variety)
+// Quote/atmosphere backgrounds - Soft, calm ocean imagery
 const QUOTE_QUERIES = [
-  'morning mist lake calm',
-  'fog forest peaceful',
-  'soft clouds sky pastel',
-  'zen garden peaceful',
-  'mountain mist sunrise',
-  'lavender field calm',
-  'meadow morning dew',
-  'still water reflection trees',
+  'calm ocean sunrise peaceful',
+  'ocean horizon minimalist',
+  'beach misty morning',
+  'soft waves sandy beach',
+  'ocean blue gradient calm',
+  'sea foam beach peaceful',
+  'coastline fog morning',
+  'ocean sunset soft colors',
 ];
 
-// Science/underwater - Colorful marine life (vibrant, not dark)
+// Science/underwater - Ocean blue and marine life (vibrant, not dark)
 const SCIENCE_QUERIES = [
-  'coral reef fish colorful',
-  'jellyfish glowing dark water',
-  'sea turtle swimming underwater',
-  'dolphins underwater blue',
-  'manta ray underwater graceful',
-  'kelp forest underwater sunlight',
+  'underwater ocean blue light rays',
+  'sea turtle swimming clear water',
+  'dolphins underwater ocean',
+  'coral reef tropical fish',
+  'ocean sunlight underwater',
+  'jellyfish blue ocean',
 ];
 
-// Surfer lifestyle
+// Surfer lifestyle - specific surfing imagery
 const SURFER_QUERIES = [
-  'surfer beach lifestyle',
-  'surfboard on beach',
-  'surfer walking beach',
-  'surf culture',
-  'beach lifestyle sunset',
-  'surfer dawn patrol',
+  'surfer carrying surfboard beach',
+  'surfboard sand beach sunset',
+  'surfer walking ocean',
+  'surfer silhouette waves',
+  'surfing lifestyle beach',
+  'surfer paddling out ocean',
 ];
 
-// Portugal/Atlantic specific - Rocky cliffs and dramatic landscapes (emphasize rocks)
+// Portugal/Atlantic specific - Rocky cliffs and dramatic coastlines
 const PORTUGAL_QUERIES = [
-  'dramatic cliff edge aerial view',
-  'rocky coast birds eye view',
-  'sea arch rock formation',
-  'lighthouse cliff stormy sky',
-  'basalt columns coastline',
-  'volcanic rocks ocean coast',
+  'dramatic ocean cliffs aerial',
+  'rocky coastline waves crashing',
+  'sea cliff sunset dramatic',
+  'atlantic ocean coast rugged',
+  'coastal rocks waves',
+  'cliffs ocean view dramatic',
 ];
 
 // Newsletter/CTA backgrounds - Blue ocean vibes (turquoise, vibrant, calming)
@@ -127,7 +127,7 @@ const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = 
   
   // About page - Each section uses completely different visual style
   'about:hero': { category: 'portugal', index: 0 },      // Dramatic cliffs
-  'about:quote': { category: 'science', index: 0 },      // Underwater/marine (distinct from hero)
+  'about:quote': { category: 'quote', index: 1 },        // Calm ocean atmosphere
   'about:surfer': { category: 'surfer', index: 0 },
   'about:newsletter': { category: 'cta', index: 1 },
   
@@ -149,13 +149,13 @@ const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = 
 
 // Section-specific queries for issue highlights
 const SECTION_QUERIES: Record<string, string[]> = {
-  'editors-note': ['ocean horizon peaceful', 'calm sea morning'],
+  'editors-note': ['ocean horizon peaceful', 'calm sea sunrise'],
   'meet-the-scientist': SCIENCE_QUERIES,
-  'students-peak': ['surfer learning', 'beginner surfing'],
-  'surf-science-explained': ['ocean waves physics', 'wave formation'],
+  'students-peak': ['surfing lesson beach', 'beginner surfer waves'],
+  'surf-science-explained': ['ocean wave breaking', 'wave barrel surfing'],
   'meet-the-surfer': SURFER_QUERIES,
-  'tips-tricks': ['surfboard beach', 'surf equipment'],
-  'community-projects': ['beach cleanup', 'surf community'],
+  'tips-tricks': ['surfboard wax beach', 'surf gear equipment'],
+  'community-projects': ['beach cleanup volunteers', 'ocean conservation'],
 };
 
 // ============================================
