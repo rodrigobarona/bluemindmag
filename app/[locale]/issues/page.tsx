@@ -55,10 +55,18 @@ export default async function IssuesPage({ params }: Props) {
   const issues = getAllIssues();
   
   // Fetch Pexels images using slot-based system (no repeats across pages)
-  const [newsletterImage, heroImage] = await Promise.all([
-    getImageForSlot('issues:newsletter'),
-    getImageForSlot('issues:hero'),
-  ]);
+  // Wrapped in try-catch to prevent SSR bailout if Pexels API fails
+  let newsletterImage = null;
+  let heroImage = null;
+  try {
+    [newsletterImage, heroImage] = await Promise.all([
+      getImageForSlot('issues:newsletter'),
+      getImageForSlot('issues:hero'),
+    ]);
+  } catch {
+    // Silently fail - pages will render without hero images
+    console.error('[Issues] Failed to fetch Pexels images');
+  }
 
   // Get translations based on locale
   const issueTranslations =
