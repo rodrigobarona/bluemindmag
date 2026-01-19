@@ -108,14 +108,23 @@ export default async function ReadIssuePage({ params }: Props) {
 
       {/* Header with close button and issue indicator */}
       <header className="flipbook-reader__header">
-        <div className="font-ui text-white/60 text-sm">
-          Issue {issue.issueNumber}
+        {/* Brand and issue info - from MDX content */}
+        <div className="flex items-center gap-4">
+          <Link href="/" className="font-headline text-xl text-white tracking-wider hover:text-white/80 transition-colors">
+            BLUE MIND
+          </Link>
+          <span className="text-white/30 hidden sm:inline">|</span>
+          <div className="hidden sm:block font-ui text-white/70 text-sm">
+            {translation.title} · {translation.subtitle}
+          </div>
         </div>
 
-        <div className="text-white/40 text-xs font-ui hidden sm:block">
+        {/* ESC hint - center */}
+        <div className="text-white/40 text-xs font-ui hidden md:block absolute left-1/2 -translate-x-1/2">
           Press <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">ESC</kbd> to close
         </div>
 
+        {/* Close button */}
         <Link
           href={`/issues/${slug}`}
           className="p-2 bg-white/10 hover:bg-white/20 text-white transition-colors rounded"
