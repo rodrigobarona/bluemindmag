@@ -6,6 +6,7 @@ import { getIssueBySlug, getAllIssues, getIssueTranslations } from '@/content/da
 import type { Locale } from '@/content/types/content';
 import { IconX } from '@tabler/icons-react';
 import { JsonLd } from '@/components/json-ld';
+import { FlipbookFrame } from '@/components/flipbook-frame';
 import { siteConfig } from '@/content/data/navigation';
 import { generateReadIssueSchema, generateBreadcrumbSchema } from '@/lib/schema';
 
@@ -132,14 +133,13 @@ export default async function ReadIssuePage({ params }: Props) {
         </Link>
       </header>
 
-      {/* Flipbook content area */}
+      {/* Flipbook content area - wrapped with consent Frame */}
       <div className="flipbook-reader__content">
-        <iframe
+        <FlipbookFrame
           src={flipbookUrl}
-          title={`Blue Mind Magazine Issue ${issue.issueNumber}`}
-          className="w-full h-full"
-          allow="clipboard-write; autoplay; fullscreen"
-          allowFullScreen
+          title={translation.title}
+          issueNumber={issue.issueNumber}
+          locale={locale}
         />
       </div>
     </div>

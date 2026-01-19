@@ -1,6 +1,6 @@
 'use client';
 
-import { useConsentManager } from '@c15t/nextjs';
+import { useConsentManager } from '@c15t/react';
 import { cn } from '@/lib/utils';
 
 interface ManageCookiesButtonProps {
