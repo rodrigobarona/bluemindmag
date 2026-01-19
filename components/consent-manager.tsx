@@ -99,49 +99,56 @@ const brandTheme = {
   'banner.root': 'fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 bg-card border-t border-border shadow-lg',
   'banner.card': 'max-w-4xl mx-auto',
   'banner.header': 'mb-4',
-  'banner.header.title': 'font-headline text-xl md:text-2xl text-foreground tracking-wide uppercase',
-  'banner.header.description': 'font-body text-sm md:text-base text-muted-foreground leading-relaxed mt-2',
+  'banner.title': 'font-headline text-xl md:text-2xl text-foreground tracking-wide uppercase',
+  'banner.description': 'font-body text-sm md:text-base text-muted-foreground leading-relaxed mt-2',
   'banner.footer': 'flex flex-col sm:flex-row gap-3 mt-4',
-  'banner.footer.reject-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300',
-  'banner.footer.customize-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300',
-  'banner.footer.accept-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300',
+  'banner.footer.reject-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300 cursor-pointer',
+  'banner.footer.customize-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300 cursor-pointer',
+  'banner.footer.accept-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300 cursor-pointer',
   
   // ============================================
   // CONSENT DIALOG - Full preferences modal
   // ============================================
-  'dialog.root': 'fixed inset-0 z-50 flex items-center justify-center p-4',
+  'dialog': 'font-sans',
+  'dialog.root': 'fixed inset-0 z-[100] flex items-center justify-center p-4',
   'dialog.overlay': 'fixed inset-0 bg-black/60 backdrop-blur-sm',
-  'dialog.card': 'relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-card border border-border shadow-2xl',
-  'dialog.header': 'sticky top-0 bg-card border-b border-border p-6 z-10',
-  'dialog.header.title': 'font-headline text-2xl md:text-3xl text-foreground tracking-wide uppercase',
-  'dialog.header.description': 'font-body text-sm md:text-base text-muted-foreground leading-relaxed mt-2',
-  'dialog.header.close-button': 'absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground transition-colors',
-  'dialog.content': 'p-6',
-  'dialog.footer': 'sticky bottom-0 bg-card border-t border-border p-6 flex flex-col sm:flex-row gap-3',
-  'dialog.footer.reject-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300',
-  'dialog.footer.accept-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300',
-  'dialog.footer.save-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300',
+  'dialog.header': 'border-b border-border p-6',
+  'dialog.title': 'font-headline text-2xl md:text-3xl text-foreground tracking-wide uppercase',
+  'dialog.description': 'font-body text-sm md:text-base text-muted-foreground leading-relaxed mt-2',
+  'dialog.content': 'p-6 max-h-[60vh] overflow-y-auto bg-card',
+  'dialog.footer': 'border-t border-border p-6 flex flex-col sm:flex-row gap-3 bg-card',
   
   // ============================================
-  // WIDGET - Consent type accordion items
+  // WIDGET - Inside dialog content
   // ============================================
-  'widget.root': 'space-y-3',
+  'widget.root': 'space-y-4',
+  'widget.branding': 'hidden',
+  'widget.footer': 'flex flex-col sm:flex-row gap-3 pt-4',
+  'widget.footer.sub-group': 'flex gap-3',
+  'widget.footer.reject-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300 cursor-pointer',
+  'widget.footer.accept-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300 cursor-pointer',
+  'widget.footer.customize-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider border border-foreground/20 text-foreground bg-transparent hover:bg-foreground/5 transition-all duration-300 cursor-pointer',
+  'widget.footer.save-button': 'px-6 py-3 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300 cursor-pointer',
+  
+  // ============================================
+  // ACCORDION - Consent type items
+  // ============================================
   'widget.accordion': 'space-y-2',
-  'widget.accordion.item': 'border border-border bg-background/50',
-  'widget.accordion.trigger': 'w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors',
-  'widget.accordion.trigger-inner': 'flex items-center gap-3',
-  'widget.accordion.content': 'px-4 pb-4 pt-0',
-  'widget.accordion.title': 'font-ui text-sm font-semibold uppercase tracking-wider text-foreground',
-  'widget.accordion.description': 'font-body text-sm text-muted-foreground leading-relaxed',
+  'widget.accordion.item': 'border border-border bg-background/50 overflow-hidden',
+  'widget.accordion.trigger': 'w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors cursor-pointer',
+  'widget.accordion.trigger-inner': 'flex items-center gap-3 text-left',
+  'widget.accordion.icon': 'text-muted-foreground',
+  'widget.accordion.arrow.open': 'rotate-180 transition-transform',
+  'widget.accordion.arrow.close': 'transition-transform',
+  'widget.accordion.content': 'overflow-hidden',
+  'widget.accordion.content-inner': 'px-4 pb-4 font-body text-sm text-muted-foreground leading-relaxed',
   
   // ============================================
   // SWITCH - Toggle controls
   // ============================================
-  'switch.root': 'relative inline-flex h-6 w-11 items-center rounded-none border border-border transition-colors',
-  'switch.thumb': 'absolute left-0.5 h-5 w-5 bg-muted-foreground transition-transform',
-  'switch.thumb.checked': 'translate-x-5 bg-brand',
-  'switch.root.checked': 'bg-brand/20 border-brand',
-  'switch.root.disabled': 'opacity-50 cursor-not-allowed',
+  'widget.switch': 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center border border-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+  'widget.switch.track': 'absolute inset-0 transition-colors data-[state=checked]:bg-brand/20 data-[state=checked]:border-brand',
+  'widget.switch.thumb': 'pointer-events-none block h-5 w-5 bg-muted-foreground shadow-lg transition-transform data-[state=checked]:translate-x-5 data-[state=checked]:bg-brand data-[state=unchecked]:translate-x-0',
 };
 
 interface ConsentManagerProps {
@@ -155,8 +162,8 @@ function ConsentManagerContent({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
-      <CookieBanner />
-      <ConsentManagerDialog open={isPrivacyDialogOpen} />
+      <CookieBanner noStyle theme={brandTheme} />
+      <ConsentManagerDialog noStyle theme={brandTheme} open={isPrivacyDialogOpen} />
     </>
   );
 }
