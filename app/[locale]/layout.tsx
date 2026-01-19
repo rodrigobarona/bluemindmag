@@ -11,7 +11,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { CookieConsentProvider } from "@/components/cookie-consent-provider";
+import ConsentManager from "@/components/consent-manager";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/next"
 import "../globals.css";
@@ -131,7 +131,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <ThemeProvider>
           <NextIntlClientProvider>
             <Suspense fallback={null}>
-              <CookieConsentProvider>{children}</CookieConsentProvider>
+              <ConsentManager locale={locale}>{children}</ConsentManager>
             </Suspense>
           </NextIntlClientProvider>
         </ThemeProvider>
