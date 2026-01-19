@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
-import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
+import { getAllIssues, getCurrentIssue, getIssueTranslations } from '@/content/data/issues';
 import { siteConfig } from '@/content/data/navigation';
 
 export async function GET() {
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
   const baseUrl = siteConfig.url;
+
+  // Get translations from MDX (single source of truth)
+  const enIssueTranslations = getIssueTranslations('en');
 
   // Generate issue list with descriptions
   const issuesList = issues
@@ -144,4 +146,3 @@ ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
     },
   });
 }
-

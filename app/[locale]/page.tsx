@@ -11,9 +11,8 @@ import { IssueCardFeatured, IssueCardMini } from '@/components/issue-card';
 import { HorizontalScroll, HorizontalScrollItem } from '@/components/horizontal-scroll';
 import { JsonLd } from '@/components/json-ld';
 import { getImageForSlot, getSectionImages } from '@/lib/pexels';
-import { getAllIssues, getCurrentIssue } from '@/content/data/issues';
-import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
-import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import { getAllIssues, getCurrentIssue, getIssueTranslations } from '@/content/data/issues';
+import type { Locale } from '@/content/types/content';
 import {
   generateWebSiteSchema,
   generateOrganizationSchema,
@@ -44,9 +43,8 @@ export default async function HomePage({ params }: Props) {
   const highlightIds = currentIssue?.highlights.map(h => h.id) || [];
   const sectionImages = await getSectionImages(highlightIds);
 
-  // Get translations based on locale
-  const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
 
   // Get past issues (excluding current)
   const pastIssues = issues.filter((issue) => !issue.isCurrent);

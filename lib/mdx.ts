@@ -1,44 +1,74 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import type { 
+  Issue, 
+  IssueHighlight, 
+  IssueTranslation, 
+  IssueHighlightTranslation,
+  Locale 
+} from '@/content/types/content';
 
 // ============================================
 // MDX CONTENT UTILITIES
+// Single source of truth for issue content
 // ============================================
 
 const ISSUES_DIR = path.join(process.cwd(), 'content/issues');
 
-export interface IssueFrontmatter {
+// ============================================
+// MDX FRONTMATTER TYPES
+// ============================================
+
+interface MDXHighlight {
+  id: string;
+  page: number;
+  image: string;
+  title: string;
+  author: string;
+  excerpt: string;
+}
+
+interface MDXIssueFrontmatter {
+  // Shared metadata
   id: string;
   slug: string;
   issueNumber: number;
-  title: string;
-  subtitle: string;
   date: string;
   accentColor: string;
   cover: string;
-  flipbookUrl: string;
-  isCurrent: boolean;
+  isCurrent?: boolean;
   sponsors: string[];
-}
-
-export interface IssueContent {
-  frontmatter: IssueFrontmatter;
-  content: string;
-  sections: IssueSection[];
-}
-
-export interface IssueSection {
-  id: string;
+  // Locale-specific
   title: string;
-  author?: string;
+  subtitle: string;
+  description: string;
+  flipbookUrl: string;
+  sections: string[];
+  highlights: MDXHighlight[];
+}
+
+// ============================================
+// PARSED ISSUE DATA (combines data + translations)
+// ============================================
+
+export interface ParsedIssue {
+  // Issue data (for Issue type)
+  issue: Issue;
+  // Translation data (for IssueTranslation type)
+  translation: IssueTranslation;
+  // Raw MDX content
   content: string;
 }
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
 
 /**
- * Get all issue slugs for a locale
+ * Get MDX files for a locale
  */
-export function getIssueSlugs(locale: string): string[] {
+function getMDXFiles(locale: string): string[] {
   const localeDir = path.join(ISSUES_DIR, locale);
   
   if (!fs.existsSync(localeDir)) {
@@ -46,16 +76,13 @@ export function getIssueSlugs(locale: string): string[] {
   }
   
   return fs.readdirSync(localeDir)
-    .filter(file => file.endsWith('.mdx'))
-    .map(file => file.replace('.mdx', ''));
+    .filter(file => file.endsWith('.mdx'));
 }
 
 /**
- * Get issue content by slug and locale
+ * Parse MDX frontmatter and content
  */
-export function getIssueBySlug(slug: string, locale: string): IssueContent | null {
-  const filePath = path.join(ISSUES_DIR, locale, `${slug}.mdx`);
-  
+function parseMDXFile(filePath: string): { frontmatter: MDXIssueFrontmatter; content: string } | null {
   if (!fs.existsSync(filePath)) {
     return null;
   }
@@ -63,28 +90,136 @@ export function getIssueBySlug(slug: string, locale: string): IssueContent | nul
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(fileContents);
   
-  // Parse sections from content
-  const sections = parseSections(content);
+  return {
+    frontmatter: data as MDXIssueFrontmatter,
+    content,
+  };
+}
+
+/**
+ * Convert MDX frontmatter to Issue data type
+ */
+function toIssueData(frontmatter: MDXIssueFrontmatter, enFrontmatter?: MDXIssueFrontmatter): Issue {
+  // For flipbook, we need both locale URLs
+  // If we have the English version, use it for 'en', otherwise duplicate
+  const flipbook = {
+    en: enFrontmatter?.flipbookUrl || frontmatter.flipbookUrl,
+    pt: frontmatter.flipbookUrl,
+  };
+  
+  // Extract highlight data (without translations)
+  const highlights: IssueHighlight[] = frontmatter.highlights.map(h => ({
+    id: h.id,
+    page: h.page,
+    image: h.image,
+  }));
+  
+  // For sections, use English as default (shared across locales for Issue type)
+  const sections = enFrontmatter?.sections || frontmatter.sections;
   
   return {
-    frontmatter: data as IssueFrontmatter,
-    content,
+    id: frontmatter.id,
+    slug: frontmatter.slug,
+    issueNumber: frontmatter.issueNumber,
+    date: frontmatter.date,
+    accentColor: frontmatter.accentColor,
+    cover: frontmatter.cover,
+    flipbook,
+    sponsors: frontmatter.sponsors,
+    highlights,
     sections,
+    isCurrent: frontmatter.isCurrent,
+  };
+}
+
+/**
+ * Convert MDX frontmatter to IssueTranslation type
+ */
+function toIssueTranslation(frontmatter: MDXIssueFrontmatter): IssueTranslation {
+  // Convert highlights to translation format
+  const highlights: Record<string, IssueHighlightTranslation> = {};
+  
+  for (const h of frontmatter.highlights) {
+    highlights[h.id] = {
+      title: h.title,
+      author: h.author,
+      excerpt: h.excerpt,
+    };
+  }
+  
+  return {
+    title: frontmatter.title,
+    subtitle: frontmatter.subtitle,
+    description: frontmatter.description,
+    highlights,
+  };
+}
+
+// ============================================
+// PUBLIC API - READ FROM MDX
+// ============================================
+
+/**
+ * Get all issue slugs (from English files as source of truth)
+ */
+export function getIssueSlugs(): string[] {
+  const files = getMDXFiles('en');
+  return files.map(file => file.replace('.mdx', ''));
+}
+
+/**
+ * Get parsed issue by slug for a specific locale
+ */
+export function getIssueBySlugMDX(slug: string, locale: Locale = 'en'): ParsedIssue | null {
+  // Try locale-specific file first
+  let filePath = path.join(ISSUES_DIR, locale, `${slug}.mdx`);
+  
+  // For Portuguese, the filename might be different (e.g., issue-0-janeiro-2026.mdx)
+  if (!fs.existsSync(filePath) && locale === 'pt') {
+    // Try to find a matching file by reading all PT files and matching by slug in frontmatter
+    const ptFiles = getMDXFiles('pt');
+    for (const file of ptFiles) {
+      const ptPath = path.join(ISSUES_DIR, 'pt', file);
+      const parsed = parseMDXFile(ptPath);
+      if (parsed && parsed.frontmatter.slug === slug) {
+        filePath = ptPath;
+        break;
+      }
+    }
+  }
+  
+  const parsed = parseMDXFile(filePath);
+  if (!parsed) {
+    return null;
+  }
+  
+  // Get English version for flipbook URLs (if this is PT)
+  let enFrontmatter: MDXIssueFrontmatter | undefined;
+  if (locale === 'pt') {
+    const enPath = path.join(ISSUES_DIR, 'en', `${slug}.mdx`);
+    const enParsed = parseMDXFile(enPath);
+    enFrontmatter = enParsed?.frontmatter;
+  }
+  
+  return {
+    issue: toIssueData(parsed.frontmatter, enFrontmatter),
+    translation: toIssueTranslation(parsed.frontmatter),
+    content: parsed.content,
   };
 }
 
 /**
  * Get all issues for a locale, sorted by date (newest first)
  */
-export function getAllIssues(locale: string): IssueContent[] {
-  const slugs = getIssueSlugs(locale);
+export function getAllIssuesMDX(locale: Locale = 'en'): ParsedIssue[] {
+  const slugs = getIssueSlugs();
   
   const issues = slugs
-    .map(slug => getIssueBySlug(slug, locale))
-    .filter((issue): issue is IssueContent => issue !== null)
+    .map(slug => getIssueBySlugMDX(slug, locale))
+    .filter((issue): issue is ParsedIssue => issue !== null)
     .sort((a, b) => {
-      const dateA = new Date(a.frontmatter.date).getTime();
-      const dateB = new Date(b.frontmatter.date).getTime();
+      const dateA = new Date(a.issue.date).getTime();
+      const dateB = new Date(b.issue.date).getTime();
       return dateB - dateA;
     });
   
@@ -94,94 +229,64 @@ export function getAllIssues(locale: string): IssueContent[] {
 /**
  * Get the current/latest issue for a locale
  */
-export function getCurrentIssue(locale: string): IssueContent | null {
-  const issues = getAllIssues(locale);
-  return issues.find(issue => issue.frontmatter.isCurrent) || issues[0] || null;
+export function getCurrentIssueMDX(locale: Locale = 'en'): ParsedIssue | null {
+  const issues = getAllIssuesMDX(locale);
+  return issues.find(i => i.issue.isCurrent) || issues[0] || null;
+}
+
+// ============================================
+// COMPATIBILITY LAYER
+// These functions return data in the OLD format for backward compatibility
+// ============================================
+
+/**
+ * Get issue by slug (returns Issue type only, for backward compatibility)
+ */
+export function getIssueBySlug(slug: string): Issue | undefined {
+  const parsed = getIssueBySlugMDX(slug, 'en');
+  return parsed?.issue;
 }
 
 /**
- * Parse MDX content into sections based on ## headings
+ * Get all issues (returns Issue[] only, for backward compatibility)
  */
-function parseSections(content: string): IssueSection[] {
-  const sections: IssueSection[] = [];
+export function getAllIssues(): Issue[] {
+  return getAllIssuesMDX('en').map(p => p.issue);
+}
+
+/**
+ * Get current issue (returns Issue only, for backward compatibility)
+ */
+export function getCurrentIssue(): Issue | undefined {
+  return getCurrentIssueMDX('en')?.issue;
+}
+
+/**
+ * Get issue by ID
+ */
+export function getIssueById(id: string): Issue | undefined {
+  const issues = getAllIssues();
+  return issues.find(issue => issue.id === id);
+}
+
+/**
+ * Get issue count
+ */
+export function getIssueCount(): number {
+  return getIssueSlugs().length;
+}
+
+/**
+ * Get issue translations for a locale
+ * Returns Record<issueId, IssueTranslation> for backward compatibility
+ */
+export function getIssueTranslations(locale: Locale = 'en'): Record<string, IssueTranslation> {
+  const issues = getAllIssuesMDX(locale);
+  const translations: Record<string, IssueTranslation> = {};
   
-  // Split by ## headings
-  const parts = content.split(/^## /gm);
-  
-  for (let i = 1; i < parts.length; i++) {
-    const part = parts[i];
-    const lines = part.trim().split('\n');
-    
-    if (lines.length === 0) continue;
-    
-    const title = lines[0].trim();
-    const id = slugify(title);
-    
-    // Find author line (starts with **By)
-    let author: string | undefined;
-    let contentLines = lines.slice(1);
-    
-    const authorLineIndex = contentLines.findIndex(line => 
-      line.trim().startsWith('**By ') || line.trim().startsWith('**Por ')
-    );
-    
-    if (authorLineIndex !== -1) {
-      const authorLine = contentLines[authorLineIndex];
-      author = authorLine.replace(/^\*\*(?:By|Por)\s+/, '').replace(/\*\*$/, '').trim();
-      contentLines = [
-        ...contentLines.slice(0, authorLineIndex),
-        ...contentLines.slice(authorLineIndex + 1)
-      ];
-    }
-    
-    const sectionContent = contentLines.join('\n').trim();
-    
-    // Skip "In This Issue" section (it's a list, not a real section)
-    if (title.toLowerCase().includes('in this issue') || 
-        title.toLowerCase().includes('nesta edição')) {
-      continue;
-    }
-    
-    sections.push({
-      id,
-      title,
-      author,
-      content: sectionContent,
-    });
+  for (const parsed of issues) {
+    translations[parsed.issue.id] = parsed.translation;
   }
   
-  return sections;
+  return translations;
 }
-
-/**
- * Convert string to URL-friendly slug
- */
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-/**
- * Get issue description (first paragraph after frontmatter)
- */
-export function getIssueDescription(content: string): string {
-  const lines = content.trim().split('\n');
-  const descriptionLines: string[] = [];
-  
-  for (const line of lines) {
-    // Stop at first heading or horizontal rule
-    if (line.startsWith('#') || line.startsWith('---')) {
-      break;
-    }
-    if (line.trim()) {
-      descriptionLines.push(line.trim());
-    }
-  }
-  
-  return descriptionLines.join(' ');
-}
-

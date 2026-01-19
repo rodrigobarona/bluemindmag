@@ -7,9 +7,8 @@ import { IssueShowcase } from '@/components/issue-showcase';
 import { ScrollReveal } from '@/components/scroll-reveal';
 import { StaggerList } from '@/components/stagger-list';
 import { JsonLd } from '@/components/json-ld';
-import { getAllIssues } from '@/content/data/issues';
-import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
-import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import { getAllIssues, getIssueTranslations } from '@/content/data/issues';
+import type { Locale } from '@/content/types/content';
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 import {
@@ -68,9 +67,8 @@ export default async function IssuesPage({ params }: Props) {
     console.error('[Issues] Failed to fetch Pexels images');
   }
 
-  // Get translations based on locale
-  const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
 
   // Separate current issue from past issues
   const currentIssue = issues.find((issue) => issue.isCurrent);

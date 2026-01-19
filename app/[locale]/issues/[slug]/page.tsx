@@ -11,10 +11,9 @@ import {
   MoreIssuesAnimated,
 } from "@/components/issue-detail-animated";
 import { JsonLd } from "@/components/json-ld";
-import { getIssueBySlug, getAllIssues } from "@/content/data/issues";
+import { getIssueBySlug, getAllIssues, getIssueTranslations } from "@/content/data/issues";
 import { getSponsorsByIds } from "@/content/data/sponsors";
-import { issueTranslations as enIssueTranslations } from "@/content/i18n/en/issues";
-import { issueTranslations as ptIssueTranslations } from "@/content/i18n/pt/issues";
+import type { Locale } from "@/content/types/content";
 import { getCtaImage } from "@/lib/pexels";
 import { siteConfig } from "@/content/data/navigation";
 import {
@@ -44,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const issueTranslations =
-    locale === "pt" ? ptIssueTranslations : enIssueTranslations;
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
   const baseUrl = siteConfig.url;
 
@@ -93,8 +92,9 @@ export default async function IssueDetailPage({ params }: Props) {
 
   const t = await getTranslations("Issues");
   const tCommon = await getTranslations("Common");
-  const issueTranslations =
-    locale === "pt" ? ptIssueTranslations : enIssueTranslations;
+  
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
   const sponsors = getSponsorsByIds(issue.sponsors);
 

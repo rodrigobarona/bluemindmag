@@ -2,9 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import { getIssueBySlug, getAllIssues } from '@/content/data/issues';
-import { issueTranslations as enIssueTranslations } from '@/content/i18n/en/issues';
-import { issueTranslations as ptIssueTranslations } from '@/content/i18n/pt/issues';
+import { getIssueBySlug, getAllIssues, getIssueTranslations } from '@/content/data/issues';
+import type { Locale } from '@/content/types/content';
 import { IconX } from '@tabler/icons-react';
 import { JsonLd } from '@/components/json-ld';
 import { siteConfig } from '@/content/data/navigation';
@@ -30,8 +29,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Issue Not Found' };
   }
 
-  const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
   const baseUrl = siteConfig.url;
 
@@ -81,9 +80,8 @@ export default async function ReadIssuePage({ params }: Props) {
     notFound();
   }
 
-  // Get translations for the issue
-  const issueTranslations =
-    locale === 'pt' ? ptIssueTranslations : enIssueTranslations;
+  // Get translations from MDX (single source of truth)
+  const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
 
   // Get the flipbook URL for the current locale
@@ -140,4 +138,3 @@ export default async function ReadIssuePage({ params }: Props) {
     </div>
   );
 }
-
