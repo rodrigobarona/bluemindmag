@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+
 import { Suspense } from "react";
 import {
   League_Gothic,
@@ -12,6 +13,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { CookieConsentProvider } from "@/components/cookie-consent-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from "@vercel/analytics/next"
 import "../globals.css";
 
 // Display/Headlines - Condensed bold for masthead and titles
@@ -133,6 +135,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             </Suspense>
           </NextIntlClientProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
