@@ -6,7 +6,8 @@ import type {
   IssueHighlight, 
   IssueTranslation, 
   IssueHighlightTranslation,
-  Locale 
+  Locale,
+  Sponsor 
 } from '@/content/types/content';
 
 // ============================================
@@ -15,6 +16,7 @@ import type {
 // ============================================
 
 const ISSUES_DIR = path.join(process.cwd(), 'content/issues');
+const SPONSORS_FILE = path.join(process.cwd(), 'content/sponsors/sponsors.mdx');
 
 // ============================================
 // MDX FRONTMATTER TYPES
@@ -38,7 +40,6 @@ interface MDXIssueFrontmatter {
   accentColor: string;
   cover: string;
   isCurrent?: boolean;
-  sponsors: string[];
   // Locale-specific
   title: string;
   subtitle: string;
@@ -131,7 +132,6 @@ function toIssueData(
     accentColor: frontmatter.accentColor,
     cover: frontmatter.cover,
     flipbook,
-    sponsors: frontmatter.sponsors,
     highlights,
     sections,
     isCurrent: frontmatter.isCurrent,
@@ -315,4 +315,73 @@ export function getIssueTranslations(locale: Locale = 'en'): Record<string, Issu
   }
   
   return translations;
+}
+
+// ============================================
+// SPONSORS MDX UTILITIES
+// Single source of truth for sponsor content
+// ============================================
+
+interface MDXSponsorFrontmatter {
+  sponsors: Sponsor[];
+}
+
+// Cache for sponsors data
+let sponsorsCache: Sponsor[] | null = null;
+
+/**
+ * Parse sponsors MDX file
+ */
+function parseSponsorsFile(): Sponsor[] {
+  // Return cached data if available
+  if (sponsorsCache !== null) {
+    return sponsorsCache;
+  }
+  
+  if (!fs.existsSync(SPONSORS_FILE)) {
+    console.warn('Sponsors MDX file not found:', SPONSORS_FILE);
+    return [];
+  }
+  
+  const fileContents = fs.readFileSync(SPONSORS_FILE, 'utf8');
+  const { data } = matter(fileContents);
+  const frontmatter = data as MDXSponsorFrontmatter;
+  
+  // Cache the result
+  sponsorsCache = frontmatter.sponsors || [];
+  
+  return sponsorsCache;
+}
+
+/**
+ * Get all sponsors from MDX
+ */
+export function getAllSponsorsMDX(): Sponsor[] {
+  return parseSponsorsFile();
+}
+
+/**
+ * Get sponsor by ID from MDX
+ */
+export function getSponsorByIdMDX(id: string): Sponsor | undefined {
+  const sponsors = parseSponsorsFile();
+  return sponsors.find(sponsor => sponsor.id === id);
+}
+
+/**
+ * Get sponsors by IDs from MDX
+ */
+export function getSponsorsByIdsMDX(ids: string[]): Sponsor[] {
+  const sponsors = parseSponsorsFile();
+  return ids
+    .map(id => sponsors.find(sponsor => sponsor.id === id))
+    .filter((sponsor): sponsor is Sponsor => sponsor !== undefined);
+}
+
+/**
+ * Get sponsors by tier from MDX
+ */
+export function getSponsorsByTierMDX(tier: Sponsor['tier']): Sponsor[] {
+  const sponsors = parseSponsorsFile();
+  return sponsors.filter(sponsor => sponsor.tier === tier);
 }

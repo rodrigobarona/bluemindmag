@@ -25,7 +25,6 @@ export interface Issue {
     en: string;
     pt: string;
   };
-  sponsors: string[];
   highlights: IssueHighlight[];
   sections: string[];
   isCurrent?: boolean;
@@ -53,6 +52,7 @@ export interface Sponsor {
   id: string;
   name: string;
   logo: string;
+  alt: string;
   url: string;
   tier: 'main' | 'supporting' | 'community';
 }
