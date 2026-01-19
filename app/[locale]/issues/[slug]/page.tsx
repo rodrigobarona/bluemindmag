@@ -3,7 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { SiteLayout } from "@/components/site-layout";
 import { IssueCard } from "@/components/issue-card";
-import { SponsorsCarousel } from "@/components/sponsors-carousel";
 import {
   IssueDetailHero,
   IssueDetailFeatures,
@@ -12,7 +11,6 @@ import {
 } from "@/components/issue-detail-animated";
 import { JsonLd } from "@/components/json-ld";
 import { getIssueBySlug, getAllIssues, getIssueTranslations } from "@/content/data/issues";
-import { getSponsorsByIds } from "@/content/data/sponsors";
 import type { Locale } from "@/content/types/content";
 import { getCtaImage } from "@/lib/pexels";
 import { siteConfig } from "@/content/data/navigation";
@@ -97,7 +95,6 @@ export default async function IssueDetailPage({ params }: Props) {
   // Get translations from MDX (single source of truth)
   const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
-  const sponsors = getSponsorsByIds(issue.sponsors);
 
   // Get other issues for "More Issues" section
   const allIssues = getAllIssues();
@@ -162,18 +159,6 @@ export default async function IssueDetailPage({ params }: Props) {
         locale={locale}
         labels={labels}
       />
-
-      {/* Sponsors Section - Carousel */}
-      {sponsors.length > 0 && (
-        <section className="py-16 md:py-20 border-t border-border overflow-hidden">
-          <div className="container-editorial">
-            <SponsorsCarousel
-              sponsors={sponsors}
-              title={t("supportedBy")}
-            />
-          </div>
-        </section>
-      )}
 
       {/* Animated More Issues Section */}
       {otherIssues.length > 0 && (

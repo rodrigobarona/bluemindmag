@@ -4,7 +4,6 @@ import {
   ConsentManagerDialog,
   ConsentManagerProvider,
   CookieBanner,
-  useConsentManager,
 } from '@c15t/react';
 import type { ReactNode } from 'react';
 
@@ -157,13 +156,11 @@ interface ConsentManagerProps {
 }
 
 function ConsentManagerContent({ children }: { children: ReactNode }) {
-  const { isPrivacyDialogOpen } = useConsentManager();
-  
   return (
     <>
       {children}
       <CookieBanner noStyle theme={brandTheme} />
-      <ConsentManagerDialog noStyle theme={brandTheme} open={isPrivacyDialogOpen} />
+      <ConsentManagerDialog noStyle theme={brandTheme} />
     </>
   );
 }
