@@ -1,8 +1,11 @@
+'use client';
+
 import {
   ConsentManagerDialog,
   ConsentManagerProvider,
   CookieBanner,
-} from '@c15t/nextjs';
+  useConsentManager,
+} from '@c15t/react';
 import type { ReactNode } from 'react';
 
 // Translations for English and Portuguese
@@ -146,6 +149,18 @@ interface ConsentManagerProps {
   locale?: string;
 }
 
+function ConsentManagerContent({ children }: { children: ReactNode }) {
+  const { isPrivacyDialogOpen } = useConsentManager();
+  
+  return (
+    <>
+      {children}
+      <CookieBanner />
+      <ConsentManagerDialog open={isPrivacyDialogOpen} />
+    </>
+  );
+}
+
 export default function ConsentManager({ children, locale = 'en' }: ConsentManagerProps) {
   // Determine the language to use (fallback to 'en' if not supported)
   const lang = locale === 'pt' ? 'pt' : 'en';
@@ -156,7 +171,9 @@ export default function ConsentManager({ children, locale = 'en' }: ConsentManag
         mode: 'c15t',
         backendURL: '/api/c15t',
         consentCategories: ['necessary', 'functionality', 'measurement', 'marketing'],
-        // ignoreGeoLocation: true, // Uncomment for development testing
+        // Always show banner regardless of geolocation (for testing/development)
+        // Set to false in production to only show to GDPR regions
+        ignoreGeoLocation: true,
         translations: {
           defaultLanguage: lang,
           translations: {
@@ -165,9 +182,7 @@ export default function ConsentManager({ children, locale = 'en' }: ConsentManag
         },
       }}
     >
-      <CookieBanner noStyle theme={brandTheme} />
-      <ConsentManagerDialog noStyle theme={brandTheme} />
-      {children}
+      <ConsentManagerContent>{children}</ConsentManagerContent>
     </ConsentManagerProvider>
   );
 }
