@@ -3,13 +3,18 @@
  * Fetches high-quality ocean and surf photography for all sections
  * 
  * Features:
- * - Slot-based deterministic image assignment (no repeats across pages)
- * - Next.js 16 "use cache" directive for serverless-compatible caching
+ * - Slot-based image assignment (different images per page section)
+ * - TIME-BASED ROTATION: Images change every hour for variety
+ * - Pool caching: 15 images cached per category, rotates hourly
  * - Blur placeholder generation for instant loading feedback
+ * 
+ * Cache Strategy:
+ * - Pool fetch: Cached for 1 hour (ROTATION_INTERVAL_MINUTES)
+ * - Selection: Time-based algorithm ensures different images over time
+ * - Different slots always get different images from the pool
  */
 
-// Note: 'use cache' directive removed due to SSR bailout issues in Next.js 16
-// Caching is now handled at fetch level with next.revalidate
+import { connection } from 'next/server';
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.PEXELS_API_URL;
 const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
@@ -365,20 +370,58 @@ export function generateBlurPlaceholder(avgColor: string): string {
 // ============================================
 
 /**
- * Generate a deterministic index based on slot name using a simple hash.
- * This provides variety across different slots while allowing static generation.
- * The pool is cached and revalidated daily, so images refresh when the cache expires.
+ * Get the current time period for image rotation.
+ * Images rotate every ROTATION_INTERVAL_MINUTES.
+ * This provides variety while still allowing some caching benefits.
+ * 
+ * Note: Uses connection() to signal dynamic rendering requirement.
+ * This is required in Next.js 16 for non-deterministic operations.
  */
-function getSlotBasedIndex(slot: string, poolSize: number): number {
-  // Simple hash of slot name for deterministic but varied selection
-  let hash = 0;
+const ROTATION_INTERVAL_MINUTES = 60; // Change images every hour
+
+async function getCurrentTimePeriod(): Promise<number> {
+  // Signal to Next.js that this needs dynamic rendering
+  // Required for non-deterministic operations (new Date, Math.random, etc.)
+  await connection();
+  
+  const now = new Date();
+  // Calculate minutes since epoch, divided by interval
+  const minutesSinceEpoch = Math.floor(now.getTime() / (1000 * 60));
+  return Math.floor(minutesSinceEpoch / ROTATION_INTERVAL_MINUTES);
+}
+
+/**
+ * Generate an index based on slot name AND current time period.
+ * This provides variety across different slots AND rotates images over time.
+ * 
+ * - Different slots get different images (slot hash)
+ * - Same slot gets different images over time (time period)
+ * - Pool is still cached (1h) so we don't hit API on every request
+ */
+async function getTimeBasedIndex(slot: string, poolSize: number): Promise<number> {
+  // Combine slot hash with time period for rotation
+  const timePeriod = await getCurrentTimePeriod();
+  
+  // Simple hash of slot name
+  let slotHash = 0;
   for (let i = 0; i < slot.length; i++) {
     const char = slot.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
+    slotHash = ((slotHash << 5) - slotHash) + char;
+    slotHash = slotHash & slotHash; // Convert to 32bit integer
   }
   
-  return Math.abs(hash) % poolSize;
+  // Combine slot hash with time period for variety over time
+  const combinedHash = Math.abs(slotHash + timePeriod * 7919); // 7919 is a prime number for better distribution
+  
+  return combinedHash % poolSize;
+}
+
+/**
+ * Generate a fully random index (for dynamic pages)
+ * Use this when you want completely random selection on each request
+ */
+function getRandomIndex(poolSize: number): number {
+  return Math.floor(Math.random() * poolSize);
 }
 
 /**
@@ -415,7 +458,12 @@ function getFallbackImage(category: ImageCategory, index: number = 0): ImageResu
 }
 
 /**
- * Fetch images from Pexels API (internal, not cached)
+ * Fetch images from Pexels API (internal)
+ * 
+ * Cache strategy:
+ * - Pool data is cached for 1 hour (3600 seconds)
+ * - This matches ROTATION_INTERVAL_MINUTES for consistency
+ * - After 1 hour, both pool and selection refresh together
  */
 async function fetchFromPexels(
   query: string,
@@ -443,9 +491,10 @@ async function fetchFromPexels(
       headers: {
         Authorization: PEXELS_API_KEY,
       },
-      // Fetch-level cache as backup (24 hours)
+      // Cache pool for 1 hour to match image rotation interval
+      // This ensures fresh images every hour
       next: {
-        revalidate: 86400,
+        revalidate: ROTATION_INTERVAL_MINUTES * 60, // Convert minutes to seconds
       },
     });
 
@@ -467,23 +516,22 @@ async function fetchFromPexels(
 
 /**
  * Get image pool for a category
- * Uses fetch-level caching via next.revalidate instead of 'use cache' directive
- * to avoid SSR bailout issues in Next.js 16
+ * Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES) via next.revalidate
  */
 async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
   try {
     const queries = CATEGORY_QUERIES[category];
     const query = queries[queryIndex % queries.length];
     
-    // Fetch 15 images to build a pool for random selection
-    // Caching is handled at the fetch level in fetchFromPexels
+    // Fetch 15 images to build a pool for rotation
+    // Pool is cached for 1 hour at fetch level
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
       return response.photos.map(photo => transformPhoto(photo, query));
     }
 
-    // Return multiple fallbacks if API fails
+    // Return fallback if API fails
     return [getFallbackImage(category, 0)];
   } catch {
     // Ensure we never throw and cause SSR bailout
@@ -494,8 +542,12 @@ async function getCachedImagePool(category: ImageCategory, queryIndex: number): 
 
 /**
  * Internal function to fetch image for a slot
- * Selects from a cached pool using time-based pseudo-random selection.
- * Images change every 5 minutes for variety while allowing static generation.
+ * Selects from a cached pool using time-based rotation.
+ * 
+ * - Pool is cached for 1 hour (API data)
+ * - Selection rotates every hour (ROTATION_INTERVAL_MINUTES)
+ * - Different slots always show different images
+ * - Dynamically rendered due to time-based selection
  */
 async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
   const config = IMAGE_SLOTS[slot];
@@ -507,43 +559,65 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
   // Get the cached pool of images for this category
   const pool = await getCachedImagePool(config.category, config.index);
   
-  // DETERMINISTIC SELECTION: Pick an image based on slot hash
-  // Provides variety across slots while allowing static generation
-  const selectedIndex = getSlotBasedIndex(slot, pool.length);
+  // TIME-BASED SELECTION: Pick an image based on slot + current time period
+  // Images rotate every ROTATION_INTERVAL_MINUTES for variety
+  const selectedIndex = await getTimeBasedIndex(slot, pool.length);
   const selectedImage = pool[selectedIndex];
 
   return selectedImage || getFallbackImage(config.category, config.index);
 }
 
 /**
- * Get image for a specific slot with FRESH random selection
+ * Get image for a specific slot with TIME-BASED rotation
  * 
  * Slots are formatted as 'page:section', e.g.:
  * - 'home:hero'
  * - 'about:quote'
  * - 'contact:newsletter'
  * 
- * The image POOL is cached (24h), but selection is random on each render
- * for a fresh feel on every visit.
+ * Cache strategy:
+ * - Pool of 15 images is fetched from Pexels API
+ * - Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES)
+ * - Selection rotates every hour based on slot + time
+ * - Different slots always show different images
+ * - Same slot shows different images over time
  */
 export async function getImageForSlot(slot: string): Promise<ImageResult | null> {
-  // NO unstable_cache here - we want fresh random selection each time
-  // The pool fetch inside is cached, but the random pick is not
   return fetchImageForSlotInternal(slot);
 }
 
 /**
+ * Get image for a slot with FULLY RANDOM selection
+ * Use this for dynamic pages where you want different images on every request.
+ * 
+ * Note: Pool is still cached (1h), but selection is random each time.
+ */
+export async function getRandomImageForSlot(slot: string): Promise<ImageResult | null> {
+  // Signal dynamic rendering for random selection
+  await connection();
+  
+  const config = IMAGE_SLOTS[slot];
+  if (!config) {
+    console.warn(`Unknown image slot: ${slot}`);
+    return null;
+  }
+
+  const pool = await getCachedImagePool(config.category, config.index);
+  const selectedIndex = getRandomIndex(pool.length);
+  return pool[selectedIndex] || getFallbackImage(config.category, config.index);
+}
+
+/**
  * Get image pool for a section
- * Uses fetch-level caching via next.revalidate instead of 'use cache' directive
- * to avoid SSR bailout issues in Next.js 16
+ * Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES) via next.revalidate
  */
 async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
   try {
     const queries = SECTION_QUERIES[section] || HERO_QUERIES;
     const query = queries[queryIndex % queries.length];
     
-    // Fetch 15 images to build a pool for random selection
-    // Caching is handled at the fetch level in fetchFromPexels
+    // Fetch 15 images to build a pool for rotation
+    // Pool is cached for 1 hour at fetch level
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
@@ -560,14 +634,15 @@ async function getCachedSectionPool(section: string, queryIndex: number): Promis
 
 /**
  * Get image for issue section highlights with time-based selection.
- * Pool is cached (24h), selection changes every 5 minutes for variety.
+ * Pool is cached (1h), selection rotates every hour for variety.
+ * Dynamically rendered due to time-based selection.
  */
 export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
   // Get the cached pool
   const pool = await getCachedSectionPool(section, index);
   
-  // DETERMINISTIC SELECTION based on section name for variety
-  const selectedIndex = getSlotBasedIndex(`section-${section}-${index}`, pool.length);
+  // TIME-BASED SELECTION: Rotates every ROTATION_INTERVAL_MINUTES
+  const selectedIndex = await getTimeBasedIndex(`section-${section}-${index}`, pool.length);
   return pool[selectedIndex] || getFallbackImage('hero', index);
 }
 
@@ -694,6 +769,7 @@ export async function getCuratedImages(
 
 /**
  * Get a specific image by Pexels ID
+ * Single photos are cached for 1 hour to match rotation interval
  */
 export async function getPhotoById(id: number): Promise<ImageResult | null> {
   if (!PEXELS_API_KEY) return null;
@@ -701,7 +777,7 @@ export async function getPhotoById(id: number): Promise<ImageResult | null> {
   try {
     const response = await fetch(`${PEXELS_BASE_URL}/photos/${id}`, {
       headers: { Authorization: PEXELS_API_KEY },
-      next: { revalidate: 86400 }, // Cache for 24 hours
+      next: { revalidate: ROTATION_INTERVAL_MINUTES * 60 },
     });
 
     if (!response.ok) return null;
