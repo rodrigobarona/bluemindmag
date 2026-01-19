@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';

@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { JsonLd } from '@/components/json-ld';
 import { generateLegalPageSchema, generateBreadcrumbSchema } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';

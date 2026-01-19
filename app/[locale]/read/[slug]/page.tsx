@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { getIssueBySlug, getAllIssues, getIssueTranslations } from '@/content/data/issues';

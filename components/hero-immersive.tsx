@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from 'motion/react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useRef } from 'react';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import { generateBlurPlaceholder } from '@/lib/image-utils';

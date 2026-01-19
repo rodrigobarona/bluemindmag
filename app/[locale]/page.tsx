@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { SiteLayout } from '@/components/site-layout';
