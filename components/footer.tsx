@@ -9,9 +9,11 @@ import {
   socialLinks,
   siteConfig,
 } from '@/content/data/navigation';
+import { getAllSponsors } from '@/content/data/sponsors';
 import { LanguageDropdown } from './language-dropdown';
 import { NewsletterForm } from './newsletter-form';
 import { ManageCookiesButton } from './manage-cookies-button';
+import { SponsorsCarousel } from './sponsors-carousel';
 import type { ImageResult } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 
@@ -24,6 +26,7 @@ export function Footer({ newsletterImage }: FooterProps) {
   const tFooter = useTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
+  const sponsors = getAllSponsors();
 
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -38,6 +41,19 @@ export function Footer({ newsletterImage }: FooterProps) {
 
   return (
     <footer className="border-t border-border">
+      {/* Sponsors Section - White background for logo visibility */}
+      {sponsors.length > 0 && (
+        <section className="py-16 md:py-20 bg-white overflow-hidden">
+          <div className="container-editorial">
+            <SponsorsCarousel
+              sponsors={sponsors}
+              title={tFooter('supportedBy')}
+              variant="light"
+            />
+          </div>
+        </section>
+      )}
+
       {/* Newsletter Section - With Background Image */}
       <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
         {/* Background image */}

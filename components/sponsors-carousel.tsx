@@ -7,18 +7,26 @@ import type { Sponsor } from "@/content/types/content";
 interface SponsorsCarouselProps {
   sponsors: Sponsor[];
   title?: string;
+  variant?: "default" | "light";
 }
 
-export function SponsorsCarousel({ sponsors, title }: SponsorsCarouselProps) {
+export function SponsorsCarousel({ sponsors, title, variant = "default" }: SponsorsCarouselProps) {
   const [isPaused, setIsPaused] = useState(false);
   
   // Duplicate sponsors multiple times for seamless infinite loop
   const duplicatedSponsors = [...sponsors, ...sponsors, ...sponsors];
 
+  // Use white gradients for light variant (forced light mode for logo visibility)
+  const gradientClass = variant === "light" 
+    ? "from-white" 
+    : "from-background";
+
   return (
     <div className="w-full">
       {title && (
-        <h3 className="font-headline text-2xl md:text-3xl text-center mb-10">
+        <h3 className={`font-headline text-2xl md:text-3xl text-center mb-10 ${
+          variant === "light" ? "text-foreground" : ""
+        }`}>
           {title}
         </h3>
       )}
@@ -30,8 +38,8 @@ export function SponsorsCarousel({ sponsors, title }: SponsorsCarouselProps) {
         onMouseLeave={() => setIsPaused(false)}
       >
         {/* Fade edges */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        <div className={`absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r ${gradientClass} to-transparent z-10 pointer-events-none`} />
+        <div className={`absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l ${gradientClass} to-transparent z-10 pointer-events-none`} />
         
         {/* Scrolling track */}
         <div 
