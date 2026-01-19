@@ -9,24 +9,24 @@ import {
   socialLinks,
   siteConfig,
 } from '@/content/data/navigation';
-import { getAllSponsors } from '@/content/data/sponsors';
 import { LanguageDropdown } from './language-dropdown';
 import { NewsletterForm } from './newsletter-form';
 import { ManageCookiesButton } from './manage-cookies-button';
 import { SponsorsCarousel } from './sponsors-carousel';
 import type { ImageResult } from '@/lib/pexels';
+import type { Sponsor } from '@/content/types/content';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 
 interface FooterProps {
   newsletterImage?: ImageResult | null;
+  sponsors?: Sponsor[];
 }
 
-export function Footer({ newsletterImage }: FooterProps) {
+export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
   const t = useTranslations('Navigation');
   const tFooter = useTranslations('Footer');
 
   const currentYear = new Date().getFullYear();
-  const sponsors = getAllSponsors();
 
   const getSocialIcon = (platform: string) => {
     switch (platform) {
