@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { ReadIssueCTA, ViewDetailsCTA, IssueHoverCTA } from "./issue-cta";
 import type {
   Issue,
   IssueTranslation,
@@ -169,11 +170,7 @@ export function IssueShowcase({
 
                     {/* CTA on hover */}
                     <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
-                      <span className="inline-flex items-center gap-2 font-ui text-sm font-medium text-white">
-                        <BookOpen className="w-4 h-4" />
-                        {locale === "pt" ? "Ler Agora" : "Read Now"}
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
-                      </span>
+                      <IssueHoverCTA label={locale === "pt" ? "Ler Agora" : "Read Now"} />
                     </div>
                   </div>
 
@@ -276,27 +273,18 @@ export function IssueShowcase({
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <Link
-                href={`/read/${issue.slug}`}
-                className="inline-flex items-center justify-center gap-3 text-white px-8 py-4 font-ui text-sm font-medium transition-slow group hover:brightness-110"
-                style={{ backgroundColor: issue.accentColor }}
-              >
-                <BookOpen className="w-4 h-4" />
-                {locale === "pt" ? "Ler Edição" : "Read Issue"}
-              </Link>
-
-              <Link
-                href={`/issues/${issue.slug}`}
-                className="inline-flex items-center justify-center gap-3 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow group issue-secondary-cta"
-                style={
-                  {
-                    "--hover-color": issue.accentColor,
-                  } as React.CSSProperties
-                }
-              >
-                {locale === "pt" ? "Ver Detalhes" : "View Details"}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
-              </Link>
+              <ReadIssueCTA
+                slug={issue.slug}
+                label={locale === "pt" ? "Ler Edição" : "Read Issue"}
+                accentColor={issue.accentColor}
+                size="lg"
+              />
+              <ViewDetailsCTA
+                slug={issue.slug}
+                label={locale === "pt" ? "Ver Detalhes" : "View Details"}
+                accentColor={issue.accentColor}
+                size="lg"
+              />
             </motion.div>
           </motion.div>
         </div>

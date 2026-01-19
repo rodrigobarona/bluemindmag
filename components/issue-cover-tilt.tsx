@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import { CurrentIssueBadge, IssueHoverCTA } from "./issue-cta";
 
 interface IssueCoverTiltProps {
   cover: string;
@@ -145,25 +146,18 @@ export function IssueCoverTilt({
 
               {/* CTA on hover */}
               <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
-                <span className="inline-flex items-center gap-2 font-ui text-sm font-medium text-white">
-                  <BookOpen className="w-4 h-4" />
-                  Read Now
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
-                </span>
+                <IssueHoverCTA label="Read Now" />
               </div>
             </div>
 
-            {/* Current issue badge - inside the cover like homepage */}
+            {/* Current issue badge */}
             {isCurrent && (
-              <div
-                className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
-                style={{
-                  backgroundColor: accentColor,
-                  color: "#ffffff",
-                }}
-              >
-                {currentLabel}
-              </div>
+              <CurrentIssueBadge
+                label={currentLabel}
+                accentColor={accentColor}
+                size="lg"
+                className="absolute top-4 right-4 z-10"
+              />
             )}
           </div>
 

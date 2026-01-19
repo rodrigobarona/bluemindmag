@@ -1,5 +1,9 @@
-import { Link } from '@/i18n/navigation';
-import { BookOpen } from 'lucide-react';
+/**
+ * @deprecated Use ReadIssueCTA from @/components/issue-cta instead
+ * This file is kept for backwards compatibility
+ */
+
+import { ReadIssueCTA } from "./issue-cta";
 
 interface ReadIssueButtonProps {
   issueSlug: string;
@@ -10,15 +14,15 @@ interface ReadIssueButtonProps {
 export function ReadIssueButton({
   issueSlug,
   label,
-  className = '',
+  className = "",
 }: ReadIssueButtonProps) {
   return (
-    <Link
-      href={`/read/${issueSlug}`}
-      className={`group inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-base hover:bg-brand ${className}`}
-      >
-        <BookOpen className="w-5 h-5" />
-        {label}
-    </Link>
+    <ReadIssueCTA
+      slug={issueSlug}
+      label={label}
+      variant="primary"
+      size="lg"
+      className={`bg-foreground hover:bg-brand ${className}`}
+    />
   );
 }

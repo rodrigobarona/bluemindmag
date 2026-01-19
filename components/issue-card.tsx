@@ -4,8 +4,9 @@ import { useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { ArrowRight, BookOpen, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import type { Issue, IssueTranslation } from '@/content/types/content';
+import { CurrentIssueBadge, IssueHoverCTA } from './issue-cta';
 
 interface IssueCardProps {
   issue: Issue;
@@ -40,15 +41,11 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
 
             {/* Current issue badge */}
             {issue.isCurrent && (
-              <div
-              className="absolute top-4 right-4 z-10 px-3 py-1.5 font-ui text-xs font-semibold uppercase tracking-wider"
-                style={{
-                  backgroundColor: issue.accentColor,
-                  color: '#ffffff',
-                }}
-              >
-                Current
-              </div>
+              <CurrentIssueBadge
+                label="Current"
+                accentColor={issue.accentColor}
+                className="absolute top-4 right-4 z-10"
+              />
             )}
           </div>
 
@@ -183,25 +180,18 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
 
                 {/* CTA on hover */}
                 <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
-                  <span className="inline-flex items-center gap-2 font-ui text-sm font-medium text-white">
-                    <BookOpen className="w-4 h-4" />
-                    Read Now
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-base" />
-                  </span>
+                  <IssueHoverCTA label="Read Now" />
                 </div>
               </div>
 
               {/* Current issue badge */}
               {issue.isCurrent && (
-                <div
-                  className="absolute top-4 right-4 z-10 px-4 py-2 font-ui text-sm font-semibold uppercase tracking-wider"
-                  style={{
-                    backgroundColor: issue.accentColor,
-                    color: '#ffffff',
-                  }}
-                >
-                  Current Issue
-                </div>
+                <CurrentIssueBadge
+                  label="Current Issue"
+                  accentColor={issue.accentColor}
+                  size="lg"
+                  className="absolute top-4 right-4 z-10"
+                />
               )}
             </div>
 
@@ -317,15 +307,12 @@ export function IssueCardSimple({
 
           {/* Current issue badge */}
           {issue.isCurrent && (
-            <div
-              className="absolute top-3 right-3 z-10 px-2 py-1 font-ui text-xs font-semibold uppercase tracking-wider"
-              style={{
-                backgroundColor: issue.accentColor,
-                color: '#ffffff',
-              }}
-            >
-              Current
-            </div>
+            <CurrentIssueBadge
+              label="Current"
+              accentColor={issue.accentColor}
+              size="sm"
+              className="absolute top-3 right-3 z-10"
+            />
           )}
         </div>
 

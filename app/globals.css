@@ -735,12 +735,12 @@
    ============================================ */
 .flipbook-reader {
   @apply fixed inset-0 flex flex-col;
-  background: #0d1117;
+  background: #000000;
 }
 
 .flipbook-reader__header {
   @apply relative flex items-center justify-between px-4 py-3 shrink-0;
-  background: #0d1117;
+  background: #000000;
 }
 
 .flipbook-reader__content {
