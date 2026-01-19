@@ -29,6 +29,7 @@ export default async function HomePage({ params }: Props) {
 
   const t = await getTranslations('Home');
   const tCommon = await getTranslations('Common');
+  const tIssues = await getTranslations('Issues');
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
 
@@ -137,7 +138,7 @@ export default async function HomePage({ params }: Props) {
                       style={{ backgroundColor: currentIssue.accentColor }}
                     >
                       <BookOpen className="w-5 h-5" />
-                      {locale === 'pt' ? 'Ler Edição' : 'Read Issue'}
+                      {tIssues('readIssue')}
                     </Link>
 
                     <Link
@@ -145,7 +146,7 @@ export default async function HomePage({ params }: Props) {
                       className="inline-flex items-center gap-2 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow issue-secondary-cta"
                       style={{ '--hover-color': currentIssue.accentColor } as React.CSSProperties}
                     >
-                      {locale === 'pt' ? 'Ver Detalhes' : 'View Details'}
+                      {tIssues('viewDetails')}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
@@ -163,14 +164,14 @@ export default async function HomePage({ params }: Props) {
             {/* Inline header */}
             <ScrollReveal className="flex items-center justify-between mb-6">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                {locale === 'pt' ? 'Nesta Edição' : 'In This Issue'}
+                {tIssues('inThisIssue')}
               </span>
               <Link
                 href={`/issues/${currentIssue.slug}#features`}
                 className="font-ui text-xs font-medium transition-colors hover:opacity-70 flex items-center gap-1"
                 style={{ color: currentIssue.accentColor }}
               >
-                {locale === 'pt' ? 'Ver Todos' : 'View All'}
+                {tCommon('viewAll')}
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </ScrollReveal>
@@ -268,12 +269,8 @@ export default async function HomePage({ params }: Props) {
 
       {/* Section 4: Pull Quote with Beautiful Image */}
       <PullQuoteImage
-        quote={
-          locale === 'pt'
-            ? 'O surf sempre foi mais do que um desporto. É uma forma de nos compreendermos através do ritmo do oceano.'
-            : 'Surfing has always been more than a sport. It\'s a way of understanding ourselves through the rhythm of the ocean.'
-        }
-        attribution={locale === 'pt' ? 'Pedro Seixas, Editor' : 'Pedro Seixas, Editor'}
+        quote={t('quote.text')}
+        attribution={t('quote.attribution')}
         image={quoteImage}
       />
 
@@ -284,7 +281,7 @@ export default async function HomePage({ params }: Props) {
             <ScrollReveal className="flex items-end justify-between mb-16">
               <div>
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                  {locale === 'pt' ? 'Arquivo' : 'Archive'}
+                  {t('archive.label')}
                 </span>
                 <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl">
                   {t('archive.title')}
@@ -332,7 +329,7 @@ export default async function HomePage({ params }: Props) {
         <div className="container-narrow">
           <ScrollReveal className="text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {locale === 'pt' ? 'A Nossa História' : 'Our Story'}
+              {t('about.label')}
             </span>
             
             <h2 className="font-headline text-3xl md:text-4xl mb-8">

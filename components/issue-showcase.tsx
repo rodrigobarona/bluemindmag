@@ -16,13 +16,30 @@ interface IssueShowcaseProps {
   issue: Issue;
   translation: IssueTranslation;
   locale: string;
+  labels?: {
+    readNow?: string;
+    moveCursor?: string;
+    inThisIssue?: string;
+    readIssue?: string;
+    viewDetails?: string;
+  };
 }
 
 export function IssueShowcase({
   issue,
   translation,
   locale,
+  labels = {},
 }: IssueShowcaseProps) {
+  // Default labels (fallback to hardcoded for backwards compatibility)
+  const defaultLabels = {
+    readNow: locale === "pt" ? "Ler Agora" : "Read Now",
+    moveCursor: locale === "pt" ? "Mova o cursor" : "Move cursor",
+    inThisIssue: locale === "pt" ? "Nesta Edição" : "In This Issue",
+    readIssue: locale === "pt" ? "Ler Edição" : "Read Issue",
+    viewDetails: locale === "pt" ? "Ver Detalhes" : "View Details",
+  };
+  const mergedLabels = { ...defaultLabels, ...labels };
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -170,7 +187,7 @@ export function IssueShowcase({
 
                     {/* CTA on hover */}
                     <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
-                      <IssueHoverCTA label={locale === "pt" ? "Ler Agora" : "Read Now"} />
+                      <IssueHoverCTA label={mergedLabels.readNow} />
                     </div>
                   </div>
 
@@ -204,7 +221,7 @@ export function IssueShowcase({
               transition={{ duration: 0.3 }}
             >
               <Sparkles className="w-3 h-3" />
-              {locale === "pt" ? "Mova o cursor" : "Move cursor"}
+              {mergedLabels.moveCursor}
             </motion.div>
           </motion.div>
 
@@ -235,7 +252,7 @@ export function IssueShowcase({
             {highlightTranslations.length > 0 && (
               <div className="mb-10">
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-4 block">
-                  {locale === "pt" ? "Nesta Edição" : "In This Issue"}
+                  {mergedLabels.inThisIssue}
                 </span>
                 <div className="space-y-3">
                   {highlightTranslations.map((highlight, index) => (
@@ -275,13 +292,13 @@ export function IssueShowcase({
             >
               <ReadIssueCTA
                 slug={issue.slug}
-                label={locale === "pt" ? "Ler Edição" : "Read Issue"}
+                label={mergedLabels.readIssue}
                 accentColor={issue.accentColor}
                 size="lg"
               />
               <ViewDetailsCTA
                 slug={issue.slug}
-                label={locale === "pt" ? "Ver Detalhes" : "View Details"}
+                label={mergedLabels.viewDetails}
                 accentColor={issue.accentColor}
                 size="lg"
               />

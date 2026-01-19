@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: 'website',
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === 'pt' ? 'O Arquivo' : 'The Archive')}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}`],
     },
     twitter: {
       card: 'summary_large_image',
@@ -51,6 +51,9 @@ export default async function IssuesPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Issues');
+  const tNav = await getTranslations('Navigation');
+  const tHome = await getTranslations('Home');
+  const tCommon = await getTranslations('Common');
   const issues = getAllIssues();
   
   // Fetch Pexels images using slot-based system (no repeats across pages)
@@ -75,14 +78,12 @@ export default async function IssuesPage({ params }: Props) {
   const pastIssues = issues.filter((issue) => !issue.isCurrent);
 
   // Generate JSON-LD schemas for SEO
-  const title = locale === 'pt' ? 'Edições' : 'Issues';
-  const description = locale === 'pt' 
-    ? 'Explore a nossa coleção de edições onde surf e ciência se encontram.'
-    : 'Explore our collection of issues where surf and science meet.';
+  const title = t('title');
+  const description = t('description');
   
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
     { name: title, url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues` },
   ];
 
@@ -169,16 +170,23 @@ export default async function IssuesPage({ params }: Props) {
         <section className="py-20 md:py-28 border-b border-border">
           <div className="container-editorial mb-8 md:mb-12">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-              {locale === 'pt' ? 'Em Destaque' : 'Featured'}
+              {t('featured')}
             </span>
             <h2 className="font-headline text-3xl md:text-4xl">
-              {locale === 'pt' ? 'Edição Atual' : 'Current Issue'}
+              {t('current')}
             </h2>
           </div>
           <IssueShowcase
             issue={currentIssue}
             translation={issueTranslations[currentIssue.id]}
             locale={locale}
+            labels={{
+              readNow: t('readNow'),
+              moveCursor: tCommon('moveCursor'),
+              inThisIssue: t('inThisIssue'),
+              readIssue: t('readIssue'),
+              viewDetails: t('viewDetails'),
+            }}
           />
         </section>
       )}
@@ -189,10 +197,10 @@ export default async function IssuesPage({ params }: Props) {
           <div className="container-editorial">
             <ScrollReveal className="mb-16">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                {locale === 'pt' ? 'Edições Anteriores' : 'Past Issues'}
+                {t('pastIssues')}
               </span>
               <h2 className="font-headline text-3xl md:text-4xl">
-                {locale === 'pt' ? 'Arquivo' : 'Archive'}
+                {tHome('archive.label')}
               </h2>
             </ScrollReveal>
 
@@ -241,9 +249,7 @@ export default async function IssuesPage({ params }: Props) {
         <section className="py-32">
           <div className="container-editorial text-center">
             <p className="font-body text-muted-foreground text-xl">
-              {locale === 'pt'
-                ? 'Ainda não há edições disponíveis. Volte em breve!'
-                : 'No issues available yet. Check back soon!'}
+              {t('exploreMore')}
               </p>
             </div>
         </section>

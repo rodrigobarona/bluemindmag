@@ -91,6 +91,7 @@ export default async function IssueDetailPage({ params }: Props) {
   }
 
   const t = await getTranslations("Issues");
+  const tNav = await getTranslations("Navigation");
   const tCommon = await getTranslations("Common");
   
   // Get translations from MDX (single source of truth)
@@ -113,13 +114,18 @@ export default async function IssueDetailPage({ params }: Props) {
     page: t("page"),
     by: t("by"),
     current: t("current"),
+    previewIssue: t("previewIssue"),
+    inThisIssue: t("inThisIssue"),
+    fullIssue: t("fullIssue"),
+    startReading: t("startReading"),
+    exploreMore: t("exploreMore"),
   };
 
   // Generate JSON-LD schemas for SEO
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: "Home", url: `${baseUrl}${locale === "pt" ? "/pt" : ""}` },
-    { name: locale === "pt" ? "Edições" : "Issues", url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues` },
+    { name: tNav("home"), url: `${baseUrl}${locale === "pt" ? "/pt" : ""}` },
+    { name: tNav("issues"), url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues` },
     { name: translation.title, url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues/${issue.slug}` },
   ];
 
@@ -163,7 +169,7 @@ export default async function IssueDetailPage({ params }: Props) {
           <div className="container-editorial">
             <SponsorsCarousel
               sponsors={sponsors}
-              title={locale === "pt" ? "Apoiado Por" : "Supported By"}
+              title={t("supportedBy")}
             />
           </div>
         </section>
@@ -176,7 +182,7 @@ export default async function IssueDetailPage({ params }: Props) {
           issueTranslations={issueTranslations}
           locale={locale}
           labels={{
-            moreIssues: locale === "pt" ? "Mais Edições" : "More Issues",
+            moreIssues: t("moreIssues"),
             viewAll: tCommon("viewAll"),
           }}
           IssueCard={IssueCard}

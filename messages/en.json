@@ -18,7 +18,11 @@
     "readMore": "Read More",
     "viewAll": "View All",
     "subscribe": "Subscribe",
-    "learnMore": "Learn More"
+    "learnMore": "Learn More",
+    "free": "Free",
+    "perMonth": "Per Month",
+    "spam": "Spam",
+    "moveCursor": "Move cursor"
   },
   "Navigation": {
     "home": "Home",
@@ -30,7 +34,8 @@
     "cookies": "Cookie Policy",
     "terms": "Terms of Use",
     "subscribe": "Subscribe",
-    "language": "Language"
+    "language": "Language",
+    "read": "Read"
   },
   "Footer": {
     "newsletter": {
@@ -60,6 +65,7 @@
       "preview": "Preview Issue"
     },
     "archive": {
+      "label": "Archive",
       "title": "Past Issues",
       "viewAll": "View All Issues"
     },
@@ -69,8 +75,13 @@
       "cta": "Subscribe Now"
     },
     "about": {
+      "label": "Our Story",
       "title": "About Blue Mind",
       "description": "Blue Mind Magazine bridges the gap between scientific research and the surfing community. We make complex studies accessible while celebrating the transformative power of the sea."
+    },
+    "quote": {
+      "text": "Surfing has always been more than a sport. It's a way of understanding ourselves through the rhythm of the ocean.",
+      "attribution": "Pedro Seixas, Editor"
     }
   },
   "Issues": {
@@ -78,16 +89,28 @@
     "subtitle": "The Archive",
     "description": "Explore our collection of issues where surf and science meet.",
     "current": "Current Issue",
+    "featured": "Featured",
+    "pastIssues": "Past Issues",
     "page": "Page",
     "readIssue": "Read Issue",
+    "readNow": "Read Now",
+    "viewDetails": "View Details",
+    "previewIssue": "Preview Issue",
+    "fullIssue": "Full Issue",
+    "startReading": "Start Reading",
+    "moreIssues": "More Issues",
     "features": "Features",
     "by": "By",
     "supportedBy": "Supported by",
-    "sections": "In this issue"
+    "sections": "In this issue",
+    "inThisIssue": "In This Issue",
+    "exploreMore": "Want to explore more? Check out our previous issues and discover the full archive of surf science content."
   },
   "About": {
     "title": "About",
     "subtitle": "Our Story",
+    "theMagazine": "The Magazine",
+    "missionLabel": "Mission",
     "magazine": {
       "title": "About Blue Mind",
       "description": "Blue Mind Magazine is where surf and science meet. We explore the fascinating intersection of ocean sports, human health, and scientific research."
@@ -113,12 +136,51 @@
         "name": "Surfing Medicine International",
         "description": "SMI is a non-profit organization founded by medical doctors and surfers dedicated to the science of surfing medicine."
       }
+    },
+    "collaboration": {
+      "title": "Collaborate With Us",
+      "description": "Are you a researcher, scientist, or surf enthusiast with a story to tell? We're always looking for contributors who share our passion for surf science.",
+      "cta": "Get in Touch"
+    },
+    "vision": {
+      "description": "Our vision is to create a global community where surf and science come together to improve lives and deepen our understanding of the ocean's impact on human health."
     }
   },
   "Contact": {
     "title": "Get in Touch",
     "subtitle": "We'd love to hear from you",
     "description": "Whether you have a question about our magazine, want to contribute an article, or are interested in partnership opportunities, we're here to help.",
+    "hero": {
+      "label": "Let's Talk",
+      "greeting": "Say Hello",
+      "tagline": "We love hearing from our readers. Whether you have a question, feedback, or just want to say hi, drop us a message."
+    },
+    "ways": {
+      "email": {
+        "label": "Email Us",
+        "description": "Best for detailed inquiries"
+      },
+      "response": {
+        "label": "Response Time",
+        "description": "Usually within 48h"
+      }
+    },
+    "chat": {
+      "label": "Prefer to chat?",
+      "book": "Book a virtual coffee",
+      "duration": "15 min • Free"
+    },
+    "social": {
+      "follow": "Follow along",
+      "description": "Join the conversation on social media"
+    },
+    "contribute": {
+      "title": "Contribute",
+      "description": "Got a story about surf science? We're always looking for contributors.",
+      "guidelines": "We welcome articles about surf science, health research, and stories from the community.",
+      "cta": "Pitch an idea",
+      "emailSubject": "Article Pitch for Blue Mind"
+    },
     "form": {
       "name": "Name",
       "namePlaceholder": "Your name",
@@ -161,6 +223,33 @@
       "communityStories": "Community stories and events",
       "earlyAccess": "Early access to content"
     },
+    "benefits": {
+      "newIssues": {
+        "title": "New Issues",
+        "description": "Be the first to know when a new edition drops"
+      },
+      "exclusive": {
+        "title": "Exclusive Insights",
+        "description": "Surf science content you won't find anywhere else"
+      },
+      "community": {
+        "title": "Community Stories",
+        "description": "Real stories from surfers and scientists around the world"
+      },
+      "earlyAccess": {
+        "title": "Early Access",
+        "description": "Preview content before it goes live"
+      }
+    },
+    "founder": {
+      "role": "Editor & Founder"
+    },
+    "whatYouGet": "What You Get",
+    "notSure": {
+      "title": "Not Sure Yet?",
+      "description": "Take a look at what we've published so far. Our archive is always free to browse.",
+      "cta": "Explore the Magazine"
+    },
     "freeNewsletter": "Free Newsletter",
     "formTitle": "Newsletter Signup",
     "privacyNote": "We respect your privacy. Unsubscribe at any time.",
@@ -173,15 +262,18 @@
   "Legal": {
     "privacy": {
       "title": "Privacy Policy",
-      "lastUpdated": "Last updated"
+      "lastUpdated": "Last updated",
+      "description": "Learn how we collect, use, and protect your personal information."
     },
     "cookies": {
       "title": "Cookie Policy",
-      "lastUpdated": "Last updated"
+      "lastUpdated": "Last updated",
+      "description": "Information about how we use cookies on our website."
     },
     "terms": {
       "title": "Terms of Use",
-      "lastUpdated": "Last updated"
+      "lastUpdated": "Last updated",
+      "description": "The terms and conditions for using Blue Mind Magazine."
     }
   },
   "CookieConsent": {

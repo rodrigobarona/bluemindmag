@@ -98,13 +98,19 @@ function parseMDXFile(filePath: string): { frontmatter: MDXIssueFrontmatter; con
 
 /**
  * Convert MDX frontmatter to Issue data type
+ * @param frontmatter - The current locale's frontmatter
+ * @param enFrontmatter - English frontmatter (for getting EN flipbook URL)
+ * @param ptFrontmatter - Portuguese frontmatter (for getting PT flipbook URL)
  */
-function toIssueData(frontmatter: MDXIssueFrontmatter, enFrontmatter?: MDXIssueFrontmatter): Issue {
-  // For flipbook, we need both locale URLs
-  // If we have the English version, use it for 'en', otherwise duplicate
+function toIssueData(
+  frontmatter: MDXIssueFrontmatter, 
+  enFrontmatter?: MDXIssueFrontmatter,
+  ptFrontmatter?: MDXIssueFrontmatter
+): Issue {
+  // For flipbook, we need both locale URLs from their respective MDX files
   const flipbook = {
     en: enFrontmatter?.flipbookUrl || frontmatter.flipbookUrl,
-    pt: frontmatter.flipbookUrl,
+    pt: ptFrontmatter?.flipbookUrl || frontmatter.flipbookUrl,
   };
   
   // Extract highlight data (without translations)
@@ -151,6 +157,7 @@ function toIssueTranslation(frontmatter: MDXIssueFrontmatter): IssueTranslation 
     title: frontmatter.title,
     subtitle: frontmatter.subtitle,
     description: frontmatter.description,
+    sections: frontmatter.sections,
     highlights,
   };
 }
@@ -168,6 +175,21 @@ export function getIssueSlugs(): string[] {
 }
 
 /**
+ * Helper to find PT MDX file by slug (since PT filename may differ)
+ */
+function findPTFileBySlug(slug: string): string | null {
+  const ptFiles = getMDXFiles('pt');
+  for (const file of ptFiles) {
+    const ptPath = path.join(ISSUES_DIR, 'pt', file);
+    const parsed = parseMDXFile(ptPath);
+    if (parsed && parsed.frontmatter.slug === slug) {
+      return ptPath;
+    }
+  }
+  return null;
+}
+
+/**
  * Get parsed issue by slug for a specific locale
  */
 export function getIssueBySlugMDX(slug: string, locale: Locale = 'en'): ParsedIssue | null {
@@ -176,15 +198,9 @@ export function getIssueBySlugMDX(slug: string, locale: Locale = 'en'): ParsedIs
   
   // For Portuguese, the filename might be different (e.g., issue-0-janeiro-2026.mdx)
   if (!fs.existsSync(filePath) && locale === 'pt') {
-    // Try to find a matching file by reading all PT files and matching by slug in frontmatter
-    const ptFiles = getMDXFiles('pt');
-    for (const file of ptFiles) {
-      const ptPath = path.join(ISSUES_DIR, 'pt', file);
-      const parsed = parseMDXFile(ptPath);
-      if (parsed && parsed.frontmatter.slug === slug) {
-        filePath = ptPath;
-        break;
-      }
+    const ptPath = findPTFileBySlug(slug);
+    if (ptPath) {
+      filePath = ptPath;
     }
   }
   
@@ -193,16 +209,26 @@ export function getIssueBySlugMDX(slug: string, locale: Locale = 'en'): ParsedIs
     return null;
   }
   
-  // Get English version for flipbook URLs (if this is PT)
+  // Always get both EN and PT frontmatter to build correct flipbook URLs
   let enFrontmatter: MDXIssueFrontmatter | undefined;
-  if (locale === 'pt') {
-    const enPath = path.join(ISSUES_DIR, 'en', `${slug}.mdx`);
+  let ptFrontmatter: MDXIssueFrontmatter | undefined;
+  
+  // Get English frontmatter
+  const enPath = path.join(ISSUES_DIR, 'en', `${slug}.mdx`);
+  if (fs.existsSync(enPath)) {
     const enParsed = parseMDXFile(enPath);
     enFrontmatter = enParsed?.frontmatter;
   }
   
+  // Get Portuguese frontmatter
+  const ptPath = findPTFileBySlug(slug);
+  if (ptPath) {
+    const ptParsed = parseMDXFile(ptPath);
+    ptFrontmatter = ptParsed?.frontmatter;
+  }
+  
   return {
-    issue: toIssueData(parsed.frontmatter, enFrontmatter),
+    issue: toIssueData(parsed.frontmatter, enFrontmatter, ptFrontmatter),
     translation: toIssueTranslation(parsed.frontmatter),
     content: parsed.content,
   };

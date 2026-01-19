@@ -37,6 +37,11 @@ interface IssueDetailAnimatedProps {
     page: string;
     by: string;
     current: string;
+    previewIssue: string;
+    inThisIssue: string;
+    fullIssue: string;
+    startReading: string;
+    exploreMore: string;
   };
 }
 
@@ -138,7 +143,7 @@ export function IssueDetailHero({
                 className="font-ui text-sm font-medium transition-colors hover:opacity-70"
                 style={{ color: issue.accentColor }}
               >
-                {locale === "pt" ? "Ver Conteúdo" : "Preview Issue"}{" "}
+                {labels.previewIssue}{" "}
                 {isMounted ? (
                   <motion.span
                     animate={{ y: [0, 3, 0] }}
@@ -153,7 +158,7 @@ export function IssueDetailHero({
               </a>
             </StaggerItem>
 
-            {/* Sections - styled with accent color */}
+            {/* Sections - styled with accent color (from MDX translation) */}
             <StaggerItem className="mt-12 pt-8 border-t border-border/50">
               <p
                 className="font-ui text-xs font-medium uppercase tracking-wider mb-4"
@@ -162,7 +167,7 @@ export function IssueDetailHero({
                 {labels.sections}
               </p>
               <div className="flex flex-wrap gap-2">
-                {issue.sections.map((section, index) =>
+                {translation.sections.map((section, index) =>
                   isMounted ? (
                     <motion.span
                       key={section}
@@ -222,7 +227,7 @@ export function IssueDetailFeatures({
               className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block"
               style={{ color: issue.accentColor }}
             >
-              {locale === "pt" ? "Nesta Edição" : "In This Issue"}
+              {labels.inThisIssue}
             </span>
           </TextReveal>
           <TextReveal delay={0.1}>
@@ -525,19 +530,17 @@ export function IssueDetailCTA({
           >
             <StaggerItem>
               <span className="inline-block font-ui text-xs font-semibold uppercase tracking-[0.3em] text-white/70 mb-4">
-                {locale === "pt" ? "Edição Completa" : "Full Issue"}
+                {labels.fullIssue}
               </span>
             </StaggerItem>
             <StaggerItem>
               <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-                {locale === "pt" ? "Comece a Ler" : "Start Reading"}
+                {labels.startReading}
               </h2>
             </StaggerItem>
             <StaggerItem>
               <p className="font-body text-lg text-white/80 mb-10 max-w-md mx-auto lg:mx-0">
-                {locale === "pt"
-                  ? "Mergulhe na experiência completa desta edição. Artigos, entrevistas e muito mais esperam por si."
-                  : "Dive into the complete experience of this issue. Articles, interviews, and more await you."}
+                {labels.exploreMore}
               </p>
             </StaggerItem>
             <StaggerItem>

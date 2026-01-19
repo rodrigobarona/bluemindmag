@@ -41,6 +41,7 @@ export interface IssueTranslation {
   title: string;
   subtitle: string;
   description: string;
+  sections: string[];
   highlights: Record<string, IssueHighlightTranslation>;
 }
 

@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: "website",
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === "pt" ? "Vamos Conversar" : "Let's Talk")}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t("hero.label"))}`],
     },
     twitter: {
       card: "summary_large_image",
@@ -53,6 +53,7 @@ export default async function ContactPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Contact");
+  const tNav = await getTranslations("Navigation");
   const editor = getTeamMemberById("pedro-seixas");
 
   // Fetch Pexels images using slot-based system (no repeats across pages)
@@ -75,8 +76,8 @@ export default async function ContactPage({ params }: Props) {
   // Generate JSON-LD schema for SEO
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
-    { name: locale === 'pt' ? 'Contacto' : 'Contact', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/contact` },
+    { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: tNav('contact'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/contact` },
   ];
   
   const schemas = [
@@ -142,7 +143,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {locale === "pt" ? "Vamos Conversar" : "Let's Talk"}
+              {t("hero.label")}
             </span>
             <h1
               className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? "text-white" : ""}`}
@@ -152,7 +153,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {locale === "pt" ? "Olá!" : "Say Hello"}
+              {t("hero.greeting")}
             </h1>
             <p
               className={`font-body text-xl leading-relaxed ${heroImage ? "text-white/80" : "text-muted-foreground"}`}
@@ -162,9 +163,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {locale === "pt"
-                ? "A Blue Mind Magazine é um projeto de paixão. Se tens uma história para contar, uma ideia para partilhar, ou simplesmente queres dizer olá — adoraria ouvir-te."
-                : "Blue Mind Magazine is a passion project. If you have a story to tell, an idea to share, or just want to say hi — I'd love to hear from you."}
+              {t("hero.tagline")}
             </p>
           </ScrollReveal>
         </div>
@@ -179,14 +178,10 @@ export default async function ContactPage({ params }: Props) {
               {/* Form Header */}
               <div className="mb-10">
                 <h2 className="font-headline text-3xl md:text-4xl mb-4">
-                  {locale === "pt"
-                    ? "Envia-me uma mensagem"
-                    : "Drop me a message"}
+                  {t("ways.email.label")}
                 </h2>
                 <p className="text-muted-foreground max-w-lg leading-relaxed">
-                  {locale === "pt"
-                    ? "Seja uma pergunta, sugestão, proposta de colaboração, ou apenas para partilhar a tua última sessão de surf — respondo a todas as mensagens pessoalmente."
-                    : "Whether it's a question, suggestion, collaboration idea, or just to share your latest surf session — I personally read and reply to every message."}
+                  {t("ways.email.description")}
                 </p>
               </div>
 
@@ -221,9 +216,7 @@ export default async function ContactPage({ params }: Props) {
                   <div>
                     <p className="font-medium mb-1">Pedro Seixas</p>
                     <p className="text-sm text-muted-foreground">
-                      {locale === "pt"
-                        ? "Editor & Fundador"
-                        : "Editor & Founder"}
+                      {t("ways.response.label")}
                     </p>
                   </div>
                 </div>
@@ -231,9 +224,7 @@ export default async function ContactPage({ params }: Props) {
                 <div className="pl-0">
                   <IconWaveSine className="h-8 w-8 text-brand/30 mb-3" />
                   <p className="font-accent italic text-muted-foreground leading-relaxed text-lg">
-                    {locale === "pt"
-                      ? '"A Blue Mind nasceu da paixão pelo surf e pela ciência. Cada mensagem que recebo é uma oportunidade de conectar com alguém que partilha esta visão. Não hesites em escrever!"'
-                      : '"Blue Mind was born from a passion for surf and science. Every message I receive is a chance to connect with someone who shares this vision. Don\'t hesitate to reach out!"'}
+                    {t("ways.response.description")}
                   </p>
                 </div>
               </div>
@@ -243,7 +234,7 @@ export default async function ContactPage({ params }: Props) {
                 {/* Book a Chat */}
                 <div>
                   <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
-                    {locale === "pt" ? "Preferes conversar?" : "Prefer to chat?"}
+                    {t("chat.label")}
                   </h3>
 
                   <a
@@ -257,26 +248,24 @@ export default async function ContactPage({ params }: Props) {
                     </div>
                     <div>
                       <p className="font-medium text-lg group-hover:text-brand transition-colors">
-                        {locale === "pt" ? "Marca um café virtual" : "Book a virtual coffee"}
+                        {t("chat.book")}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {locale === "pt" ? "15 min • Grátis" : "15 min • Free"}
+                        {t("chat.duration")}
                       </p>
                     </div>
                     <IconCalendar className="h-5 w-5 text-muted-foreground ml-auto group-hover:text-brand transition-colors" />
                   </a>
 
                   <p className="text-sm text-muted-foreground mt-4">
-                    {locale === "pt"
-                      ? "Para conversas rápidas, colaborações ou só para trocar ideias sobre surf e ciência."
-                      : "For quick chats, collaborations, or just to talk surf and science."}
+                    {t("social.description")}
                   </p>
                 </div>
 
                 {/* Connect on Social */}
                 <div className="pt-8 border-t border-border">
                   <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
-                    {locale === "pt" ? "Acompanha nas redes" : "Follow along"}
+                    {t("social.follow")}
                   </h3>
 
                   <div className="flex gap-3">
@@ -295,9 +284,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
 
                   <p className="text-sm text-muted-foreground mt-4">
-                    {locale === "pt"
-                      ? "Partilho bastidores, novidades e boas ondas"
-                      : "Behind the scenes, updates, and good vibes"}
+                    {t("social.description")}
                   </p>
                 </div>
               </div>
@@ -311,23 +298,19 @@ export default async function ContactPage({ params }: Props) {
         <div className="container-editorial">
           <div className="max-w-2xl mx-auto text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {locale === "pt" ? "Colabora Connosco" : "Contribute"}
+              {t("contribute.title")}
             </span>
             <h2 className="font-headline text-3xl md:text-4xl mb-4">
-              {locale === "pt"
-                ? "Queres escrever para a revista?"
-                : "Want to write for the magazine?"}
+              {t("contribute.description")}
             </h2>
             <p className="text-muted-foreground mb-8 leading-relaxed text-lg">
-              {locale === "pt"
-                ? "Se és investigador, surfista, ou apenas apaixonado pelo oceano com uma história para contar — envia-me as tuas ideias! Estou sempre à procura de novas vozes e perspetivas."
-                : "If you're a researcher, surfer, or just ocean-passionate with a story to tell — send me your ideas! I'm always looking for new voices and perspectives."}
+              {t("contribute.guidelines")}
             </p>
             <Link
-              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(locale === "pt" ? "Proposta de Artigo para Blue Mind" : "Article Pitch for Blue Mind")}`}
+              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(t("contribute.emailSubject"))}`}
               className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
             >
-              {locale === "pt" ? "Enviar proposta" : "Pitch an idea"}
+              {t("contribute.cta")}
               <IconArrowRight className="h-4 w-4" />
             </Link>
           </div>

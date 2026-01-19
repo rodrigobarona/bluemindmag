@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: 'website',
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === 'pt' ? 'A Nossa História' : 'Our Story')}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}`],
     },
     twitter: {
       card: 'summary_large_image',
@@ -57,6 +57,7 @@ export default async function AboutPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('About');
+  const tNav = await getTranslations('Navigation');
   const editor = getTeamMemberById('pedro-seixas');
   const publisher = getTeamMemberById('surfisio');
   const smi = getSponsorById('surfing-medicine-international');
@@ -72,8 +73,8 @@ export default async function AboutPage({ params }: Props) {
   // Generate JSON-LD schemas for SEO
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
-    { name: locale === 'pt' ? 'Sobre' : 'About', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/about` },
+    { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: tNav('about'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/about` },
   ];
 
   const schemas = [
@@ -161,7 +162,7 @@ export default async function AboutPage({ params }: Props) {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             <ScrollReveal direction="left">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                {locale === 'pt' ? 'A Revista' : 'The Magazine'}
+                {t('theMagazine')}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
                 {t('magazine.title')}
@@ -174,7 +175,7 @@ export default async function AboutPage({ params }: Props) {
             <ScrollReveal direction="right" delay={0.2}>
               <div className="bg-gradient-to-br from-warm/10 via-secondary to-brand/5 p-10 md:p-14">
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                  {locale === 'pt' ? 'Missão' : 'Mission'}
+                  {t('missionLabel')}
                 </span>
                 <h3 className="font-headline text-2xl md:text-3xl mb-6">
                   {t('mission.title')}
@@ -386,9 +387,7 @@ export default async function AboutPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="font-ui inline-flex items-center gap-2 text-brand hover:text-foreground font-medium transition-base"
               >
-                {locale === 'pt'
-                  ? 'Visitar Surfing Medicine International'
-                  : 'Visit Surfing Medicine International'}
+                {t('vision.description')}
                 <ArrowRight className="w-4 h-4" />
               </a>
             )}
@@ -403,23 +402,19 @@ export default async function AboutPage({ params }: Props) {
             {/* Text content */}
             <ScrollReveal>
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {locale === 'pt' ? 'Colabore Connosco' : 'Collaborate With Us'}
+                {t('collaboration.title')}
               </span>
               <h2 className="font-headline text-3xl md:text-4xl mb-4">
-                {locale === 'pt'
-                  ? 'Partilhe a sua história'
-                  : 'Share your story'}
-            </h2>
+                {t('collaboration.description')}
+              </h2>
               <p className="font-body text-lg text-muted-foreground mb-8 leading-relaxed">
-                {locale === 'pt'
-                  ? 'Estamos sempre à procura de investigadores, escritores e surfistas que queiram partilhar as suas histórias e conhecimentos.'
-                  : "We're always looking for researchers, writers, and surfers who want to share their stories and insights."}
-            </p>
+                {t('vision.description')}
+              </p>
             <Link
               href="/contact"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
             >
-                {locale === 'pt' ? 'Contacte-nos' : 'Get in Touch'}
+                {t('collaboration.cta')}
                 <ArrowRight className="w-4 h-4" />
             </Link>
             </ScrollReveal>

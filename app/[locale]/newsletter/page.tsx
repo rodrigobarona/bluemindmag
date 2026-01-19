@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: "website",
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(locale === "pt" ? "Newsletter Gratuita" : "Free Newsletter")}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t("freeNewsletter"))}`],
     },
     twitter: {
       card: "summary_large_image",
@@ -53,6 +53,8 @@ export default async function NewsletterPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("Newsletter");
+  const tNav = await getTranslations("Navigation");
+  const tCommon = await getTranslations("Common");
   const editor = getTeamMemberById("pedro-seixas");
 
   // Fetch Pexels images using slot-based system (no repeats across pages)
@@ -62,15 +64,13 @@ export default async function NewsletterPage({ params }: Props) {
   ]);
 
   // Generate JSON-LD schema for SEO
-  const title = locale === "pt" ? "Mantém-te Ligado" : "Stay in the Loop";
-  const description = locale === "pt"
-    ? "Onde surf e ciência se encontram, entregue na tua caixa de entrada."
-    : "Where surf & science meet, delivered to your inbox.";
+  const title = t("title");
+  const description = t("subtitle");
   
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: 'Home', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
-    { name: 'Newsletter', url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/newsletter` },
+    { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
+    { name: tNav('newsletter'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/newsletter` },
   ];
 
   const schemas = [
@@ -81,35 +81,23 @@ export default async function NewsletterPage({ params }: Props) {
   const features = [
     {
       icon: IconSparkles,
-      title: locale === "pt" ? "Novos Números" : "New Issues",
-      description:
-        locale === "pt"
-          ? "Sê o primeiro a saber quando publicamos um novo número da revista."
-          : "Be the first to know when we publish a new issue of the magazine.",
+      title: t("benefits.newIssues.title"),
+      description: t("benefits.newIssues.description"),
     },
     {
       icon: IconEye,
-      title: locale === "pt" ? "Conteúdo Exclusivo" : "Exclusive Insights",
-      description:
-        locale === "pt"
-          ? "Artigos e entrevistas exclusivas que não encontras em mais lado nenhum."
-          : "Articles and interviews you won't find anywhere else.",
+      title: t("benefits.exclusive.title"),
+      description: t("benefits.exclusive.description"),
     },
     {
       icon: IconUsers,
-      title: locale === "pt" ? "Histórias da Comunidade" : "Community Stories",
-      description:
-        locale === "pt"
-          ? "Conhece surfistas e cientistas que estão a fazer a diferença."
-          : "Meet surfers and scientists who are making a difference.",
+      title: t("benefits.community.title"),
+      description: t("benefits.community.description"),
     },
     {
       icon: IconClock,
-      title: locale === "pt" ? "Acesso Antecipado" : "Early Access",
-      description:
-        locale === "pt"
-          ? "Pré-visualização de artigos e funcionalidades antes de todos."
-          : "Preview articles and features before anyone else.",
+      title: t("benefits.earlyAccess.title"),
+      description: t("benefits.earlyAccess.description"),
     },
   ];
 
@@ -260,14 +248,12 @@ export default async function NewsletterPage({ params }: Props) {
                 <div className="text-center md:text-left">
                   <IconWaveSine className="h-10 w-10 text-brand/30 mb-4 mx-auto md:mx-0" />
                   <p className="font-accent italic text-xl md:text-2xl text-muted-foreground leading-relaxed mb-6">
-                    {locale === "pt"
-                      ? '"Cada newsletter é uma carta pessoal da linha de costa. Partilho descobertas, histórias e reflexões sobre o ponto onde o surf encontra a ciência. Sem spam, apenas boas ondas na tua caixa de entrada."'
-                      : '"Every newsletter is a personal letter from the coastline. I share discoveries, stories, and reflections on where surf meets science. No spam, just good waves in your inbox."'}
+                    {t("description")}
                   </p>
                   <div>
                     <p className="font-medium text-lg">Pedro Seixas</p>
                     <p className="text-sm text-muted-foreground">
-                      {locale === "pt" ? "Editor & Fundador" : "Editor & Founder"}
+                      {t("founder.role")}
                     </p>
                   </div>
                 </div>
@@ -282,7 +268,7 @@ export default async function NewsletterPage({ params }: Props) {
         <div className="container-editorial">
           <ScrollReveal className="text-center mb-16">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {locale === "pt" ? "O Que Recebes" : "What You Get"}
+              {t("whatYouGet")}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl">
               {t("features.title")}
@@ -315,7 +301,7 @@ export default async function NewsletterPage({ params }: Props) {
               <div>
                 <p className="font-headline text-4xl md:text-5xl mb-2">100%</p>
                 <p className="text-background/60 text-sm uppercase tracking-wider">
-                  {locale === "pt" ? "Gratuito" : "Free"}
+                  {tCommon("free")}
                 </p>
               </div>
             </ScrollReveal>
@@ -324,7 +310,7 @@ export default async function NewsletterPage({ params }: Props) {
               <div>
                 <p className="font-headline text-4xl md:text-5xl mb-2">2x</p>
                 <p className="text-background/60 text-sm uppercase tracking-wider">
-                  {locale === "pt" ? "Por Mês" : "Per Month"}
+                  {tCommon("perMonth")}
                 </p>
               </div>
             </ScrollReveal>
@@ -333,7 +319,7 @@ export default async function NewsletterPage({ params }: Props) {
               <div>
                 <p className="font-headline text-4xl md:text-5xl mb-2">0</p>
                 <p className="text-background/60 text-sm uppercase tracking-wider">
-                  {locale === "pt" ? "Spam" : "Spam"}
+                  {tCommon("spam")}
                 </p>
               </div>
             </ScrollReveal>
@@ -347,24 +333,20 @@ export default async function NewsletterPage({ params }: Props) {
           <div className="max-w-2xl mx-auto text-center">
             <ScrollReveal>
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {locale === "pt" ? "Não Tens a Certeza?" : "Not Sure Yet?"}
+                {t("notSure.title")}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl mb-6">
-                {locale === "pt"
-                  ? "Lê Primeiro, Subscreve Depois"
-                  : "Read First, Subscribe Later"}
+                {t("readFirst.title")}
               </h2>
               <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
-                {locale === "pt"
-                  ? "Explora a nossa revista antes de te juntares à comunidade. Lê os nossos artigos e decide se o nosso conteúdo é para ti."
-                  : "Explore the magazine before joining the community. Read our articles and decide if our content is for you."}
+                {t("notSure.description")}
               </p>
 
               <Link
                 href="/issues"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
               >
-                {locale === "pt" ? "Explorar a Revista" : "Explore the Magazine"}
+                {t("notSure.cta")}
                 <span>→</span>
               </Link>
             </ScrollReveal>
