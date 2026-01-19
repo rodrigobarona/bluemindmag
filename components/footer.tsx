@@ -11,6 +11,7 @@ import {
 } from '@/content/data/navigation';
 import { LanguageDropdown } from './language-dropdown';
 import { NewsletterForm } from './newsletter-form';
+import { ManageCookiesButton } from './manage-cookies-button';
 import type { ImageResult } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 
@@ -198,6 +199,10 @@ export function Footer({ newsletterImage }: FooterProps) {
                   {t(link.key)}
                 </Link>
               ))}
+              {/* Manage Cookies Button */}
+              <ManageCookiesButton>
+                {tFooter('manageCookies')}
+              </ManageCookiesButton>
             </nav>
           </div>
         </div>

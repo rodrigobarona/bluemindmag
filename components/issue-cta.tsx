@@ -41,9 +41,9 @@ export function ReadIssueCTA({
   };
 
   const variantClasses = {
-    primary: "text-white hover:brightness-110",
+    primary: "text-white hover:brightness-110 shadow-sm",
     white: "bg-white text-foreground hover:bg-white/90",
-    outline: "border border-border bg-transparent hover:bg-muted",
+    outline: "border border-foreground/20 dark:border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5",
   };
 
   const baseClasses = cn(
@@ -108,7 +108,7 @@ export function ViewDetailsCTA({
     <Link
       href={`/issues/${slug}`}
       className={cn(
-        "inline-flex items-center justify-center gap-2 border border-border font-ui font-medium transition-all issue-secondary-cta",
+        "inline-flex items-center justify-center gap-2 border border-foreground/20 dark:border-foreground/30 text-foreground font-ui font-medium transition-all issue-secondary-cta hover:bg-foreground/5",
         sizeClasses[size],
         className
       )}

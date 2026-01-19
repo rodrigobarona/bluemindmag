@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     qualities: [75, 80, 85, 90],
   },
+  // Rewrite c15t consent API requests to hosted backend
+  async rewrites() {
+    return [
+      {
+        source: '/api/c15t/:path*',
+        destination: 'https://bluemind-europe-website.c15t.dev/:path*',
+      },
+    ];
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
