@@ -12,12 +12,12 @@ export const aboutSections: Record<string, AboutSectionTranslation> = {
   magazine: {
     title: 'Sobre a Blue Mind',
     description:
-      'A Blue Mind Magazine é onde o surf e a ciência se encontram. Exploramos a fascinante interseção entre desportos oceânicos, saúde humana e investigação científica. A nossa missão é trazer conhecimentos baseados em evidências à comunidade surfista, celebrando o poder transformador do mar.',
+      'A Blue Mind Magazine pretende explicar a ciência que se faz em torno do surf, numa linguagem acessível a todos os surfistas',
   },
   mission: {
     title: 'A Nossa Missão',
     description:
-      'Fazer a ponte entre a investigação científica e a comunidade surfista, tornando estudos complexos acessíveis e aplicáveis. Acreditamos que compreender a ciência por detrás do surf melhora tanto a performance como a ligação profunda que os surfistas sentem com o oceano.',
+      'A Blue Mind Magazine faz a ponte entre a investigação científica e a comunidade surfista. Explicamos estudos complexos em linguagem acessível para que possas viver mais o teu surf.',
   },
 };
 
@@ -26,12 +26,12 @@ export const teamTranslations: Record<string, TeamMemberTranslation> = {
   'pedro-seixas': {
     name: 'Pedro Seixas',
     title: 'Editor-Chefe & Fundador',
-    bio: 'Pedro Seixas é doutorado em Cinética Humana e serve como Coordenador Científico na Surfing Medicine International (SMI). Como fisioterapeuta e surfista apaixonado, fundou a Blue Mind Magazine para criar uma plataforma que une as suas duas maiores paixões: ciência e surf.',
+    bio: 'Pedro Seixas é Fisioterapeuta há mais de 20 anos, Professor Universitário Doutorado em Movimento Humano/ Treino Desportivo e Coordenador Científico da Surfing Medicine International (SMI). Mas é sobretudo um apaixonado pelo surf, o que o levou a idealizar a Blue Mind Magazine para criar uma plataforma que une as suas duas maiores paixões: ciência e surf.',
   },
   surfisio: {
     name: 'Surfisio',
     title: 'Editora',
-    bio: 'A Surfisio é uma empresa especializada em fisioterapia e performance desportiva dedicada à comunidade surfista. Fundada em 2011, a Surfisio opera sob a filosofia "We Drop The Pain!" — proporcionando prevenção de lesões, tratamento e otimização de performance para surfistas de todos os níveis.',
+    bio: 'A Surfisio é uma empresa especializada em fisioterapia e performance desportiva dedicada à comunidade surfista. Fundada em 2011, a Surfisio opera sob a filosofia "We Drop The Pain!": prevenção, tratamento de lesões e otimização de performance para surfistas de todos os níveis.',
   },
 };
 
@@ -43,7 +43,7 @@ export const supporterTranslations: Record<
   'surfing-medicine-international': {
     name: 'Surfing Medicine International',
     description:
-      'A SMI é uma organização sem fins lucrativos fundada por médicos e surfistas dedicados à ciência da medicina do surf. Desenvolvem investigação, programas de prevenção de lesões e plataformas educacionais para tornar o surf mais seguro e reconhecer os surfistas como socorristas-chave em situações de afogamento.',
+      'A SMI é uma organização sem fins lucrativos fundada por médicos surfistas dedicados à ciência da medicina do surf. Desenvolvem investigação, programas de prevenção de lesões e plataformas educacionais para tornar o surf mais seguro e reconhecer os surfistas como socorristas-chave em situações de afogamento.',
   },
 };
 
