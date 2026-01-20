@@ -12,12 +12,12 @@ export const aboutSections: Record<string, AboutSectionTranslation> = {
   magazine: {
     title: 'About Blue Mind',
     description:
-      'Blue Mind Magazine is where surf and science meet. We explore the fascinating intersection of ocean sports, human health, and scientific research. Our mission is to bring evidence-based insights to the surfing community while celebrating the transformative power of the sea.',
+      'Blue Mind Magazine aims to explain the science behind surfing in language that is accessible to all surfers.',
   },
   mission: {
     title: 'Our Mission',
     description:
-      'To bridge the gap between scientific research and the surfing community, making complex studies accessible and actionable. We believe that understanding the science behind surfing enhances both performance and the deep connection surfers feel with the ocean.',
+      'Blue Mind Magazine bridges the gap between scientific research and the surfing community. We explain complex studies in accessible language so you can get more out of your surfing',
   },
 };
 
@@ -26,7 +26,7 @@ export const teamTranslations: Record<string, TeamMemberTranslation> = {
   'pedro-seixas': {
     name: 'Pedro Seixas',
     title: 'Chief Editor & Founder',
-    bio: 'Pedro Seixas holds a PhD in Human Kinetics and serves as the Scientific Coordinator at Surfing Medicine International (SMI). As a physiotherapist and passionate surfer, he founded Blue Mind Magazine to create a platform that unites his two greatest passions: science and surfing.',
+    bio: 'Pedro has been a Physiotherapist for over 20 years, he is a PhD-qualified university professor in Human Movement/Sports Training, and serves as the Scientific Coordinator of Surfing Medicine International (SMI). Above all, he is deeply passionate about surfing, which led him to create Blue Mind Magazine as a platform that brings together his two greatest passions: science and surfing',
   },
   surfisio: {
     name: 'Surfisio',
