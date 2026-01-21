@@ -12,6 +12,7 @@ import { HorizontalScroll, HorizontalScrollItem } from '@/components/horizontal-
 import { JsonLd } from '@/components/json-ld';
 import { getImageForSlot, getSectionImages } from '@/lib/pexels';
 import { getAllIssues, getCurrentIssue, getIssueTranslations } from '@/content/data/issues';
+import { getHomePageContent } from '@/lib/mdx';
 import type { Locale } from '@/content/types/content';
 import {
   generateWebSiteSchema,
@@ -27,11 +28,16 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations('Home');
   const tCommon = await getTranslations('Common');
   const tIssues = await getTranslations('Issues');
+  const content = getHomePageContent(locale as Locale);
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
+
+  // Fallback if content is not found
+  if (!content) {
+    throw new Error(`Home page content not found for locale: ${locale}`);
+  }
 
   // Fetch dynamic Pexels images using slot-based system (no repeats across pages)
   const [heroImage, quoteImage, newsletterImage] = await Promise.all([
@@ -65,7 +71,7 @@ export default async function HomePage({ params }: Props) {
       {/* Section 1: Immersive Hero - Full viewport */}
       <HeroImmersive
         heroImage={heroImage}
-        tagline={t('hero.tagline')}
+        tagline={content.hero.tagline}
         issueNumber={currentIssue?.issueNumber?.toString() || '0'}
         issueDate={
           currentIssue
@@ -269,8 +275,8 @@ export default async function HomePage({ params }: Props) {
 
       {/* Section 4: Pull Quote with Beautiful Image */}
       <PullQuoteImage
-        quote={t('quote.text')}
-        attribution={t('quote.attribution')}
+        quote={content.quote.text}
+        attribution={content.quote.attribution}
         image={quoteImage}
       />
 
@@ -281,10 +287,10 @@ export default async function HomePage({ params }: Props) {
             <ScrollReveal className="flex items-end justify-between mb-16">
               <div>
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                  {t('archive.label')}
+                  {content.archive.label}
                 </span>
                 <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl">
-                  {t('archive.title')}
+                  {content.archive.title}
                 </h2>
               </div>
               <Link
@@ -329,15 +335,15 @@ export default async function HomePage({ params }: Props) {
         <div className="container-narrow">
           <ScrollReveal className="text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {t('about.label')}
+              {content.about.label}
             </span>
             
             <h2 className="font-headline text-3xl md:text-4xl mb-8">
-              {t('about.title')}
+              {content.about.title}
             </h2>
             
             <p className="font-body text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
-              {t('about.description')}
+              {content.about.description}
             </p>
             
             <Link

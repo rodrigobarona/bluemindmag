@@ -2,6 +2,7 @@ import type { TeamMember } from '../types/content';
 
 // ============================================
 // BLUE MIND MAGAZINE - TEAM DATA
+// Edit team members and social links directly here
 // ============================================
 
 export const team: TeamMember[] = [

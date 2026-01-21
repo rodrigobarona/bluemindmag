@@ -246,7 +246,7 @@ export default async function ContactPage({ params }: Props) {
                   </h3>
 
                   <a
-                    href="https://cal.com/pedroseixas/15min"
+                    href={content.links.calcom}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all"

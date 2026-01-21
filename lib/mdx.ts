@@ -521,6 +521,9 @@ export interface ContactPageContent {
     email: string;
     response: string;
   };
+  links: {
+    calcom: string;
+  };
 }
 
 /**
@@ -625,3 +628,52 @@ export function getLegalPageContent(
     content: parsed.content,
   };
 }
+
+// ============================================
+// HOME PAGE CONTENT
+// ============================================
+
+export interface HomePageContent {
+  hero: {
+    title: string;
+    subtitle: string;
+    tagline: string;
+    description: string;
+    cta: string;
+    secondary: string;
+  };
+  currentIssue: {
+    label: string;
+    readNow: string;
+    preview: string;
+  };
+  archive: {
+    label: string;
+    title: string;
+    viewAll: string;
+  };
+  newsletter: {
+    title: string;
+    description: string;
+    cta: string;
+  };
+  about: {
+    label: string;
+    title: string;
+    description: string;
+  };
+  quote: {
+    text: string;
+    attribution: string;
+  };
+}
+
+/**
+ * Get Home page content for a locale
+ */
+export function getHomePageContent(locale: Locale = 'en'): HomePageContent | null {
+  const parsed = parsePageFile('home', locale);
+  if (!parsed) return null;
+  return parsed.frontmatter as unknown as HomePageContent;
+}
+

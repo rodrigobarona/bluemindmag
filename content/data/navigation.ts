@@ -33,6 +33,7 @@ export const footerNavLinks: NavLink[] = [
 
 // ============================================
 // SOCIAL LINKS
+// Edit directly here
 // ============================================
 
 export const socialLinks: SocialLink[] = [
@@ -50,6 +51,7 @@ export const socialLinks: SocialLink[] = [
 
 // ============================================
 // EXTERNAL LINKS
+// Edit directly here
 // ============================================
 
 export const externalLinks = {
