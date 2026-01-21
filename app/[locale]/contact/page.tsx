@@ -198,7 +198,7 @@ export default async function ContactPage({ params }: Props) {
             </div>
 
             {/* Sidebar - Personal Touch */}
-            <div className="lg:col-span-5">
+            <aside className="lg:col-span-5">
               {/* Personal Note from Pedro - Always visible at top */}
               <div className="relative pb-8 mb-8 border-b border-border">
                 <div className="flex items-start gap-4 mb-6">
@@ -270,8 +270,8 @@ export default async function ContactPage({ params }: Props) {
                   </p>
                 </div>
 
-                {/* Connect on Social */}
-                <div className="pt-8 border-t border-border">
+                {/* Connect on Social - Using address for semantic contact info */}
+                <address className="pt-8 border-t border-border not-italic">
                   <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
                     {content.social.follow}
                   </h3>
@@ -294,9 +294,9 @@ export default async function ContactPage({ params }: Props) {
                   <p className="text-sm text-muted-foreground mt-4">
                     {content.social.description}
                   </p>
-                </div>
+                </address>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </section>

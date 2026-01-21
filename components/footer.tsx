@@ -56,9 +56,9 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
 
       {/* Newsletter Section - With Background Image */}
       <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
-        {/* Background image */}
+        {/* Background image with semantic figure */}
         {newsletterImage && (
-          <>
+          <figure className="absolute inset-0">
             <Image
               src={newsletterImage.srcLarge || newsletterImage.src}
               alt={newsletterImage.alt}
@@ -72,9 +72,9 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
             />
             <div className="absolute inset-0 bg-black/60" />
             
-            {/* Photo credit */}
+            {/* Photo credit as figcaption */}
             {newsletterImage.photographer && (
-              <div className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
+              <figcaption className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
                 Photo:{' '}
                 {newsletterImage.photographerUrl ? (
                   <a
@@ -89,9 +89,9 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
                   newsletterImage.photographer
                 )}
                 {' / Pexels'}
-              </div>
+              </figcaption>
             )}
-          </>
+          </figure>
         )}
         
         {/* Fallback gradient if no image */}

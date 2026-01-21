@@ -69,7 +69,7 @@ export default async function TermsPage({ params }: Props) {
         <header className="mb-10 pb-8 border-b border-border">
           <h1 className="font-headline text-3xl md:text-4xl lg:text-5xl uppercase tracking-wide mb-3">{frontmatter.title}</h1>
           <p className="text-sm text-muted-foreground">
-            {tLegal('lastUpdated')}: {frontmatter.lastUpdated}
+            {tLegal('lastUpdated')}: <time dateTime={frontmatter.lastUpdated}>{frontmatter.lastUpdated}</time>
           </p>
         </header>
 
