@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { checkBotId } from 'botid/server';
 
 // Initialize Resend only if API key is available
 const resend = process.env.RESEND_API_KEY
@@ -31,6 +32,15 @@ function escapeHtml(text: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify the request is from a human using BotID
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json(
+        { error: 'Access denied' },
+        { status: 403 }
+      );
+    }
+
     // Check if Resend is configured
     if (!resend) {
       console.error('Resend API key not configured');

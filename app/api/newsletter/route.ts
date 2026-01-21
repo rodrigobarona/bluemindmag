@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkBotId } from 'botid/server';
 
 // Beehiiv API Configuration
 const BEEHIIV_API_KEY = process.env.BEEHIIV_API_KEY;
@@ -6,6 +7,15 @@ const BEEHIIV_PUBLICATION_ID = process.env.BEEHIIV_PUBLICATION_ID;
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify the request is from a human using BotID
+    const verification = await checkBotId();
+    if (verification.isBot) {
+      return NextResponse.json(
+        { error: 'Access denied' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { email } = body;
 
