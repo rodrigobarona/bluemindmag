@@ -156,7 +156,7 @@ export default async function AboutPage({ params }: Props) {
               className={`font-body text-xl leading-relaxed ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
               style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
             >
-              {content.magazine.description}
+              {content.heroDescription}
             </p>
           </ScrollReveal>
         </div>

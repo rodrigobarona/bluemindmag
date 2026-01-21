@@ -433,6 +433,7 @@ export interface AboutPageContent {
   description: string;
   theMagazine: string;
   missionLabel: string;
+  heroDescription: string;
   magazine: {
     title: string;
     description: string;
