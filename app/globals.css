@@ -810,6 +810,119 @@
 }
 
 /* ============================================
+   LEGAL PAGE CONTENT STYLES
+   Clean, readable typography for Terms, Privacy, Cookies
+   ============================================ */
+.legal-content {
+  color: var(--foreground);
+  font-family: var(--font-body), Georgia, "Times New Roman", serif;
+  counter-reset: section;
+}
+
+.legal-content h2 {
+  font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  counter-increment: section;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.legal-content h2::before {
+  content: counter(section) ". ";
+}
+
+.legal-content h3 {
+  font-family: var(--font-headline), Impact, "Arial Narrow", sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: var(--muted-foreground);
+}
+
+.legal-content strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.legal-content ul {
+  margin-bottom: 1.5rem;
+  padding-left: 1.25rem;
+  list-style-type: disc;
+}
+
+.legal-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.25rem;
+  list-style-type: decimal;
+}
+
+.legal-content li {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin-bottom: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.legal-content li::marker {
+  color: var(--brand);
+}
+
+.legal-content a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.legal-content a:hover {
+  text-decoration: underline;
+}
+
+.legal-content hr {
+  margin: 2rem 0;
+  border-color: var(--border);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .legal-content h2 {
+    font-size: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+  }
+  
+  .legal-content h3 {
+    font-size: 0.9375rem;
+    margin-top: 1.25rem;
+  }
+  
+  .legal-content p,
+  .legal-content li {
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
    HERO SECTION UTILITIES
    ============================================ */
 @layer utilities {

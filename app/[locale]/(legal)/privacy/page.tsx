@@ -61,28 +61,28 @@ export default async function PrivacyPage({ params }: Props) {
   ];
 
   return (
-    <article className="py-20 md:py-32">
+    <article className="py-16 md:py-24">
       {/* JSON-LD Structured Data */}
       <JsonLd data={schemas} />
       <div className="container-narrow">
         {/* Header */}
-        <header className="mb-12">
-          <h1 className="headline text-4xl md:text-5xl mb-4">{frontmatter.title}</h1>
-          <p className="text-muted-foreground">
+        <header className="mb-8 pb-6 border-b border-border">
+          <h1 className="font-headline text-2xl md:text-3xl uppercase tracking-wide mb-2">{frontmatter.title}</h1>
+          <p className="text-sm text-muted-foreground">
             {tLegal('lastUpdated')}: {frontmatter.lastUpdated}
           </p>
         </header>
 
         {/* Content */}
-        <div className="prose prose-invert prose-lg max-w-none prose-headings:font-headline prose-headings:font-normal prose-h2:text-2xl prose-h2:mb-4 prose-p:text-muted-foreground prose-p:leading-relaxed prose-li:text-muted-foreground prose-strong:text-foreground prose-a:text-brand prose-a:no-underline hover:prose-a:underline">
+        <section className="legal-content">
           <ReactMarkdown>{content}</ReactMarkdown>
-        </div>
+        </section>
 
         {/* Back link */}
-        <div className="mt-12 pt-8 border-t border-border">
+        <div className="mt-12 pt-6 border-t border-border">
           <Link
             href="/"
-            className="text-brand hover:underline inline-flex items-center gap-2"
+            className="text-brand hover:underline inline-flex items-center gap-2 text-sm"
           >
             ← {locale === 'pt' ? 'Voltar ao Início' : 'Back to Home'}
           </Link>
@@ -91,4 +91,3 @@ export default async function PrivacyPage({ params }: Props) {
     </article>
   );
 }
-
