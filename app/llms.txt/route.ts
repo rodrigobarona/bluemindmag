@@ -79,7 +79,7 @@ ${aboutContent?.editor.bio || 'Scientific Coordinator at Surfing Medicine Intern
 
 ## Main Supporter
 
-${aboutContent?.supporters.smi.name || 'Surfing Medicine International'} (${externalLinks.smi})
+${aboutContent?.supporters.smi.name || 'Surfing Medicine International'} (${aboutContent?.supporters.smi.url || 'https://surfingmedicine.org'})
 
 ${aboutContent?.supporters.smi.description || 'A non-profit organization founded by medical doctors and surfers dedicated to the science of surfing medicine.'}
 ${currentIssueInfo}

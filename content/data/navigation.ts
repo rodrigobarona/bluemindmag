@@ -51,13 +51,11 @@ export const socialLinks: SocialLink[] = [
 
 // ============================================
 // EXTERNAL LINKS
-// Edit directly here
+// Only links used in code (schema.ts, llms.txt)
+// Other links are in MDX files for easy editing
 // ============================================
 
 export const externalLinks = {
-  beehiiv: 'https://bluemindmag.beehiiv.com/subscribe',
-  publuu: 'https://publuu.com',
-  surfisio: 'https://surfisio.pt',
-  smi: 'https://surfingmedicine.org',
+  surfisio: 'https://surfisio.pt',  // Used in JSON-LD schema
 };
 
