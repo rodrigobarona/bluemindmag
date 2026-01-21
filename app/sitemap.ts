@@ -42,7 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   });
 
-  // Generate sitemap entries for issue pages
+  // Generate sitemap entries for issue detail pages
   const issueEntries: MetadataRoute.Sitemap = issues.flatMap((issue) => {
     return locales.map((locale) => {
       const url =
@@ -65,6 +65,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   });
 
-  return [...staticEntries, ...issueEntries];
+  // Generate sitemap entries for issue reader pages (flipbook)
+  const readerEntries: MetadataRoute.Sitemap = issues.flatMap((issue) => {
+    return locales.map((locale) => {
+      const url =
+        locale === 'en'
+          ? `${baseUrl}/read/${issue.slug}`
+          : `${baseUrl}/${locale}/read/${issue.slug}`;
+
+      return {
+        url,
+        lastModified: new Date(issue.date),
+        changeFrequency: 'monthly' as const,
+        priority: issue.isCurrent ? 0.8 : 0.7,
+        alternates: {
+          languages: {
+            en: `${baseUrl}/read/${issue.slug}`,
+            pt: `${baseUrl}/pt/read/${issue.slug}`,
+          },
+        },
+      };
+    });
+  });
+
+  return [...staticEntries, ...issueEntries, ...readerEntries];
 }
 

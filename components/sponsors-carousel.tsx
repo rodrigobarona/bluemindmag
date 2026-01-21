@@ -63,6 +63,7 @@ export function SponsorsCarousel({ sponsors, title, variant = "default" }: Spons
                 alt={sponsor.alt || sponsor.name}
                 width={160}
                 height={60}
+                loading="lazy"
                 className="h-12 md:h-14 w-auto object-contain"
               />
             </a>

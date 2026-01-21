@@ -77,6 +77,9 @@ export async function generateMetadata({
         en: baseUrl,
         pt: `${baseUrl}/pt`,
       },
+      types: {
+        'application/rss+xml': `${baseUrl}/feed.xml`,
+      },
     },
     openGraph: {
       title: t("title"),
@@ -85,11 +88,21 @@ export async function generateMetadata({
       siteName: "Blue Mind Magazine",
       locale: locale === "en" ? "en_US" : "pt_PT",
       type: "website",
+      images: [
+        {
+          url: `${baseUrl}/api/og`,
+          width: 1200,
+          height: 630,
+          alt: "Blue Mind Magazine - Surf Science Publication",
+          type: "image/png",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
+      images: [`${baseUrl}/api/og`],
     },
     robots: {
       index: true,
@@ -127,6 +140,13 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={`${leagueGothic.variable} ${sourceSerif.variable} ${dmSans.variable} ${cormorant.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {/* DNS prefetch for external resources - improves LCP */}
+        <link rel="dns-prefetch" href="//images.pexels.com" />
+        <link rel="preconnect" href="https://images.pexels.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+      </head>
       <body className="min-h-screen bg-background font-sans antialiased overflow-x-hidden">
         <ThemeProvider>
           <NextIntlClientProvider>

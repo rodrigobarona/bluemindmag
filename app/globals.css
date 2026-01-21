@@ -85,9 +85,9 @@
   --secondary: #f0ebe4;
   --secondary-foreground: #1a1a1a;
 
-  /* Muted - Soft warmth */
+  /* Muted - Soft warmth (WCAG AA: 4.5:1 contrast) */
   --muted: #ebe6df;
-  --muted-foreground: #6b6560;
+  --muted-foreground: #5c5855;
 
   /* Accent - Ocean Teal */
   --accent: #0097b2;
@@ -272,12 +272,27 @@
     opacity: 0.9;
   }
 
-  /* Focus states */
+  /* Focus states - WCAG 2.1 AA compliant */
   a:focus-visible,
   button:focus-visible,
-  [role="button"]:focus-visible {
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+
+  /* Ensure focus ring is visible on dark backgrounds */
+  .dark a:focus-visible,
+  .dark button:focus-visible,
+  .dark [role="button"]:focus-visible,
+  .dark input:focus-visible,
+  .dark textarea:focus-visible,
+  .dark select:focus-visible {
+    outline-color: var(--ring);
   }
 }
 

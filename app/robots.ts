@@ -33,6 +33,21 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/_next/'],
       },
       {
+        userAgent: 'PerplexityBot',
+        allow: ['/', '/llms.txt'],
+        disallow: ['/api/', '/_next/'],
+      },
+      {
+        userAgent: 'Cohere-AI',
+        allow: ['/', '/llms.txt'],
+        disallow: ['/api/', '/_next/'],
+      },
+      {
+        userAgent: 'YouBot',
+        allow: ['/', '/llms.txt'],
+        disallow: ['/api/', '/_next/'],
+      },
+      {
         userAgent: 'Googlebot',
         allow: '/',
         disallow: ['/api/', '/_next/', '/private/'],

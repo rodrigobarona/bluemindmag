@@ -63,6 +63,7 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
               src={newsletterImage.srcLarge || newsletterImage.src}
               alt={newsletterImage.alt}
               fill
+              loading="lazy"
               placeholder={newsletterImage.blurDataURL || newsletterImage.avgColor ? 'blur' : 'empty'}
               blurDataURL={newsletterImage.blurDataURL || (newsletterImage.avgColor ? generateBlurPlaceholder(newsletterImage.avgColor) : undefined)}
               className="object-cover"
