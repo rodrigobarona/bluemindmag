@@ -96,10 +96,13 @@ highlights:
   - id: "editors-note"           # Unique ID (don't change)
     page: 3                      # Page number in magazine
     image: "/images/issues/..."  # Thumbnail image path
-    title: "Editor's Note"       # Article title
+    title: "Editor's Note"       # Section label (e.g., "Meet the Scientist")
+    headline: "Welcome to..."    # Article headline (main title shown)
     author: "Pedro Seixas"       # Author name
     excerpt: "Short teaser..."   # Brief description
 ```
+
+> **💡 Title vs Headline:** The `title` is a short label (like "Editor's Note"), while `headline` is the actual article title displayed prominently.
 
 ---
 
@@ -442,6 +445,5 @@ Contact the development team if you're stuck!
 | File | Description |
 |------|-------------|
 | [✏️ `sponsors/sponsors.mdx`](./sponsors/sponsors.mdx) | Sponsor logos and info |
-| [✏️ `site/links.mdx`](./site/links.mdx) | Quick reference for all links |
 | [✏️ `data/navigation.ts`](./data/navigation.ts) | Social links & external URLs |
 | [✏️ `data/team.ts`](./data/team.ts) | Team member info & social links |

@@ -332,6 +332,15 @@ export function IssueDetailFeatures({
                         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-12">
                           {isMounted ? (
                             <>
+                              <motion.span
+                                className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/70 mb-2 block"
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.2, duration: 0.5 }}
+                              >
+                                {highlightTranslation.title}
+                              </motion.span>
                               <motion.h3
                                 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4"
                                 initial={{ opacity: 0, y: 30 }}
@@ -339,7 +348,7 @@ export function IssueDetailFeatures({
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.3, duration: 0.6 }}
                               >
-                                {highlightTranslation.title}
+                                {highlightTranslation.headline || highlightTranslation.title}
                               </motion.h3>
                               <motion.p
                                 className="font-accent italic text-white/80 text-lg"
@@ -353,8 +362,11 @@ export function IssueDetailFeatures({
                             </>
                           ) : (
                             <>
-                              <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4">
+                              <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/70 mb-2 block">
                                 {highlightTranslation.title}
+                              </span>
+                              <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4">
+                                {highlightTranslation.headline || highlightTranslation.title}
                               </h3>
                               <p className="font-accent italic text-white/80 text-lg">
                                 {labels.by} {highlightTranslation.author}
@@ -459,10 +471,20 @@ export function IssueDetailFeatures({
                       )}
                     </div>
 
-                    {/* Title */}
+                    {/* Title (label) */}
                     <TextReveal delay={0.1}>
-                      <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-6 group-hover:text-foreground/80 transition-colors">
+                      <span 
+                        className="font-ui text-xs font-medium uppercase tracking-[0.2em] mb-2 block"
+                        style={{ color: issue.accentColor }}
+                      >
                         {highlightTranslation.title}
+                      </span>
+                    </TextReveal>
+
+                    {/* Headline */}
+                    <TextReveal delay={0.15}>
+                      <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-6 group-hover:text-foreground/80 transition-colors">
+                        {highlightTranslation.headline || highlightTranslation.title}
                       </h3>
                     </TextReveal>
 

@@ -32,6 +32,7 @@ export interface Issue {
 
 export interface IssueHighlightTranslation {
   title: string;
+  headline?: string;
   author: string;
   excerpt: string;
 }

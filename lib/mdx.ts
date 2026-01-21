@@ -28,6 +28,7 @@ interface MDXHighlight {
   page: number;
   image: string;
   title: string;
+  headline?: string;
   author: string;
   excerpt: string;
 }
@@ -149,6 +150,7 @@ function toIssueTranslation(frontmatter: MDXIssueFrontmatter): IssueTranslation 
   for (const h of frontmatter.highlights) {
     highlights[h.id] = {
       title: h.title,
+      headline: h.headline,
       author: h.author,
       excerpt: h.excerpt,
     };

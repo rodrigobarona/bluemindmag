@@ -711,13 +711,13 @@
   }
 }
 
-/* Infinite marquee scroll */
+/* Infinite marquee scroll - seamless loop with two identical tracks */
 @keyframes marquee {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-33.333%);
+    transform: translateX(-50%);
   }
 }
 
