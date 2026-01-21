@@ -22,8 +22,8 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
         whileHover={{ y: -8 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
-        {/* Cover container with dramatic shadow */}
-        <div className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
+        {/* Cover as semantic figure */}
+        <figure className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
             {/* Cover Image */}
           <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
               <Image
@@ -47,17 +47,17 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
                 className="absolute top-4 right-4 z-10"
               />
             )}
-          </div>
-
-        {/* Issue info */}
-        <div className="mt-6 text-center">
-          <h3 className="font-headline text-xl md:text-2xl group-hover:text-brand transition-base">
-            {translation.title}
-          </h3>
-          <p className="font-ui text-muted-foreground text-sm mt-2">
-            {translation.subtitle}
-          </p>
-        </div>
+          
+          {/* Issue info as figcaption */}
+          <figcaption className="mt-6 text-center">
+            <h3 className="font-headline text-xl md:text-2xl group-hover:text-brand transition-base">
+              {translation.title}
+            </h3>
+            <p className="font-ui text-muted-foreground text-sm mt-2">
+              {translation.subtitle}
+            </p>
+          </figcaption>
+        </figure>
       </motion.article>
     </Link>
   );
@@ -292,39 +292,41 @@ export function IssueCardSimple({
         whileHover={{ y: -6 }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
-        {/* Cover Image with subtle shadow */}
-        <div className="relative overflow-hidden shadow-editorial group-hover:shadow-editorial-lg transition-slow">
-          <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
-            <Image
-              src={issue.cover}
-              alt={`${translation.title} cover`}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              priority={priority}
-            />
+        {/* Cover as semantic figure */}
+        <figure>
+          <div className="relative overflow-hidden shadow-editorial group-hover:shadow-editorial-lg transition-slow">
+            <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
+              <Image
+                src={issue.cover}
+                alt={`${translation.title} cover`}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={priority}
+              />
+            </div>
+
+            {/* Current issue badge */}
+            {issue.isCurrent && (
+              <CurrentIssueBadge
+                label="Current"
+                accentColor={issue.accentColor}
+                size="sm"
+                className="absolute top-3 right-3 z-10"
+              />
+            )}
           </div>
 
-          {/* Current issue badge */}
-          {issue.isCurrent && (
-            <CurrentIssueBadge
-              label="Current"
-              accentColor={issue.accentColor}
-              size="sm"
-              className="absolute top-3 right-3 z-10"
-            />
-          )}
-        </div>
-
-        {/* Issue info */}
-        <div className="mt-4 text-center">
-          <h3 className="font-headline text-lg md:text-xl group-hover:text-brand transition-base">
-            {translation.title}
-          </h3>
-          <p className="font-ui text-muted-foreground text-sm mt-1">
-            {translation.subtitle}
-          </p>
-        </div>
+          {/* Issue info as figcaption */}
+          <figcaption className="mt-4 text-center">
+            <h3 className="font-headline text-lg md:text-xl group-hover:text-brand transition-base">
+              {translation.title}
+            </h3>
+            <p className="font-ui text-muted-foreground text-sm mt-1">
+              {translation.subtitle}
+            </p>
+          </figcaption>
+        </figure>
       </motion.article>
     </Link>
   );
@@ -343,24 +345,26 @@ export function IssueCardMini({
         whileHover={{ y: -4 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
       >
-        <div className="relative overflow-hidden shadow-editorial">
-          <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
-            <Image
-              src={issue.cover}
-              alt={`${translation.title} cover`}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="(max-width: 640px) 50vw, 25vw"
-              priority={priority}
-            />
+        <figure>
+          <div className="relative overflow-hidden shadow-editorial">
+            <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
+              <Image
+                src={issue.cover}
+                alt={`${translation.title} cover`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 50vw, 25vw"
+                priority={priority}
+              />
+            </div>
           </div>
-        </div>
-        
-        <div className="mt-3 text-center">
-          <span className="font-ui text-xs text-muted-foreground">
-            Issue {issue.issueNumber}
-          </span>
-        </div>
+          
+          <figcaption className="mt-3 text-center">
+            <span className="font-ui text-xs text-muted-foreground">
+              Issue {issue.issueNumber}
+            </span>
+          </figcaption>
+        </figure>
       </motion.article>
     </Link>
   );
