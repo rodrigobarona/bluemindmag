@@ -6,11 +6,27 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
+// Email configuration from environment variables
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || 'Blue Mind Magazine <contact@updates.bluemindmag.com>';
+const EMAIL_TO = process.env.RESEND_TO_EMAIL || 'contact@updates.bluemindmag.com';
+
 interface ContactFormData {
   name: string;
   email: string;
   subject: string;
   message: string;
+}
+
+// Escape HTML to prevent injection attacks
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
 export async function POST(request: NextRequest) {
@@ -44,33 +60,105 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Escape user input to prevent HTML injection
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeSubject = escapeHtml(subject);
+    const safeMessage = escapeHtml(message);
+
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: 'Blue Mind Magazine <noreply@bluemindmag.com>',
-      to: ['info@bluemindmag.com'],
+      from: EMAIL_FROM,
+      to: [EMAIL_TO],
       replyTo: email,
       subject: `[Contact Form] ${subject}`,
+      text: `New Contact Form Submission
+
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+This message was sent from the Blue Mind Magazine contact form.`,
       html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #0097B2; margin-bottom: 24px;">New Contact Form Submission</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="padding: 40px 20px;">
+        <table role="presentation" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #0097B2; padding: 32px 40px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600;">Blue Mind Magazine</h1>
+            </td>
+          </tr>
           
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
-            <p style="margin: 0 0 8px 0;"><strong>Name:</strong> ${name}</p>
-            <p style="margin: 0 0 8px 0;"><strong>Email:</strong> ${email}</p>
-            <p style="margin: 0;"><strong>Subject:</strong> ${subject}</p>
-          </div>
+          <!-- Title -->
+          <tr>
+            <td style="padding: 32px 40px 24px;">
+              <h2 style="margin: 0; color: #1a1a1a; font-size: 20px; font-weight: 600;">New Contact Form Submission</h2>
+            </td>
+          </tr>
           
-          <div style="background: #fff; border: 1px solid #e5e5e5; padding: 20px; border-radius: 8px;">
-            <h2 style="margin-top: 0; font-size: 16px;">Message:</h2>
-            <p style="white-space: pre-wrap; margin: 0;">${message}</p>
-          </div>
+          <!-- Contact Details -->
+          <tr>
+            <td style="padding: 0 40px 24px;">
+              <table role="presentation" style="width: 100%; background-color: #f8f9fa; border-radius: 6px; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 16px 20px; border-bottom: 1px solid #e9ecef;">
+                    <span style="color: #6c757d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Name</span><br>
+                    <span style="color: #1a1a1a; font-size: 15px; font-weight: 500;">${safeName}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 16px 20px; border-bottom: 1px solid #e9ecef;">
+                    <span style="color: #6c757d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Email</span><br>
+                    <a href="mailto:${safeEmail}" style="color: #0097B2; font-size: 15px; font-weight: 500; text-decoration: none;">${safeEmail}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 16px 20px;">
+                    <span style="color: #6c757d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Subject</span><br>
+                    <span style="color: #1a1a1a; font-size: 15px; font-weight: 500;">${safeSubject}</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
           
-          <hr style="margin: 24px 0; border: none; border-top: 1px solid #e5e5e5;" />
+          <!-- Message -->
+          <tr>
+            <td style="padding: 0 40px 32px;">
+              <h3 style="margin: 0 0 12px; color: #1a1a1a; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Message</h3>
+              <div style="background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 6px; padding: 20px;">
+                <p style="margin: 0; color: #333333; font-size: 15px; line-height: 1.6; white-space: pre-wrap;">${safeMessage}</p>
+              </div>
+            </td>
+          </tr>
           
-          <p style="color: #666; font-size: 14px;">
-            This message was sent from the Blue Mind Magazine contact form.
-          </p>
-        </div>
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8f9fa; padding: 24px 40px; border-top: 1px solid #e9ecef;">
+              <p style="margin: 0; color: #6c757d; font-size: 13px; text-align: center;">
+                This message was sent from the Blue Mind Magazine contact form.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
       `,
     });
 
