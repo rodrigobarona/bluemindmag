@@ -61,13 +61,13 @@ export default async function TermsPage({ params }: Props) {
   ];
 
   return (
-    <article className="py-16 md:py-24">
+    <article className="pt-24 pb-16 md:pt-32 md:pb-24">
       {/* JSON-LD Structured Data */}
       <JsonLd data={schemas} />
       <div className="container-narrow">
         {/* Header */}
-        <header className="mb-8 pb-6 border-b border-border">
-          <h1 className="font-headline text-2xl md:text-3xl uppercase tracking-wide mb-2">{frontmatter.title}</h1>
+        <header className="mb-10 pb-8 border-b border-border">
+          <h1 className="font-headline text-3xl md:text-4xl lg:text-5xl uppercase tracking-wide mb-3">{frontmatter.title}</h1>
           <p className="text-sm text-muted-foreground">
             {tLegal('lastUpdated')}: {frontmatter.lastUpdated}
           </p>
