@@ -25,7 +25,7 @@ export function SponsorsCarousel({ sponsors, title, variant = "default" }: Spons
     <div className="w-full">
       {title && (
         <h3 className={`font-headline text-2xl md:text-3xl text-center mb-10 ${
-          variant === "light" ? "text-foreground" : ""
+          variant === "light" ? "text-gray-900" : ""
         }`}>
           {title}
         </h3>
