@@ -115,6 +115,17 @@ export async function generateMetadata({
         "max-snippet": -1,
       },
     },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/bluemind-avatar.png', type: 'image/png', sizes: '194x194' },
+      ],
+      apple: [
+        { url: '/bluemind-avatar.png', sizes: '194x194', type: 'image/png' },
+      ],
+      shortcut: '/favicon.ico',
+    },
+    manifest: '/manifest.json',
   };
 }
 

@@ -1,0 +1,30 @@
+{
+  "name": "Blue Mind Magazine",
+  "short_name": "Blue Mind",
+  "description": "A magazine dedicated to surf science, bridging the gap between academic research and the surfing community.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#14b8bf",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/bluemind-avatar.png",
+      "sizes": "194x194",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bluemind-avatar.png",
+      "sizes": "194x194",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
+
