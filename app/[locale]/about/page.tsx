@@ -23,6 +23,8 @@ import {
   generateBreadcrumbSchema,
 } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';
+import { getAboutPageContent } from '@/lib/mdx';
+import type { Locale } from '@/content/types/content';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -30,10 +32,11 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'About' });
+  const content = getAboutPageContent(locale as Locale);
 
-  const title = t('title');
-  const description = t('magazine.description');
+  const title = content?.title || 'About';
+  const description = content?.magazine.description || '';
+  const subtitle = content?.subtitle || '';
 
   return {
     title,
@@ -42,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: 'website',
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}`],
     },
     twitter: {
       card: 'summary_large_image',
@@ -56,11 +59,16 @@ export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations('About');
   const tNav = await getTranslations('Navigation');
+  const content = getAboutPageContent(locale as Locale);
   const editor = getTeamMemberById('pedro-seixas');
   const publisher = getTeamMemberById('surfisio');
   const smi = getSponsorById('surfing-medicine-international');
+
+  // Fallback if content is not found
+  if (!content) {
+    throw new Error(`About page content not found for locale: ${locale}`);
+  }
 
   // Fetch Pexels images using slot-based system (no repeats across pages)
   const [quoteImage, heroImage, surferImage, newsletterImage] = await Promise.all([
@@ -138,19 +146,19 @@ export default async function AboutPage({ params }: Props) {
               className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${heroImage ? 'text-white/70' : 'text-brand'}`}
               style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.3)' } : undefined}
             >
-              {t('subtitle')}
+              {content.subtitle}
             </span>
             <h1 
               className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}
               style={heroImage ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
             >
-              {t('title')}
+              {content.title}
             </h1>
             <p 
               className={`font-body text-xl leading-relaxed ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
               style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
             >
-              {t('magazine.description')}
+              {content.magazine.description}
             </p>
           </ScrollReveal>
         </div>
@@ -162,26 +170,26 @@ export default async function AboutPage({ params }: Props) {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             <ScrollReveal direction="left">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                {t('theMagazine')}
+                {content.theMagazine}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
-                {t('magazine.title')}
+                {content.magazine.title}
               </h2>
               <div className="space-y-6 font-body text-lg text-muted-foreground leading-relaxed">
-                <p>{t('magazine.description')}</p>
+                <p>{content.magazine.description}</p>
               </div>
             </ScrollReveal>
             
             <ScrollReveal direction="right" delay={0.2}>
               <div className="bg-gradient-to-br from-warm/10 via-secondary to-brand/5 p-10 md:p-14">
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
-                  {t('missionLabel')}
+                  {content.missionLabel}
                 </span>
                 <h3 className="font-headline text-2xl md:text-3xl mb-6">
-                  {t('mission.title')}
+                  {content.mission.title}
                 </h3>
                 <p className="font-body text-muted-foreground leading-relaxed">
-                  {t('mission.description')}
+                  {content.mission.description}
                 </p>
               </div>
             </ScrollReveal>
@@ -206,7 +214,7 @@ export default async function AboutPage({ params }: Props) {
                 {editor?.image ? (
                   <Image
                     src={editor.image}
-                      alt={t('editor.name')}
+                      alt={content.editor.name}
                       fill
                       className="object-cover object-center"
                       sizes="(max-width: 768px) 100vw, 50vw"
@@ -216,7 +224,7 @@ export default async function AboutPage({ params }: Props) {
                     <>
                       <Image
                         src={surferImage.srcLarge || surferImage.src}
-                        alt={t('editor.name')}
+                        alt={content.editor.name}
                         fill
                         placeholder={surferImage.blurDataURL || surferImage.avgColor ? 'blur' : 'empty'}
                         blurDataURL={surferImage.blurDataURL || (surferImage.avgColor ? generateBlurPlaceholder(surferImage.avgColor) : undefined)}
@@ -242,16 +250,16 @@ export default async function AboutPage({ params }: Props) {
             {/* Info */}
             <ScrollReveal direction="right" delay={0.2} className="order-1 lg:order-2">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {t('editor.title')}
+                {content.editor.title}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-3">
-                {t('editor.name')}
+                {content.editor.name}
               </h2>
               <p className="font-ui text-xl text-muted-foreground mb-8">
-                {t('editor.credentials')}
+                {content.editor.credentials}
               </p>
               <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
-                {t('editor.bio')}
+                {content.editor.bio}
               </p>
 
               {/* Social Links */}
@@ -293,13 +301,13 @@ export default async function AboutPage({ params }: Props) {
             {/* Info */}
             <ScrollReveal direction="left">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {t('publisher.title')}
+                {content.publisher.title}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
-                {t('publisher.name')}
+                {content.publisher.name}
               </h2>
               <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
-                {t('publisher.description')}
+                {content.publisher.description}
               </p>
 
               {/* Social Links */}
@@ -348,7 +356,7 @@ export default async function AboutPage({ params }: Props) {
                 {publisher?.image ? (
                   <Image
                     src={publisher.image}
-                    alt={t('publisher.name')}
+                    alt={content.publisher.name}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -371,13 +379,13 @@ export default async function AboutPage({ params }: Props) {
         <div className="container-editorial">
           <ScrollReveal className="max-w-3xl mx-auto text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {t('supporters.title')}
+              {content.supporters.title}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
-              {t('supporters.smi.name')}
+              {content.supporters.smi.name}
             </h2>
             <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
-              {t('supporters.smi.description')}
+              {content.supporters.smi.description}
             </p>
 
             {smi && (
@@ -387,7 +395,7 @@ export default async function AboutPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="font-ui inline-flex items-center gap-2 text-brand hover:text-foreground font-medium transition-base"
               >
-                {t('vision.description')}
+                {content.vision.description}
                 <ArrowRight className="w-4 h-4" />
               </a>
             )}
@@ -402,19 +410,19 @@ export default async function AboutPage({ params }: Props) {
             {/* Text content */}
             <ScrollReveal>
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {t('collaboration.title')}
+                {content.collaboration.title}
               </span>
               <h2 className="font-headline text-3xl md:text-4xl mb-4">
-                {t('collaboration.description')}
+                {content.collaboration.description}
               </h2>
               <p className="font-body text-lg text-muted-foreground mb-8 leading-relaxed">
-                {t('vision.description')}
+                {content.vision.description}
               </p>
             <Link
               href="/contact"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
             >
-                {t('collaboration.cta')}
+                {content.collaboration.cta}
                 <ArrowRight className="w-4 h-4" />
             </Link>
             </ScrollReveal>

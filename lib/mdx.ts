@@ -17,6 +17,7 @@ import type {
 
 const ISSUES_DIR = path.join(process.cwd(), 'content/issues');
 const SPONSORS_FILE = path.join(process.cwd(), 'content/sponsors/sponsors.mdx');
+const PAGES_DIR = path.join(process.cwd(), 'content/pages');
 
 // ============================================
 // MDX FRONTMATTER TYPES
@@ -384,4 +385,243 @@ export function getSponsorsByIdsMDX(ids: string[]): Sponsor[] {
 export function getSponsorsByTierMDX(tier: Sponsor['tier']): Sponsor[] {
   const sponsors = parseSponsorsFile();
   return sponsors.filter(sponsor => sponsor.tier === tier);
+}
+
+// ============================================
+// PAGE CONTENT MDX UTILITIES
+// Single source of truth for page content
+// ============================================
+
+// Cache for page content
+const pageContentCache: Record<string, Record<string, unknown>> = {};
+
+/**
+ * Generic function to parse any page MDX file
+ */
+function parsePageFile(
+  pageName: string,
+  locale: Locale
+): { frontmatter: Record<string, unknown>; content: string } | null {
+  const cacheKey = `${locale}:${pageName}`;
+  
+  const filePath = path.join(PAGES_DIR, locale, `${pageName}.mdx`);
+  
+  if (!fs.existsSync(filePath)) {
+    console.warn(`Page MDX file not found: ${filePath}`);
+    return null;
+  }
+  
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const { data, content } = matter(fileContents);
+  
+  // Cache the frontmatter
+  pageContentCache[cacheKey] = data;
+  
+  return {
+    frontmatter: data,
+    content,
+  };
+}
+
+// ============================================
+// ABOUT PAGE CONTENT
+// ============================================
+
+export interface AboutPageContent {
+  title: string;
+  subtitle: string;
+  description: string;
+  theMagazine: string;
+  missionLabel: string;
+  magazine: {
+    title: string;
+    description: string;
+  };
+  mission: {
+    title: string;
+    description: string;
+  };
+  editor: {
+    title: string;
+    name: string;
+    credentials: string;
+    bio: string;
+  };
+  publisher: {
+    title: string;
+    name: string;
+    description: string;
+  };
+  supporters: {
+    title: string;
+    smi: {
+      name: string;
+      description: string;
+    };
+  };
+  collaboration: {
+    title: string;
+    description: string;
+    cta: string;
+  };
+  vision: {
+    description: string;
+  };
+}
+
+/**
+ * Get About page content for a locale
+ */
+export function getAboutPageContent(locale: Locale = 'en'): AboutPageContent | null {
+  const parsed = parsePageFile('about', locale);
+  if (!parsed) return null;
+  return parsed.frontmatter as unknown as AboutPageContent;
+}
+
+// ============================================
+// CONTACT PAGE CONTENT
+// ============================================
+
+export interface ContactPageContent {
+  title: string;
+  subtitle: string;
+  description: string;
+  hero: {
+    label: string;
+    greeting: string;
+    tagline: string;
+  };
+  ways: {
+    email: {
+      label: string;
+      description: string;
+    };
+    response: {
+      label: string;
+      description: string;
+    };
+  };
+  chat: {
+    label: string;
+    book: string;
+    duration: string;
+  };
+  social: {
+    follow: string;
+    description: string;
+  };
+  contribute: {
+    title: string;
+    description: string;
+    guidelines: string;
+    cta: string;
+    emailSubject: string;
+  };
+  info: {
+    email: string;
+    response: string;
+  };
+}
+
+/**
+ * Get Contact page content for a locale
+ */
+export function getContactPageContent(locale: Locale = 'en'): ContactPageContent | null {
+  const parsed = parsePageFile('contact', locale);
+  if (!parsed) return null;
+  return parsed.frontmatter as unknown as ContactPageContent;
+}
+
+// ============================================
+// NEWSLETTER PAGE CONTENT
+// ============================================
+
+export interface NewsletterPageContent {
+  title: string;
+  subtitle: string;
+  description: string;
+  freeNewsletter: string;
+  formTitle: string;
+  cta: string;
+  whatYouGet: string;
+  benefits: {
+    newIssues: {
+      title: string;
+      description: string;
+    };
+    exclusive: {
+      title: string;
+      description: string;
+    };
+    community: {
+      title: string;
+      description: string;
+    };
+    earlyAccess: {
+      title: string;
+      description: string;
+    };
+  };
+  features: {
+    title: string;
+    items: string[];
+  };
+  founder: {
+    role: string;
+  };
+  notSure: {
+    title: string;
+    description: string;
+    cta: string;
+  };
+  readFirst: {
+    title: string;
+    description: string;
+    cta: string;
+  };
+  privacyNote: string;
+}
+
+/**
+ * Get Newsletter page content for a locale
+ */
+export function getNewsletterPageContent(locale: Locale = 'en'): NewsletterPageContent | null {
+  const parsed = parsePageFile('newsletter', locale);
+  if (!parsed) return null;
+  return parsed.frontmatter as unknown as NewsletterPageContent;
+}
+
+// ============================================
+// LEGAL PAGE CONTENT (Privacy, Terms, Cookies)
+// ============================================
+
+export interface LegalPageContent {
+  title: string;
+  lastUpdated: string;
+  description: string;
+  cookieTypes?: Array<{
+    name: string;
+    description: string;
+  }>;
+}
+
+export interface ParsedLegalPage {
+  frontmatter: LegalPageContent;
+  content: string;
+}
+
+/**
+ * Get Legal page content for a locale (privacy, terms, or cookies)
+ */
+export function getLegalPageContent(
+  page: 'privacy' | 'terms' | 'cookies',
+  locale: Locale = 'en'
+): ParsedLegalPage | null {
+  const parsed = parsePageFile(page, locale);
+  if (!parsed) return null;
+  
+  return {
+    frontmatter: parsed.frontmatter as unknown as LegalPageContent,
+    content: parsed.content,
+  };
 }

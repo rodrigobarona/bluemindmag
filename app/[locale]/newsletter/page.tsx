@@ -19,6 +19,8 @@ import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { getTeamMemberById } from "@/content/data/team";
 import { generateNewsletterPageSchema, generateBreadcrumbSchema } from "@/lib/schema";
 import { siteConfig } from "@/content/data/navigation";
+import { getNewsletterPageContent } from "@/lib/mdx";
+import type { Locale } from "@/content/types/content";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -26,10 +28,11 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Newsletter" });
+  const content = getNewsletterPageContent(locale as Locale);
 
-  const title = t("title");
-  const description = t("description");
+  const title = content?.title || "Newsletter";
+  const description = content?.description || "";
+  const freeNewsletter = content?.freeNewsletter || "";
 
   return {
     title,
@@ -38,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: "website",
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t("freeNewsletter"))}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(freeNewsletter)}`],
     },
     twitter: {
       card: "summary_large_image",
@@ -52,10 +55,15 @@ export default async function NewsletterPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("Newsletter");
   const tNav = await getTranslations("Navigation");
   const tCommon = await getTranslations("Common");
+  const content = getNewsletterPageContent(locale as Locale);
   const editor = getTeamMemberById("pedro-seixas");
+
+  // Fallback if content is not found
+  if (!content) {
+    throw new Error(`Newsletter page content not found for locale: ${locale}`);
+  }
 
   // Fetch Pexels images using slot-based system (no repeats across pages)
   const [newsletterImage, heroImage] = await Promise.all([
@@ -64,9 +72,6 @@ export default async function NewsletterPage({ params }: Props) {
   ]);
 
   // Generate JSON-LD schema for SEO
-  const title = t("title");
-  const description = t("subtitle");
-  
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
     { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
@@ -74,30 +79,30 @@ export default async function NewsletterPage({ params }: Props) {
   ];
 
   const schemas = [
-    generateNewsletterPageSchema(locale, title, description),
+    generateNewsletterPageSchema(locale, content.title, content.subtitle),
     generateBreadcrumbSchema(breadcrumbItems),
   ];
 
   const features = [
     {
       icon: IconSparkles,
-      title: t("benefits.newIssues.title"),
-      description: t("benefits.newIssues.description"),
+      title: content.benefits.newIssues.title,
+      description: content.benefits.newIssues.description,
     },
     {
       icon: IconEye,
-      title: t("benefits.exclusive.title"),
-      description: t("benefits.exclusive.description"),
+      title: content.benefits.exclusive.title,
+      description: content.benefits.exclusive.description,
     },
     {
       icon: IconUsers,
-      title: t("benefits.community.title"),
-      description: t("benefits.community.description"),
+      title: content.benefits.community.title,
+      description: content.benefits.community.description,
     },
     {
       icon: IconClock,
-      title: t("benefits.earlyAccess.title"),
-      description: t("benefits.earlyAccess.description"),
+      title: content.benefits.earlyAccess.title,
+      description: content.benefits.earlyAccess.description,
     },
   ];
 
@@ -169,7 +174,7 @@ export default async function NewsletterPage({ params }: Props) {
               }`}
             >
               <IconMail className="h-4 w-4" />
-              {t("freeNewsletter")}
+              {content.freeNewsletter}
             </div>
 
             <h1
@@ -180,7 +185,7 @@ export default async function NewsletterPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("title")}
+              {content.title}
             </h1>
 
             <p
@@ -191,7 +196,7 @@ export default async function NewsletterPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("subtitle")}
+              {content.subtitle}
             </p>
 
             <p
@@ -202,7 +207,7 @@ export default async function NewsletterPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("description")}
+              {content.description}
             </p>
 
             {/* Newsletter Form */}
@@ -213,7 +218,7 @@ export default async function NewsletterPage({ params }: Props) {
             <p
               className={`text-sm mt-6 ${heroImage ? "text-white/50" : "text-muted-foreground"}`}
             >
-              {t("privacyNote")}
+              {content.privacyNote}
             </p>
           </ScrollReveal>
         </div>
@@ -248,12 +253,12 @@ export default async function NewsletterPage({ params }: Props) {
                 <div className="text-center md:text-left">
                   <IconWaveSine className="h-10 w-10 text-brand/30 mb-4 mx-auto md:mx-0" />
                   <p className="font-accent italic text-xl md:text-2xl text-muted-foreground leading-relaxed mb-6">
-                    {t("description")}
+                    {content.description}
                   </p>
                   <div>
                     <p className="font-medium text-lg">Pedro Seixas</p>
                     <p className="text-sm text-muted-foreground">
-                      {t("founder.role")}
+                      {content.founder.role}
                     </p>
                   </div>
                 </div>
@@ -268,10 +273,10 @@ export default async function NewsletterPage({ params }: Props) {
         <div className="container-editorial">
           <ScrollReveal className="text-center mb-16">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {t("whatYouGet")}
+              {content.whatYouGet}
             </span>
             <h2 className="font-headline text-4xl md:text-5xl">
-              {t("features.title")}
+              {content.features.title}
             </h2>
           </ScrollReveal>
 
@@ -333,20 +338,20 @@ export default async function NewsletterPage({ params }: Props) {
           <div className="max-w-2xl mx-auto text-center">
             <ScrollReveal>
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-                {t("notSure.title")}
+                {content.notSure.title}
               </span>
               <h2 className="font-headline text-4xl md:text-5xl mb-6">
-                {t("readFirst.title")}
+                {content.readFirst.title}
               </h2>
               <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
-                {t("notSure.description")}
+                {content.notSure.description}
               </p>
 
               <Link
                 href="/issues"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
               >
-                {t("notSure.cta")}
+                {content.notSure.cta}
                 <span>→</span>
               </Link>
             </ScrollReveal>

@@ -19,6 +19,8 @@ import { getTeamMemberById } from "@/content/data/team";
 import { getImageForSlot } from "@/lib/pexels";
 import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { generateContactPageSchema, generateBreadcrumbSchema } from "@/lib/schema";
+import { getContactPageContent } from "@/lib/mdx";
+import type { Locale } from "@/content/types/content";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -26,10 +28,11 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Contact" });
+  const content = getContactPageContent(locale as Locale);
 
-  const title = t("title");
-  const description = t("description");
+  const title = content?.title || "Contact";
+  const description = content?.description || "";
+  const heroLabel = content?.hero.label || "";
 
   return {
     title,
@@ -38,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: "website",
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t("hero.label"))}`],
+      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(heroLabel)}`],
     },
     twitter: {
       card: "summary_large_image",
@@ -52,9 +55,14 @@ export default async function ContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("Contact");
   const tNav = await getTranslations("Navigation");
+  const content = getContactPageContent(locale as Locale);
   const editor = getTeamMemberById("pedro-seixas");
+
+  // Fallback if content is not found
+  if (!content) {
+    throw new Error(`Contact page content not found for locale: ${locale}`);
+  }
 
   // Fetch Pexels images using slot-based system (no repeats across pages)
   const [newsletterImage, heroImage] = await Promise.all([
@@ -143,7 +151,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("hero.label")}
+              {content.hero.label}
             </span>
             <h1
               className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? "text-white" : ""}`}
@@ -153,7 +161,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("hero.greeting")}
+              {content.hero.greeting}
             </h1>
             <p
               className={`font-body text-xl leading-relaxed ${heroImage ? "text-white/80" : "text-muted-foreground"}`}
@@ -163,7 +171,7 @@ export default async function ContactPage({ params }: Props) {
                   : undefined
               }
             >
-              {t("hero.tagline")}
+              {content.hero.tagline}
             </p>
           </ScrollReveal>
         </div>
@@ -178,10 +186,10 @@ export default async function ContactPage({ params }: Props) {
               {/* Form Header */}
               <div className="mb-10">
                 <h2 className="font-headline text-3xl md:text-4xl mb-4">
-                  {t("ways.email.label")}
+                  {content.ways.email.label}
                 </h2>
                 <p className="text-muted-foreground max-w-lg leading-relaxed">
-                  {t("ways.email.description")}
+                  {content.ways.email.description}
                 </p>
               </div>
 
@@ -216,7 +224,7 @@ export default async function ContactPage({ params }: Props) {
                   <div>
                     <p className="font-medium mb-1">Pedro Seixas</p>
                     <p className="text-sm text-muted-foreground">
-                      {t("ways.response.label")}
+                      {content.ways.response.label}
                     </p>
                   </div>
                 </div>
@@ -224,7 +232,7 @@ export default async function ContactPage({ params }: Props) {
                 <div className="pl-0">
                   <IconWaveSine className="h-8 w-8 text-brand/30 mb-3" />
                   <p className="font-accent italic text-muted-foreground leading-relaxed text-lg">
-                    {t("ways.response.description")}
+                    {content.ways.response.description}
                   </p>
                 </div>
               </div>
@@ -234,7 +242,7 @@ export default async function ContactPage({ params }: Props) {
                 {/* Book a Chat */}
                 <div>
                   <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
-                    {t("chat.label")}
+                    {content.chat.label}
                   </h3>
 
                   <a
@@ -248,24 +256,24 @@ export default async function ContactPage({ params }: Props) {
                     </div>
                     <div>
                       <p className="font-medium text-lg group-hover:text-brand transition-colors">
-                        {t("chat.book")}
+                        {content.chat.book}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {t("chat.duration")}
+                        {content.chat.duration}
                       </p>
                     </div>
                     <IconCalendar className="h-5 w-5 text-muted-foreground ml-auto group-hover:text-brand transition-colors" />
                   </a>
 
                   <p className="text-sm text-muted-foreground mt-4">
-                    {t("social.description")}
+                    {content.social.description}
                   </p>
                 </div>
 
                 {/* Connect on Social */}
                 <div className="pt-8 border-t border-border">
                   <h3 className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-5">
-                    {t("social.follow")}
+                    {content.social.follow}
                   </h3>
 
                   <div className="flex gap-3">
@@ -284,7 +292,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
 
                   <p className="text-sm text-muted-foreground mt-4">
-                    {t("social.description")}
+                    {content.social.description}
                   </p>
                 </div>
               </div>
@@ -298,19 +306,19 @@ export default async function ContactPage({ params }: Props) {
         <div className="container-editorial">
           <div className="max-w-2xl mx-auto text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
-              {t("contribute.title")}
+              {content.contribute.title}
             </span>
             <h2 className="font-headline text-3xl md:text-4xl mb-4">
-              {t("contribute.description")}
+              {content.contribute.description}
             </h2>
             <p className="text-muted-foreground mb-8 leading-relaxed text-lg">
-              {t("contribute.guidelines")}
+              {content.contribute.guidelines}
             </p>
             <Link
-              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(t("contribute.emailSubject"))}`}
+              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(content.contribute.emailSubject)}`}
               className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
             >
-              {t("contribute.cta")}
+              {content.contribute.cta}
               <IconArrowRight className="h-4 w-4" />
             </Link>
           </div>
