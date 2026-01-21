@@ -457,6 +457,7 @@ export interface AboutPageContent {
     smi: {
       name: string;
       description: string;
+      url: string;
     };
   };
   collaboration: {

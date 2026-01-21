@@ -13,7 +13,6 @@ import { ScrollReveal } from '@/components/scroll-reveal';
 import { PullQuoteImage } from '@/components/pull-quote';
 import { JsonLd } from '@/components/json-ld';
 import { getTeamMemberById } from '@/content/data/team';
-import { getSponsorById } from '@/content/data/sponsors';
 import { getImageForSlot } from '@/lib/pexels';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
 import {
@@ -63,7 +62,6 @@ export default async function AboutPage({ params }: Props) {
   const content = getAboutPageContent(locale as Locale);
   const editor = getTeamMemberById('pedro-seixas');
   const publisher = getTeamMemberById('surfisio');
-  const smi = getSponsorById('surfing-medicine-international');
 
   // Fallback if content is not found
   if (!content) {
@@ -388,9 +386,9 @@ export default async function AboutPage({ params }: Props) {
               {content.supporters.smi.description}
             </p>
 
-            {smi && (
+            {content.supporters.smi.url && (
               <a
-                href={smi.url}
+                href={content.supporters.smi.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-ui inline-flex items-center gap-2 text-brand hover:text-foreground font-medium transition-base"

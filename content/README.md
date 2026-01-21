@@ -177,6 +177,7 @@ External links are stored in different places depending on what they're for.
 | I want to change... | Where to edit |
 |--------------------|---------------|
 | Cal.com booking link | [✏️ `pages/pt/contact.mdx`](./pages/pt/contact.mdx) AND [✏️ `pages/en/contact.mdx`](./pages/en/contact.mdx) → find `links.calcom` |
+| SMI (Surfing Medicine) link | [✏️ `pages/pt/about.mdx`](./pages/pt/about.mdx) AND [✏️ `pages/en/about.mdx`](./pages/en/about.mdx) → find `supporters.smi.url` |
 | Instagram/LinkedIn (Blue Mind) | [✏️ `data/navigation.ts`](./data/navigation.ts) → find `socialLinks` |
 | Team social links | [✏️ `data/team.ts`](./data/team.ts) → find `social` |
 | Sponsor website links | [✏️ `sponsors/sponsors.mdx`](./sponsors/sponsors.mdx) → find `url` |
