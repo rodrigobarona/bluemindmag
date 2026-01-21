@@ -1,5 +1,6 @@
 import type { Issue, IssueTranslation } from '@/content/types/content';
-import { siteConfig } from '@/content/data/navigation';
+import { siteConfig, socialLinks, externalLinks } from '@/content/data/navigation';
+import { getEditor, getPublisher } from '@/content/data/team';
 
 // ============================================
 // JSON-LD SCHEMA.ORG STRUCTURED DATA GENERATORS
@@ -7,21 +8,41 @@ import { siteConfig } from '@/content/data/navigation';
 // Note: Nested schemas must NOT include @context.
 // Only top-level schemas (used directly in <script type="application/ld+json">)
 // should have @context. Internal helpers are prefixed with underscore.
+//
+// References:
+// - https://schema.org/Organization
+// - https://schema.org/Periodical
+// - https://schema.org/PublicationIssue
+// - https://developers.google.com/search/docs/appearance/structured-data
+
+/**
+ * Get social links URLs for sameAs property (from centralized content)
+ */
+function _getSocialUrls(): string[] {
+  return socialLinks.map(link => link.url);
+}
 
 /**
  * Publisher organization (Surfisio) - for embedding only
+ * Uses centralized externalLinks
  */
 function _publisherOrganization() {
+  const publisher = getPublisher();
   return {
     '@type': 'Organization',
     name: 'Surfisio',
-    url: 'https://surfisio.pt',
+    url: externalLinks.surfisio,
+    sameAs: publisher?.social ? [
+      publisher.social.website,
+      publisher.social.linkedin,
+      publisher.social.instagram,
+    ].filter(Boolean) : [externalLinks.surfisio],
   };
 }
 
 /**
  * Blue Mind Magazine organization - for embedding only (no @context)
- * Note: Organizations don't have publishers - removed to fix validation
+ * Uses centralized siteConfig and socialLinks
  */
 function _organizationData() {
   return {
@@ -30,11 +51,7 @@ function _organizationData() {
     url: siteConfig.url,
     logo: `${siteConfig.url}/images/logo.png`,
     email: siteConfig.email,
-    sameAs: [
-      'https://www.instagram.com/bluemindmag/',
-      'https://www.linkedin.com/company/bluemindmag/',
-    ],
-    // Note: parentOrganization could be used if needed, but publisher is for creative works only
+    sameAs: _getSocialUrls(),
   };
 }
 
@@ -66,22 +83,23 @@ export function generateOrganizationSchema() {
 
 /**
  * Generate WebSite schema for homepage
+ * Follows schema.org WebSite with SearchAction pattern
+ * @see https://schema.org/WebSite
+ * @see https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox
  */
 export function generateWebSiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${siteConfig.url}/#website`,
     name: siteConfig.name,
     url: siteConfig.url,
-    description: 'Surf Science: Where surf and science meet.',
+    description: `${siteConfig.tagline}. Surf Science: Where surf and science meet.`,
     inLanguage: ['en', 'pt'],
     publisher: _organizationData(),
     potentialAction: {
       '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${siteConfig.url}/issues?q={search_term_string}`,
-      },
+      target: `${siteConfig.url}/issues?q={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   };
@@ -128,21 +146,31 @@ export function generateIssueSchema(
 
 /**
  * Generate Person schema for Chief Editor
+ * Uses centralized team data from content/data/team.ts
  */
 export function generatePersonSchema() {
+  const editor = getEditor();
+  const editorSocialLinks = editor?.social ? [
+    editor.social.linkedin,
+    editor.social.instagram,
+  ].filter(Boolean) : [];
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Pedro Seixas',
     jobTitle: 'Chief Editor',
+    image: editor?.image ? `${siteConfig.url}${editor.image}` : undefined,
     affiliation: {
       '@type': 'Organization',
-      name: 'Blue Mind Magazine',
+      name: siteConfig.name,
+      url: siteConfig.url,
     },
-    sameAs: [
-      'https://www.linkedin.com/in/pedro-seixas-31934230/',
-      'https://www.instagram.com/seixasbay/',
-    ],
+    worksFor: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+    },
+    sameAs: editorSocialLinks,
   };
 }
 

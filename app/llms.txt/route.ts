@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server';
 import { getAllIssues, getCurrentIssue, getIssueTranslations } from '@/content/data/issues';
-import { siteConfig } from '@/content/data/navigation';
+import { siteConfig, socialLinks, externalLinks } from '@/content/data/navigation';
+import { getEditor, getPublisher } from '@/content/data/team';
+import { getAboutPageContent } from '@/lib/mdx';
 
 export async function GET() {
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
   const baseUrl = siteConfig.url;
 
-  // Get translations from MDX (single source of truth)
+  // Get centralized content from MDX (single source of truth)
   const enIssueTranslations = getIssueTranslations('en');
+  const aboutContent = getAboutPageContent('en');
+  const editor = getEditor();
+  const publisher = getPublisher();
 
   // Generate issue list with descriptions
   const issuesList = issues
@@ -45,25 +50,38 @@ ${currentIssue.highlights
 `
     : '';
 
-  const content = `# Blue Mind Magazine
+  // Build social links string from centralized data
+  const socialLinksStr = socialLinks
+    .map(link => `- ${link.label}: ${link.url}`)
+    .join('\n');
 
-> Surf Science: Where surf and science meet. From surfers, to surfers.
+  const content = `# ${siteConfig.name}
+
+> ${siteConfig.tagline}. Surf Science: Where surf and science meet.
 
 ## About
 
-Blue Mind Magazine is a bilingual (English/Portuguese) digital publication exploring the fascinating intersection of surfing, ocean sports, human health, and scientific research. We bridge the gap between academic studies and the surfing community, making complex science accessible and actionable.
+${aboutContent?.mission.description || 'Blue Mind Magazine bridges the gap between scientific research and the surfing community. We explain complex studies in accessible language.'}
+
+${aboutContent?.magazine.description || 'Blue Mind Magazine aims to explain the science behind surfing in language that is accessible to all surfers.'}
 
 ## Publisher
 
-Published by Surfisio (https://surfisio.pt), a specialized physiotherapy and sports performance company dedicated to the surfing community.
+${aboutContent?.publisher.name || 'Surfisio'} (${externalLinks.surfisio})
+
+${aboutContent?.publisher.description || 'A specialized physiotherapy and sports performance company dedicated to the surfing community.'}
 
 ## Chief Editor
 
-Pedro Seixas, PT, PhD - Scientific Coordinator at Surfing Medicine International (SMI), physiotherapist, and passionate surfer.
+${aboutContent?.editor.name || 'Pedro Seixas'}, ${aboutContent?.editor.credentials || 'PT, PhD'}
+
+${aboutContent?.editor.bio || 'Scientific Coordinator at Surfing Medicine International (SMI), physiotherapist, and passionate surfer.'}
 
 ## Main Supporter
 
-Surfing Medicine International (SMI) - A non-profit organization founded by medical doctors and surfers dedicated to the science of surfing medicine.
+${aboutContent?.supporters.smi.name || 'Surfing Medicine International'} (${externalLinks.smi})
+
+${aboutContent?.supporters.smi.description || 'A non-profit organization founded by medical doctors and surfers dedicated to the science of surfing medicine.'}
 ${currentIssueInfo}
 ## All Issues (${issues.length} total)
 
@@ -118,8 +136,7 @@ No public API is available. The website is primarily a content publication platf
 
 - Email: ${siteConfig.email}
 - Website: ${siteConfig.url}
-- Instagram: @bluemindmag
-- LinkedIn: /company/bluemindmag
+${socialLinksStr}
 
 ## Content Guidelines for AI
 
