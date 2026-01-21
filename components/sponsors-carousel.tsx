@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { motion, useMotionValue, useAnimationFrame } from "motion/react";
 import type { Sponsor } from "@/content/types/content";
 
 interface SponsorsCarouselProps {
   sponsors: Sponsor[];
   title?: string;
   variant?: "default" | "light";
+  speed?: number; // pixels per second
 }
 
 /**
@@ -44,7 +46,7 @@ function getProportionalDimensions(path: string, targetHeight: number = 56): { w
 /**
  * Renders one set of sponsor logos
  */
-function SponsorTrack({ sponsors, variant }: { sponsors: Array<Sponsor & { dimensions: { width: number; height: number } }>; variant: string }) {
+function SponsorTrack({ sponsors }: { sponsors: Array<Sponsor & { dimensions: { width: number; height: number } }> }) {
   return (
     <>
       {sponsors.map((sponsor, index) => (
@@ -70,8 +72,11 @@ function SponsorTrack({ sponsors, variant }: { sponsors: Array<Sponsor & { dimen
   );
 }
 
-export function SponsorsCarousel({ sponsors, title, variant = "default" }: SponsorsCarouselProps) {
+export function SponsorsCarousel({ sponsors, title, variant = "default", speed = 50 }: SponsorsCarouselProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [trackWidth, setTrackWidth] = useState(0);
+  const x = useMotionValue(0);
   
   // Pre-calculate dimensions for all sponsors
   const sponsorsWithDimensions = useMemo(() => 
@@ -80,6 +85,34 @@ export function SponsorsCarousel({ sponsors, title, variant = "default" }: Spons
       dimensions: getProportionalDimensions(sponsor.logo),
     })), [sponsors]
   );
+
+  // Measure the width of one track
+  useEffect(() => {
+    if (containerRef.current) {
+      // Get the width of the first track (half of the container)
+      const firstTrack = containerRef.current.children[0] as HTMLElement;
+      if (firstTrack) {
+        setTrackWidth(firstTrack.offsetWidth);
+      }
+    }
+  }, [sponsorsWithDimensions]);
+
+  // Animate frame by frame for seamless loop
+  useAnimationFrame((_, delta) => {
+    if (isPaused || trackWidth === 0) return;
+    
+    // Move left by speed * delta (in seconds)
+    const moveBy = (speed * delta) / 1000;
+    const currentX = x.get();
+    const newX = currentX - moveBy;
+    
+    // When we've scrolled one full track width, reset seamlessly
+    if (newX <= -trackWidth) {
+      x.set(newX + trackWidth);
+    } else {
+      x.set(newX);
+    }
+  });
 
   // Use white gradients for light variant (forced light mode for logo visibility)
   const gradientClass = variant === "light" 
@@ -106,24 +139,21 @@ export function SponsorsCarousel({ sponsors, title, variant = "default" }: Spons
         <div className={`absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r ${gradientClass} to-transparent z-10 pointer-events-none`} />
         <div className={`absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l ${gradientClass} to-transparent z-10 pointer-events-none`} />
         
-        {/* Seamless infinite scroll using two identical tracks */}
-        <div 
+        {/* Seamless infinite scroll using motion */}
+        <motion.div 
+          ref={containerRef}
           className="flex w-fit"
-          style={{
-            animation: 'marquee 25s linear infinite',
-            animationPlayState: isPaused ? 'paused' : 'running',
-            willChange: 'transform',
-          }}
+          style={{ x }}
         >
           {/* First track */}
           <div className="flex shrink-0">
-            <SponsorTrack sponsors={sponsorsWithDimensions} variant={variant} />
+            <SponsorTrack sponsors={sponsorsWithDimensions} />
           </div>
           {/* Second track (duplicate for seamless loop) */}
           <div className="flex shrink-0">
-            <SponsorTrack sponsors={sponsorsWithDimensions} variant={variant} />
+            <SponsorTrack sponsors={sponsorsWithDimensions} />
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

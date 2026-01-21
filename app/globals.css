@@ -711,15 +711,6 @@
   }
 }
 
-/* Infinite marquee scroll - seamless loop with two identical tracks */
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
 
 /* ============================================
    HORIZONTAL SCROLL CONTAINER
