@@ -457,12 +457,16 @@ export interface AboutPageContent {
     smi: {
       name: string;
       description: string;
+      description2?: string;
       url: string;
+      cta: string;
     };
   };
   collaboration: {
     title: string;
+    headline: string;
     description: string;
+    description2?: string;
     cta: string;
   };
   vision: {

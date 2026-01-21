@@ -382,9 +382,16 @@ export default async function AboutPage({ params }: Props) {
             <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
               {content.supporters.smi.name}
             </h2>
-            <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
-              {content.supporters.smi.description}
-            </p>
+            <div className="space-y-6 mb-10">
+              <p className="font-body text-lg text-muted-foreground leading-relaxed">
+                {content.supporters.smi.description}
+              </p>
+              {content.supporters.smi.description2 && (
+                <p className="font-body text-lg text-muted-foreground leading-relaxed">
+                  {content.supporters.smi.description2}
+                </p>
+              )}
+            </div>
 
             {content.supporters.smi.url && (
               <a
@@ -393,7 +400,7 @@ export default async function AboutPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="font-ui inline-flex items-center gap-2 text-brand hover:text-foreground font-medium transition-base"
               >
-                {content.vision.description}
+                {content.supporters.smi.cta}
                 <ArrowRight className="w-4 h-4" />
               </a>
             )}
@@ -410,12 +417,19 @@ export default async function AboutPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
                 {content.collaboration.title}
               </span>
-              <h2 className="font-headline text-3xl md:text-4xl mb-4">
-                {content.collaboration.description}
+              <h2 className="font-headline text-3xl md:text-4xl mb-6">
+                {content.collaboration.headline}
               </h2>
-              <p className="font-body text-lg text-muted-foreground mb-8 leading-relaxed">
-                {content.vision.description}
-              </p>
+              <div className="space-y-4 mb-8">
+                <p className="font-body text-lg text-muted-foreground leading-relaxed">
+                  {content.collaboration.description}
+                </p>
+                {content.collaboration.description2 && (
+                  <p className="font-body text-lg text-muted-foreground leading-relaxed">
+                    {content.collaboration.description2}
+                  </p>
+                )}
+              </div>
             <Link
               href="/contact"
                 className="inline-flex items-center gap-3 bg-foreground text-background px-8 py-4 font-ui text-sm font-medium transition-slow hover:bg-brand"
