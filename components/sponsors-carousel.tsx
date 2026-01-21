@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Sponsor } from "@/content/types/content";
 
 interface SponsorsCarouselProps {
@@ -10,11 +10,49 @@ interface SponsorsCarouselProps {
   variant?: "default" | "light";
 }
 
+/**
+ * Parse dimensions from filename convention: name_WxH.ext
+ * Example: ferox-surfboards_476x113.svg → { width: 476, height: 113 }
+ */
+function parseDimensionsFromFilename(path: string): { width: number; height: number } | null {
+  const filename = path.split('/').pop() || '';
+  const match = filename.match(/_(\d+)x(\d+)\.[a-z]+$/i);
+  if (match) {
+    return { width: parseInt(match[1], 10), height: parseInt(match[2], 10) };
+  }
+  return null;
+}
+
+/**
+ * Calculate proportional width based on target height
+ * Target height: 56px (h-14 on desktop)
+ */
+function getProportionalDimensions(path: string, targetHeight: number = 56): { width: number; height: number } {
+  const parsed = parseDimensionsFromFilename(path);
+  if (parsed) {
+    const aspectRatio = parsed.width / parsed.height;
+    return {
+      width: Math.round(targetHeight * aspectRatio),
+      height: targetHeight,
+    };
+  }
+  // Fallback for logos without dimension convention
+  return { width: 160, height: 60 };
+}
+
 export function SponsorsCarousel({ sponsors, title, variant = "default" }: SponsorsCarouselProps) {
   const [isPaused, setIsPaused] = useState(false);
   
+  // Pre-calculate dimensions for all sponsors
+  const sponsorsWithDimensions = useMemo(() => 
+    sponsors.map(sponsor => ({
+      ...sponsor,
+      dimensions: getProportionalDimensions(sponsor.logo),
+    })), [sponsors]
+  );
+  
   // Duplicate sponsors multiple times for seamless infinite loop
-  const duplicatedSponsors = [...sponsors, ...sponsors, ...sponsors];
+  const duplicatedSponsors = [...sponsorsWithDimensions, ...sponsorsWithDimensions, ...sponsorsWithDimensions];
 
   // Use white gradients for light variant (forced light mode for logo visibility)
   const gradientClass = variant === "light" 
@@ -61,8 +99,8 @@ export function SponsorsCarousel({ sponsors, title, variant = "default" }: Spons
               <Image
                 src={sponsor.logo}
                 alt={sponsor.alt || sponsor.name}
-                width={160}
-                height={60}
+                width={sponsor.dimensions.width}
+                height={sponsor.dimensions.height}
                 loading="lazy"
                 className="h-12 md:h-14 w-auto object-contain"
               />

@@ -147,19 +147,24 @@ Sponsors appear in the website footer.
 ### How to add a new sponsor
 
 1. **Add the logo image** to [`/public/images/sponsors/`](../public/images/sponsors/)
-   - Use PNG format with transparent background
-   - Recommended size: 400x150px max
+   - Use SVG or PNG format (SVG preferred, PNG with transparent background)
+   - **Use the naming convention: `name_WIDTHxHEIGHT.ext`**
+     - Example: `ferox-surfboards_476x113.svg` (original dimensions 476×113)
+     - This ensures all logos display proportionally in the carousel
+   - To find dimensions: open the image, note its width×height in pixels
 
 2. **Add entry to [`sponsors.mdx`](./sponsors/sponsors.mdx):**
 ```yaml
 sponsors:
-  - id: "new-sponsor"                        # Unique ID (lowercase, hyphens)
-    name: "New Sponsor Name"                 # Display name
-    logo: "/images/sponsors/new-sponsor.png" # Path to logo
-    alt: "New Sponsor logo"                  # Description for accessibility
-    url: "https://newsponsor.com"            # Website link
-    tier: "supporting"                       # main, supporting, or community
+  - id: "new-sponsor"                                  # Unique ID (lowercase, hyphens)
+    name: "New Sponsor Name"                           # Display name
+    logo: "/images/sponsors/new-sponsor_400x120.svg"   # Use _WxH naming convention!
+    alt: "New Sponsor logo"                            # Description for accessibility
+    url: "https://newsponsor.com"                      # Website link
+    tier: "supporting"                                 # main, supporting, or community
 ```
+
+> **💡 Why the naming convention?** The carousel automatically parses `_WxH` from filenames to calculate proportional sizing. All logos appear balanced regardless of their original dimensions.
 
 ### Sponsor tiers
 - `main` - Primary sponsors (shown larger)
@@ -348,7 +353,7 @@ If you want different style images, edit [`lib/pexels.ts`](../lib/pexels.ts):
 - [ ] Set `isCurrent: true` on new issue, `isCurrent: false` on old current issue
 
 ### Add new sponsor
-- [ ] Add logo to [`/public/images/sponsors/`](../public/images/sponsors/)
+- [ ] Add logo to [`/public/images/sponsors/`](../public/images/sponsors/) using `name_WxH.ext` naming
 - [ ] Add entry to [`sponsors/sponsors.mdx`](./sponsors/sponsors.mdx)
 
 ### Update external link
