@@ -14,7 +14,7 @@ export function SiteLayout({ children, newsletterImage }: SiteLayoutProps) {
   const sponsors: Sponsor[] = getAllSponsors();
   
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-hidden">
       {/* Skip Navigation Link - Accessibility (WCAG 2.1 AA) */}
       <a
         href="#main-content"
@@ -23,7 +23,7 @@ export function SiteLayout({ children, newsletterImage }: SiteLayoutProps) {
         Skip to main content
       </a>
       <Header />
-      <main id="main-content" className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1 overflow-x-hidden">{children}</main>
       <Footer newsletterImage={newsletterImage} sponsors={sponsors} />
     </div>
   );

@@ -88,7 +88,7 @@ export default async function HomePage({ params }: Props) {
 
       {/* Section 2: Current Issue Feature - Asymmetric layout */}
                 {currentIssue && (
-        <section className="py-24 md:py-32 lg:py-40">
+        <section className="py-24 md:py-32 lg:py-40 overflow-hidden">
           <div className="container-editorial">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               {/* Cover - Takes more space, floats */}
@@ -282,7 +282,7 @@ export default async function HomePage({ params }: Props) {
 
       {/* Section 5: Past Issues Archive */}
       {pastIssues.length > 0 && (
-        <section className="py-24 md:py-32">
+        <section className="py-24 md:py-32 overflow-hidden">
           <div className="container-editorial">
             <ScrollReveal className="flex items-end justify-between mb-16">
               <div>
@@ -331,7 +331,7 @@ export default async function HomePage({ params }: Props) {
       )}
 
       {/* Section 6: About Teaser */}
-      <section className="py-24 md:py-32 border-t border-border">
+      <section className="py-24 md:py-32 border-t border-border overflow-hidden">
         <div className="container-narrow">
           <ScrollReveal className="text-center">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">

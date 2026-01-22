@@ -163,7 +163,7 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* About the Magazine */}
-      <section className="py-24 md:py-32">
+      <section className="py-24 md:py-32 overflow-hidden">
         <div className="container-editorial">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             <ScrollReveal direction="left">
@@ -202,7 +202,7 @@ export default async function AboutPage({ params }: Props) {
       />
 
       {/* Chief Editor */}
-      <section className="py-24 md:py-32">
+      <section className="py-24 md:py-32 overflow-hidden">
         <div className="container-editorial">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Image - Surfing action shot */}
@@ -293,7 +293,7 @@ export default async function AboutPage({ params }: Props) {
       </section>
 
       {/* Publisher - Surfisio */}
-      <section className="py-24 md:py-32 bg-secondary">
+      <section className="py-24 md:py-32 bg-secondary overflow-hidden">
         <div className="container-editorial">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             {/* Info */}

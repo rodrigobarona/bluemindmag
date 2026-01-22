@@ -167,7 +167,7 @@ export default async function IssuesPage({ params }: Props) {
 
       {/* Current Issue Showcase - 3D Tilt Parallax */}
       {currentIssue && (
-        <section className="py-20 md:py-28 border-b border-border">
+        <section className="py-20 md:py-28 border-b border-border overflow-hidden">
           <div className="container-editorial mb-8 md:mb-12">
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
               {t('featured')}
@@ -193,7 +193,7 @@ export default async function IssuesPage({ params }: Props) {
 
       {/* Past Issues Grid */}
       {pastIssues.length > 0 && (
-        <section className="py-20 md:py-28">
+        <section className="py-20 md:py-28 overflow-hidden">
           <div className="container-editorial">
             <ScrollReveal className="mb-16">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
@@ -224,7 +224,7 @@ export default async function IssuesPage({ params }: Props) {
 
       {/* All Issues (if no current/past separation) */}
       {!currentIssue && pastIssues.length === 0 && issues.length > 0 && (
-        <section className="py-20 md:py-28">
+        <section className="py-20 md:py-28 overflow-hidden">
           <div className="container-editorial">
             <StaggerList
               staggerDelay={0.1}
