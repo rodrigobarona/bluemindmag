@@ -641,12 +641,12 @@ export async function GET(request: NextRequest) {
                 {displaySubtitle}
               </div>
 
-              {/* Accent line - Longer and thicker */}
+              {/* Accent line - Clean white */}
               <div
                 style={{
                   width: 150,
                   height: 6,
-                  backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
+                  backgroundColor: "rgba(255,255,255,0.9)",
                   borderRadius: 3,
                   display: "flex",
                   boxShadow: "0 3px 15px rgba(0,0,0,0.4)",
