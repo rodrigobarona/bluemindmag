@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = content?.magazine.description || '';
   const subtitle = content?.subtitle || '';
 
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}&type=about`;
+
   return {
     title,
     description,
@@ -44,12 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       type: 'website',
-      images: [`/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}`],
+      images: [ogImageUrl],
     },
     twitter: {
       card: 'summary_large_image',
       title: `${title} | Blue Mind Magazine`,
       description,
+      images: [ogImageUrl],
     },
   };
 }

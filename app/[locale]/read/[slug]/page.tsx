@@ -39,6 +39,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${t('readIssue')} ${issue.issueNumber} - ${translation.title}`;
   const description = translation.description;
 
+  // Build OG image URL with issue-specific parameters
+  const ogParams = new URLSearchParams({
+    title: translation.title,
+    subtitle: t('readNow'),
+    type: 'read',
+    cover: issue.cover,
+    accentColor: issue.accentColor,
+    issueNumber: String(issue.issueNumber),
+  });
+  const ogImageUrl = `${baseUrl}/api/og?${ogParams.toString()}`;
+
   return {
     title,
     description,
@@ -49,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: issue.date,
       images: [
         {
-          url: `${baseUrl}/api/og?title=${encodeURIComponent(translation.title)}&subtitle=${encodeURIComponent(t('readNow'))}&type=read`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: translation.title,
@@ -60,6 +71,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${title} | Blue Mind Magazine`,
       description,
+      images: [ogImageUrl],
     },
     robots: {
       index: true,
