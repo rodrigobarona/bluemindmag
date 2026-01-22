@@ -288,7 +288,7 @@ export default async function NewsletterPage({ params }: Props) {
                     <feature.icon className="h-6 w-6 text-brand" />
                   </div>
                   <h3 className="font-headline text-xl mb-3">{feature.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed text-balance">
                     {feature.description}
                   </p>
                 </div>
