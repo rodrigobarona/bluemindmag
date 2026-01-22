@@ -107,7 +107,7 @@ export function IssueShowcase({
 
   return (
     <div
-      className="relative overflow-hidden"
+      className="relative overflow-x-clip overflow-y-visible"
       style={{ "--issue-accent": issue.accentColor } as React.CSSProperties}
     >
       {/* Background ambient glow */}
