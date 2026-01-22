@@ -218,7 +218,7 @@ export function IssueDetailFeatures({
   const isMounted = useMounted();
 
   return (
-    <section id="features" className="py-20 md:py-28 border-t border-border">
+    <section id="features" className="py-20 md:py-28 border-t border-border overflow-hidden">
       <div className="container-editorial">
         {/* Section Header with line animation */}
         <div className="mb-16 md:mb-20">
@@ -522,7 +522,7 @@ export function IssueDetailCTA({
 
   return (
     <section
-      className="py-16 md:py-20 relative"
+      className="py-16 md:py-20 relative overflow-hidden"
       style={{
         background: `linear-gradient(135deg, ${issue.accentColor} 0%, ${issue.accentColor}dd 100%)`,
       }}
