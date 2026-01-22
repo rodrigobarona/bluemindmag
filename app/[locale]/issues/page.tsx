@@ -29,10 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = t('title');
   const description = t('description');
 
-  // Fetch hero image for OG
-  const heroImage = await getImageForSlot('issues:hero');
-  const imageParam = heroImage?.srcLarge ? `&image=${encodeURIComponent(heroImage.srcLarge)}` : '';
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues${imageParam}`;
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues`;
 
   return {
     title,

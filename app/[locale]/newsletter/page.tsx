@@ -34,10 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = content?.description || "";
   const freeNewsletter = content?.freeNewsletter || "";
 
-  // Fetch hero image for OG
-  const heroImage = await getImageForSlot('newsletter:hero');
-  const imageParam = heroImage?.srcLarge ? `&image=${encodeURIComponent(heroImage.srcLarge)}` : '';
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(freeNewsletter)}&type=newsletter${imageParam}`;
+  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(freeNewsletter)}&type=newsletter`;
 
   return {
     title,

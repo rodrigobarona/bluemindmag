@@ -14,7 +14,6 @@ import { routing } from "@/i18n/routing";
 import ConsentManager from "@/components/consent-manager";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
-import { getImageForSlot } from "@/lib/pexels";
 import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
 import "../globals.css";
 
@@ -69,10 +68,8 @@ export async function generateMetadata({
   // Use base URL for OG images (works with preview deployments)
   const baseUrl = getBaseUrl();
 
-  // Fetch hero image for homepage OG
-  const heroImage = await getImageForSlot('home:hero');
-  const imageParam = heroImage?.srcLarge ? `&image=${encodeURIComponent(heroImage.srcLarge)}` : '';
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(t("description").substring(0, 50))}&type=home${imageParam}`;
+  // OG image URL - uses local fallback images
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(t("description").substring(0, 50))}&type=home`;
 
   return {
     title: {
