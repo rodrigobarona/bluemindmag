@@ -79,6 +79,7 @@ export async function GET(request: NextRequest) {
     const cover = searchParams.get("cover");
     const accentColorParam = searchParams.get("accentColor");
     const issueNumber = searchParams.get("issueNumber");
+    const date = searchParams.get("date");
 
     const baseUrl = getBaseUrl();
     const logoUrl = `${baseUrl}/images/logo-white.png`; // Use white logo for better visibility
@@ -93,7 +94,7 @@ export async function GET(request: NextRequest) {
       subtitle.length > 55 ? subtitle.substring(0, 52) + "..." : subtitle;
 
     // ============================================
-    // ISSUE / READ TEMPLATE - Magazine Cover Style
+    // ISSUE / READ TEMPLATE - Magazine Cover Hero
     // ============================================
     if ((type === "issue" || type === "read") && cover) {
       return new ImageResponse(
@@ -106,42 +107,43 @@ export async function GET(request: NextRequest) {
             position: "relative",
           }}
         >
-          {/* Decorative circles for depth */}
+          {/* Decorative circles on RIGHT to support the cover */}
           <div
             style={{
               position: "absolute",
-              top: -100,
-              right: -100,
-              width: 400,
-              height: 400,
-              borderRadius: 200,
+              top: -120,
+              right: -80,
+              width: 450,
+              height: 450,
+              borderRadius: 225,
               backgroundColor: "white",
-              opacity: 0.1,
+              opacity: 0.07,
             }}
           />
           <div
             style={{
               position: "absolute",
-              bottom: -80,
-              left: -80,
-              width: 300,
-              height: 300,
-              borderRadius: 150,
+              bottom: -100,
+              right: 80,
+              width: 320,
+              height: 320,
+              borderRadius: 160,
               backgroundColor: "white",
-              opacity: 0.08,
+              opacity: 0.05,
             }}
           />
 
-          {/* Large issue number - decorative background */}
+          {/* Large issue number on RIGHT behind cover */}
           {issueNumber && (
             <div
               style={{
                 position: "absolute",
-                right: 60,
-                bottom: 80,
-                fontSize: 400,
+                right: 20,
+                top: "50%",
+                transform: "translateY(-50%)",
+                fontSize: 420,
                 fontWeight: 900,
-                color: "rgba(255,255,255,0.1)",
+                color: "rgba(255,255,255,0.06)",
                 lineHeight: 0.8,
                 letterSpacing: -20,
                 display: "flex",
@@ -151,125 +153,150 @@ export async function GET(request: NextRequest) {
             </div>
           )}
 
-          {/* Magazine cover with shadow and rotation */}
+          {/* Left side - Text content */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              padding: "50px 40px 50px 60px",
+              width: "52%",
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
+            {/* Top: BIG Logo */}
+            <div style={{ display: "flex" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logoUrl}
+                height={90}
+                alt=""
+                style={{
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            {/* Bottom: Text content */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {/* Issue metadata line */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: 24,
+                }}
+              >
+                <div
+                  style={{
+                    width: 50,
+                    height: 4,
+                    backgroundColor: "rgba(255,255,255,0.7)",
+                    marginRight: 18,
+                    display: "flex",
+                  }}
+                />
+                <div
+                  style={{
+                    fontFamily: "DM Sans",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    letterSpacing: 4,
+                    color: "rgba(255,255,255,0.9)",
+                    display: "flex",
+                  }}
+                >
+                  {date
+                    ? date.toUpperCase()
+                    : type === "read"
+                      ? "READ NOW"
+                      : "BLUE MIND MAGAZINE"}
+                </div>
+              </div>
+
+              {/* Title */}
+              <div
+                style={{
+                  fontFamily: "League Gothic",
+                  fontSize: displayTitle.length > 20 ? 64 : 72,
+                  fontWeight: 400,
+                  color: "white",
+                  lineHeight: 0.95,
+                  marginBottom: 16,
+                  display: "flex",
+                  textShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                  textTransform: "uppercase",
+                  letterSpacing: 3,
+                }}
+              >
+                {displayTitle}
+              </div>
+
+              {/* Subtitle/Description */}
+              <div
+                style={{
+                  fontFamily: "DM Sans",
+                  fontSize: 30,
+                  color: "rgba(255,255,255,0.9)",
+                  marginBottom: 32,
+                  display: "flex",
+                  fontWeight: 500,
+                }}
+              >
+                {displaySubtitle}
+              </div>
+
+              {/* Domain */}
+              <div
+                style={{
+                  fontFamily: "DM Sans",
+                  fontSize: 16,
+                  color: "rgba(255,255,255,0.6)",
+                  display: "flex",
+                  fontWeight: 500,
+                }}
+              >
+                bluemindmag.com
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Magazine cover with breathing room */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: 60,
-              width: 340,
+              width: "48%",
+              position: "relative",
+              padding: "0 60px 0 20px",
             }}
           >
             <div
               style={{
                 display: "flex",
-                transform: "rotate(-3deg)",
-                boxShadow: "0 30px 60px rgba(0,0,0,0.4)",
+                transform: "rotate(3deg)",
+                boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
+                position: "relative",
+                zIndex: 10,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={`${baseUrl}${cover}`}
-                width={240}
-                height={339}
+                width={380}
+                height={537}
                 alt=""
                 style={{
                   objectFit: "cover",
                 }}
               />
-            </div>
-          </div>
-
-          {/* Content area */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              flex: 1,
-              padding: "60px 60px 60px 20px",
-            }}
-          >
-            {/* Type label */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: 24,
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 3,
-                  backgroundColor: "rgba(255,255,255,0.6)",
-                  marginRight: 16,
-                  display: "flex",
-                }}
-              />
-              <div
-                style={{
-                  fontFamily: "DM Sans",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  letterSpacing: 4,
-                  color: "rgba(255,255,255,0.8)",
-                  display: "flex",
-                }}
-              >
-                {type === "read" ? "READ NOW" : "BLUE MIND MAGAZINE"}
-              </div>
-            </div>
-
-            {/* Title */}
-            <div
-              style={{
-                fontFamily: "League Gothic",
-                fontSize: displayTitle.length > 20 ? 48 : 56,
-                fontWeight: 400,
-                color: "white",
-                lineHeight: 1.1,
-                marginBottom: 16,
-                display: "flex",
-                textShadow: "0 2px 10px rgba(0,0,0,0.2)",
-                textTransform: "uppercase",
-              }}
-            >
-              {displayTitle}
-            </div>
-
-            {/* Subtitle */}
-            <div
-              style={{
-                fontFamily: "DM Sans",
-                fontSize: 24,
-                color: "rgba(255,255,255,0.85)",
-                marginBottom: 32,
-                display: "flex",
-              }}
-            >
-              {displaySubtitle}
-            </div>
-
-            {/* Bottom info */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "auto",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "DM Sans",
-                  fontSize: 14,
-                  color: "rgba(255,255,255,0.5)",
-                  display: "flex",
-                }}
-              >
-                bluemindmag.com
-              </div>
             </div>
           </div>
         </div>,

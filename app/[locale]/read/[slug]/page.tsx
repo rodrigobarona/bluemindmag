@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     cover: issue.cover,
     accentColor: issue.accentColor,
     issueNumber: String(issue.issueNumber),
+    date: issue.date,
   });
   const ogImageUrl = `${baseUrl}/api/og?${ogParams.toString()}`;
 
