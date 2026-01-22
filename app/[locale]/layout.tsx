@@ -15,6 +15,7 @@ import ConsentManager from "@/components/consent-manager";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
 import { getImageForSlot } from "@/lib/pexels";
+import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
 import "../globals.css";
 
 // Display/Headlines - Condensed bold for masthead and titles
@@ -63,7 +64,10 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
-  const baseUrl = "https://bluemindmag.com";
+  // Use canonical URL for SEO (always production domain)
+  const canonicalUrl = getCanonicalUrl();
+  // Use base URL for OG images (works with preview deployments)
+  const baseUrl = getBaseUrl();
 
   // Fetch hero image for homepage OG
   const heroImage = await getImageForSlot('home:hero');
@@ -76,21 +80,21 @@ export async function generateMetadata({
       template: `%s | ${t("title")}`,
     },
     description: t("description"),
-    metadataBase: new URL(baseUrl),
+    metadataBase: new URL(canonicalUrl),
     alternates: {
-      canonical: locale === "en" ? baseUrl : `${baseUrl}/pt`,
+      canonical: locale === "en" ? canonicalUrl : `${canonicalUrl}/pt`,
       languages: {
-        en: baseUrl,
-        pt: `${baseUrl}/pt`,
+        en: canonicalUrl,
+        pt: `${canonicalUrl}/pt`,
       },
       types: {
-        'application/rss+xml': `${baseUrl}/feed.xml`,
+        'application/rss+xml': `${canonicalUrl}/feed.xml`,
       },
     },
     openGraph: {
       title: t("title"),
       description: t("description"),
-      url: baseUrl,
+      url: canonicalUrl,
       siteName: "Blue Mind Magazine",
       locale: locale === "en" ? "en_US" : "pt_PT",
       type: "website",

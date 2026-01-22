@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
+import { getBaseUrl } from '@/lib/utils';
 
 // ============================================
 // BLUE MIND MAGAZINE - OG IMAGE GENERATOR
@@ -10,14 +11,6 @@ import { NextRequest } from 'next/server';
 const BRAND_BLUE = '#0097B2';
 const WARM_GOLDEN = '#D4A574';
 const DARK_BG = '#1a1a1a';
-
-// Base URL for assets
-const getBaseUrl = () => {
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return process.env.NEXT_PUBLIC_BASE_URL || 'https://bluemindmag.com';
-};
 
 export async function GET(request: NextRequest) {
   try {

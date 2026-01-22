@@ -1,4 +1,5 @@
 import type { NavLink, SocialLink, SiteConfig } from "../types/content";
+import { getCanonicalUrl } from "@/lib/utils";
 
 // ============================================
 // BLUE MIND MAGAZINE - SITE CONFIG
@@ -7,7 +8,7 @@ import type { NavLink, SocialLink, SiteConfig } from "../types/content";
 export const siteConfig: SiteConfig = {
   name: "Blue Mind Magazine - Where surf and science meet",
   tagline: "From surfers, to surfers",
-  url: "https://bluemindmag.com",
+  url: getCanonicalUrl(),
   email: "info@bluemindmag.com",
   defaultLocale: "en",
   locales: ["en", "pt"] as const,
