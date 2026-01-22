@@ -147,13 +147,13 @@ export default async function AboutPage({ params }: Props) {
               {content.subtitle}
             </span>
             <h1 
-              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 text-balance ${heroImage ? 'text-white' : ''}`}
               style={heroImage ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
             >
               {content.title}
             </h1>
             <p 
-              className={`font-body text-xl leading-relaxed ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
+              className={`font-body text-xl leading-relaxed text-balance ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
               style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
             >
               {content.heroDescription}

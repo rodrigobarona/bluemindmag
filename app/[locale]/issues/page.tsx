@@ -150,13 +150,13 @@ export default async function IssuesPage({ params }: Props) {
               {t('subtitle')}
             </span>
             <h1 
-              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? 'text-white' : ''}`}
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 text-balance ${heroImage ? 'text-white' : ''}`}
               style={heroImage ? { textShadow: '0 2px 8px rgba(0,0,0,0.3)' } : undefined}
             >
               {t('title')}
             </h1>
             <p 
-              className={`font-body text-xl leading-relaxed max-w-2xl ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
+              className={`font-body text-xl leading-relaxed max-w-2xl text-balance ${heroImage ? 'text-white/80' : 'text-muted-foreground'}`}
               style={heroImage ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
             >
               {t('description')}

@@ -178,7 +178,7 @@ export default async function NewsletterPage({ params }: Props) {
             </div>
 
             <h1
-              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? "text-white" : ""}`}
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 text-balance ${heroImage ? "text-white" : ""}`}
               style={
                 heroImage
                   ? { textShadow: "0 2px 8px rgba(0,0,0,0.3)" }
@@ -189,7 +189,7 @@ export default async function NewsletterPage({ params }: Props) {
             </h1>
 
             <p
-              className={`font-accent text-xl md:text-2xl italic mb-4 ${heroImage ? "text-white/90" : "text-muted-foreground"}`}
+              className={`font-accent text-xl md:text-2xl italic mb-4 text-balance ${heroImage ? "text-white/90" : "text-muted-foreground"}`}
               style={
                 heroImage
                   ? { textShadow: "0 1px 4px rgba(0,0,0,0.2)" }
@@ -200,7 +200,7 @@ export default async function NewsletterPage({ params }: Props) {
             </p>
 
             <p
-              className={`text-lg max-w-xl mx-auto mb-10 ${heroImage ? "text-white/70" : "text-muted-foreground"}`}
+              className={`text-lg max-w-xl mx-auto mb-10 text-balance ${heroImage ? "text-white/70" : "text-muted-foreground"}`}
               style={
                 heroImage
                   ? { textShadow: "0 1px 3px rgba(0,0,0,0.2)" }
@@ -252,8 +252,8 @@ export default async function NewsletterPage({ params }: Props) {
                 {/* Quote */}
                 <div className="text-center md:text-left">
                   <IconWaveSine className="h-10 w-10 text-brand/30 mb-4 mx-auto md:mx-0" />
-                  <p className="font-accent italic text-xl md:text-2xl text-muted-foreground leading-relaxed mb-6">
-                    {content.description}
+                  <p className="font-accent italic text-xl md:text-2xl text-muted-foreground leading-relaxed mb-6 text-balance">
+                    &ldquo;{content.founder.quote}&rdquo;
                   </p>
                   <div>
                     <p className="font-medium text-lg">Pedro Seixas</p>

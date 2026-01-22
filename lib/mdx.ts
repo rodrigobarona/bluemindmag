@@ -504,10 +504,10 @@ export interface ContactPageContent {
       label: string;
       description: string;
     };
-    response: {
-      label: string;
-      description: string;
-    };
+  };
+  founder: {
+    role: string;
+    quote: string;
   };
   chat: {
     label: string;
@@ -517,6 +517,7 @@ export interface ContactPageContent {
   social: {
     follow: string;
     description: string;
+    followDescription: string;
   };
   contribute: {
     title: string;
@@ -524,10 +525,6 @@ export interface ContactPageContent {
     guidelines: string;
     cta: string;
     emailSubject: string;
-  };
-  info: {
-    email: string;
-    response: string;
   };
   links: {
     calcom: string;
@@ -579,6 +576,7 @@ export interface NewsletterPageContent {
   };
   founder: {
     role: string;
+    quote: string;
   };
   notSure: {
     title: string;

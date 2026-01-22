@@ -7,11 +7,10 @@ import {
   IconBrandLinkedin,
   IconArrowRight,
   IconWaveSine,
-  IconCalendar,
-  IconCoffee,
 } from "@tabler/icons-react";
 import { SiteLayout } from "@/components/site-layout";
 import { ContactForm } from "@/components/contact-form";
+import { CalcomDialog } from "@/components/calcom-dialog";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { JsonLd } from "@/components/json-ld";
 import { socialLinks, siteConfig } from "@/content/data/navigation";
@@ -154,7 +153,7 @@ export default async function ContactPage({ params }: Props) {
               {content.hero.label}
             </span>
             <h1
-              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 ${heroImage ? "text-white" : ""}`}
+              className={`font-headline text-5xl md:text-7xl lg:text-8xl mb-6 text-balance ${heroImage ? "text-white" : ""}`}
               style={
                 heroImage
                   ? { textShadow: "0 2px 8px rgba(0,0,0,0.3)" }
@@ -164,7 +163,7 @@ export default async function ContactPage({ params }: Props) {
               {content.hero.greeting}
             </h1>
             <p
-              className={`font-body text-xl leading-relaxed ${heroImage ? "text-white/80" : "text-muted-foreground"}`}
+              className={`font-body text-xl leading-relaxed text-balance ${heroImage ? "text-white/80" : "text-muted-foreground"}`}
               style={
                 heroImage
                   ? { textShadow: "0 1px 3px rgba(0,0,0,0.2)" }
@@ -224,15 +223,15 @@ export default async function ContactPage({ params }: Props) {
                   <div>
                     <p className="font-medium mb-1">Pedro Seixas</p>
                     <p className="text-sm text-muted-foreground">
-                      {content.ways.response.label}
+                      {content.founder.role}
                     </p>
                   </div>
                 </div>
 
                 <div className="pl-0">
                   <IconWaveSine className="h-8 w-8 text-brand/30 mb-3" />
-                  <p className="font-accent italic text-muted-foreground leading-relaxed text-lg">
-                    {content.ways.response.description}
+                  <p className="font-accent italic text-muted-foreground leading-relaxed text-lg text-balance">
+                    &ldquo;{content.founder.quote}&rdquo;
                   </p>
                 </div>
               </div>
@@ -245,25 +244,11 @@ export default async function ContactPage({ params }: Props) {
                     {content.chat.label}
                   </h3>
 
-                  <a
-                    href={content.links.calcom}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all"
-                  >
-                    <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
-                      <IconCoffee className="h-6 w-6 text-brand" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-lg group-hover:text-brand transition-colors">
-                        {content.chat.book}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {content.chat.duration}
-                      </p>
-                    </div>
-                    <IconCalendar className="h-5 w-5 text-muted-foreground ml-auto group-hover:text-brand transition-colors" />
-                  </a>
+                  <CalcomDialog
+                    calcomUrl={content.links.calcom}
+                    triggerLabel={content.chat.book}
+                    triggerSubLabel={content.chat.duration}
+                  />
 
                   <p className="text-sm text-muted-foreground mt-4">
                     {content.social.description}
@@ -292,7 +277,7 @@ export default async function ContactPage({ params }: Props) {
                   </div>
 
                   <p className="text-sm text-muted-foreground mt-4">
-                    {content.social.description}
+                    {content.social.followDescription}
                   </p>
                 </address>
               </div>
