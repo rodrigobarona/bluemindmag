@@ -68,8 +68,8 @@ export async function generateMetadata({
   // Use base URL for OG images (works with preview deployments)
   const baseUrl = getBaseUrl();
 
-  // OG image URL - uses local fallback images
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(t("description").substring(0, 50))}&type=home`;
+  // OG image URL - uses homepage tagline
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
 
   return {
     title: {

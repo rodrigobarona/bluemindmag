@@ -15,13 +15,14 @@ const BRAND_BLUE = "#0097B2";
 const WARM_GOLDEN = "#D4A574";
 const DARK_BG = "#1a1a1a";
 
-// Fallback images mapping by page type (local assets)
+// Fallback images mapping by page type (local assets - NO REPEATS)
 const FALLBACK_IMAGES: Record<string, string> = {
-  home: "/images/fallback/ocean-aerial.jpg",
-  about: "/images/fallback/ocean-aerial.jpg",
-  contact: "/images/fallback/beach-golden-hour.jpg",
-  newsletter: "/images/fallback/underwater-blue.jpg",
-  issues: "/images/fallback/surfer-sunset.jpg",
+  home: "/images/fallback/ocean-aerial.jpg",        // Dramatic aerial for homepage
+  about: "/images/fallback/surfer-sunset.jpg",      // Surfer lifestyle for about
+  contact: "/images/fallback/beach-golden-hour.jpg", // Warm inviting for contact
+  newsletter: "/images/fallback/underwater-blue.jpg", // Deep blue for newsletter
+  issues: "/images/fallback/ocean-aerial.jpg",       // Can share with home (different template style)
+  legal: "/images/fallback/underwater-blue.jpg",     // Can share with newsletter (minimal template)
   default: "/images/fallback/ocean-aerial.jpg",
 };
 
@@ -348,7 +349,7 @@ export async function GET(request: NextRequest) {
               right: 0,
               bottom: 0,
               backgroundImage:
-                "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)",
+                "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6) 100%)",
               display: "flex",
             }}
           />
@@ -365,15 +366,15 @@ export async function GET(request: NextRequest) {
               padding: "0 80px",
             }}
           >
-            {/* Surf Science label */}
+            {/* Surf Science label - smaller and more subtle */}
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 400,
                 letterSpacing: 8,
                 color: "rgba(255,255,255,0.7)",
-                marginBottom: 24,
+                marginBottom: 28,
                 display: "flex",
                 textTransform: "uppercase",
               }}
@@ -381,72 +382,60 @@ export async function GET(request: NextRequest) {
               SURF SCIENCE
             </div>
 
-            {/* BLUE MIND masthead - Large */}
+            {/* BLUE MIND masthead - HUGE like the hero */}
             <div
               style={{
                 fontFamily: "League Gothic",
-                fontSize: 120,
+                fontSize: 140,
                 fontWeight: 400,
                 color: "white",
                 lineHeight: 1,
-                marginBottom: 32,
+                marginBottom: 36,
                 display: "flex",
-                textShadow: "0 4px 40px rgba(0,0,0,0.6)",
-                letterSpacing: 8,
+                textShadow: "0 4px 40px rgba(0,0,0,0.6), 0 2px 20px rgba(0,0,0,0.4)",
+                letterSpacing: 10,
                 textTransform: "uppercase",
               }}
             >
               BLUE MIND
             </div>
 
-            {/* Tagline in quotes */}
+            {/* Tagline in quotes - elegant, not italic */}
             <div
               style={{
                 fontFamily: "DM Sans",
                 fontSize: 28,
                 fontWeight: 400,
                 color: "rgba(255,255,255,0.9)",
-                marginBottom: 48,
+                marginBottom: 0,
                 display: "flex",
-                textShadow: "0 2px 20px rgba(0,0,0,0.5)",
-                fontStyle: "italic",
+                textShadow: "0 3px 25px rgba(0,0,0,0.5)",
                 maxWidth: 600,
                 textAlign: "center",
               }}
             >
               &ldquo;{displaySubtitle}&rdquo;
             </div>
-
-            {/* Accent line with brand gradient */}
-            <div
-              style={{
-                width: 120,
-                height: 5,
-                backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
-                borderRadius: 3,
-                display: "flex",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
-              }}
-            />
           </div>
 
-          {/* Footer with domain */}
+          {/* Footer with domain - minimal */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: "40px 60px",
+              padding: "32px 60px",
               position: "relative",
             }}
           >
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 16,
-                color: "rgba(255,255,255,0.6)",
+                fontSize: 14,
+                color: "rgba(255,255,255,0.5)",
                 display: "flex",
-                textShadow: "0 1px 10px rgba(0,0,0,0.5)",
+                textShadow: "0 2px 15px rgba(0,0,0,0.6)",
+                fontWeight: 400,
               }}
             >
               bluemindmag.com
