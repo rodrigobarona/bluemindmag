@@ -1,16 +1,16 @@
-import type { NavLink, SocialLink, SiteConfig } from '../types/content';
+import type { NavLink, SocialLink, SiteConfig } from "../types/content";
 
 // ============================================
 // BLUE MIND MAGAZINE - SITE CONFIG
 // ============================================
 
 export const siteConfig: SiteConfig = {
-  name: 'Blue Mind Magazine',
-  tagline: 'From surfers, to surfers',
-  url: 'https://bluemindmag.com',
-  email: 'info@bluemindmag.com',
-  defaultLocale: 'en',
-  locales: ['en', 'pt'] as const,
+  name: "Blue Mind Magazine",
+  tagline: "From surfers, to surfers",
+  url: "https://bluemindmag.com",
+  email: "info@bluemindmag.com",
+  defaultLocale: "en",
+  locales: ["en", "pt"] as const,
 };
 
 // ============================================
@@ -18,17 +18,17 @@ export const siteConfig: SiteConfig = {
 // ============================================
 
 export const mainNavLinks: NavLink[] = [
-  { key: 'home', href: '/' },
-  { key: 'issues', href: '/issues' },
-  { key: 'about', href: '/about' },
-  { key: 'contact', href: '/contact' },
+  { key: "home", href: "/" },
+  { key: "issues", href: "/issues" },
+  { key: "about", href: "/about" },
+  { key: "contact", href: "/contact" },
 ];
 
 export const footerNavLinks: NavLink[] = [
-  { key: 'newsletter', href: '/newsletter' },
-  { key: 'privacy', href: '/privacy' },
-  { key: 'cookies', href: '/cookies' },
-  { key: 'terms', href: '/terms' },
+  { key: "newsletter", href: "/newsletter" },
+  { key: "privacy", href: "/privacy" },
+  { key: "cookies", href: "/cookies" },
+  { key: "terms", href: "/terms" },
 ];
 
 // ============================================
@@ -38,14 +38,14 @@ export const footerNavLinks: NavLink[] = [
 
 export const socialLinks: SocialLink[] = [
   {
-    platform: 'instagram',
-    url: 'https://www.instagram.com/bluemindmag/',
-    label: 'Instagram',
+    platform: "instagram",
+    url: "https://www.instagram.com/bluemindmag/",
+    label: "Instagram",
   },
   {
-    platform: 'linkedin',
-    url: 'https://www.linkedin.com/company/bluemindmag/',
-    label: 'LinkedIn',
+    platform: "linkedin",
+    url: "https://www.linkedin.com/in/pedro-seixas-31934230/",
+    label: "LinkedIn",
   },
 ];
 
@@ -56,6 +56,5 @@ export const socialLinks: SocialLink[] = [
 // ============================================
 
 export const externalLinks = {
-  surfisio: 'https://surfisio.pt',  // Used in JSON-LD schema
+  surfisio: "https://surfisio.pt", // Used in JSON-LD schema
 };
-
