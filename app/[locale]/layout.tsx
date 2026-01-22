@@ -13,7 +13,8 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import ConsentManager from "@/components/consent-manager";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { getImageForSlot } from "@/lib/pexels";
 import "../globals.css";
 
 // Display/Headlines - Condensed bold for masthead and titles
@@ -64,6 +65,11 @@ export async function generateMetadata({
 
   const baseUrl = "https://bluemindmag.com";
 
+  // Fetch hero image for homepage OG
+  const heroImage = await getImageForSlot('home:hero');
+  const imageParam = heroImage?.srcLarge ? `&image=${encodeURIComponent(heroImage.srcLarge)}` : '';
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(t("description").substring(0, 50))}&type=home${imageParam}`;
+
   return {
     title: {
       default: t("title"),
@@ -90,7 +96,7 @@ export async function generateMetadata({
       type: "website",
       images: [
         {
-          url: `${baseUrl}/api/og`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: "Blue Mind Magazine - Surf Science Publication",
@@ -102,7 +108,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [`${baseUrl}/api/og`],
+      images: [ogImageUrl],
     },
     robots: {
       index: true,

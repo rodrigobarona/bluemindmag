@@ -10,7 +10,6 @@ import { NextRequest } from 'next/server';
 const BRAND_BLUE = '#0097B2';
 const WARM_GOLDEN = '#D4A574';
 const DARK_BG = '#1a1a1a';
-const LIGHT_BG = '#faf8f5';
 
 // Base URL for assets
 const getBaseUrl = () => {
@@ -29,6 +28,7 @@ export async function GET(request: NextRequest) {
     const cover = searchParams.get('cover');
     const accentColorParam = searchParams.get('accentColor');
     const issueNumber = searchParams.get('issueNumber');
+    const image = searchParams.get('image'); // Pexels hero image URL
 
     const baseUrl = getBaseUrl();
     const logoUrl = `${baseUrl}/images/logo.png`;
@@ -226,7 +226,196 @@ export async function GET(request: NextRequest) {
     }
 
     // ============================================
-    // DEFAULT TEMPLATE - Brand Style with Logo
+    // TEMPLATE WITH BACKGROUND IMAGE (Pexels)
+    // ============================================
+    if (image) {
+      // Type label
+      const getTypeLabel = () => {
+        switch (type) {
+          case 'about': return 'ABOUT US';
+          case 'newsletter': return 'NEWSLETTER';
+          case 'contact': return 'GET IN TOUCH';
+          case 'issues': return 'MAGAZINE ARCHIVE';
+          case 'legal': return 'LEGAL';
+          case 'home': return 'SURF SCIENCE MAGAZINE';
+          default: return 'SURF SCIENCE';
+        }
+      };
+
+      // Title font size based on length
+      const titleFontSize = displayTitle.length > 25 ? 56 : displayTitle.length > 15 ? 68 : 80;
+
+      return new ImageResponse(
+        (
+          <div
+            style={{
+              height: '100%',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              position: 'relative',
+            }}
+          >
+            {/* Background image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image}
+              alt=""
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+
+            {/* Dark overlay for text readability */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)',
+                display: 'flex',
+              }}
+            />
+
+            {/* Header with logo */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '40px 60px',
+                position: 'relative',
+              }}
+            >
+              {/* Logo */}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logoUrl}
+                  height={50}
+                  alt=""
+                  style={{
+                    objectFit: 'contain',
+                  }}
+                />
+              </div>
+
+              {/* Type badge */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  padding: '8px 20px',
+                  borderRadius: 4,
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: 3,
+                    color: BRAND_BLUE,
+                    display: 'flex',
+                  }}
+                >
+                  {getTypeLabel()}
+                </div>
+              </div>
+            </div>
+
+            {/* Main content - centered */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                padding: '0 80px',
+                position: 'relative',
+              }}
+            >
+              {/* Title */}
+              <div
+                style={{
+                  fontSize: titleFontSize,
+                  fontWeight: 700,
+                  color: 'white',
+                  lineHeight: 1.1,
+                  marginBottom: 24,
+                  display: 'flex',
+                  textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+                }}
+              >
+                {displayTitle}
+              </div>
+
+              {/* Subtitle */}
+              <div
+                style={{
+                  fontSize: 28,
+                  color: 'rgba(255,255,255,0.9)',
+                  marginBottom: 40,
+                  display: 'flex',
+                  textShadow: '0 2px 20px rgba(0,0,0,0.5)',
+                }}
+              >
+                {displaySubtitle}
+              </div>
+
+              {/* Accent line with brand gradient */}
+              <div
+                style={{
+                  width: 120,
+                  height: 5,
+                  backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
+                  borderRadius: 3,
+                  display: 'flex',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                }}
+              />
+            </div>
+
+            {/* Footer */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '40px 60px',
+                position: 'relative',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 16,
+                  color: 'rgba(255,255,255,0.6)',
+                  display: 'flex',
+                  textShadow: '0 1px 10px rgba(0,0,0,0.5)',
+                }}
+              >
+                bluemindmag.com
+              </div>
+            </div>
+          </div>
+        ),
+        {
+          width: 1200,
+          height: 630,
+        }
+      );
+    }
+
+    // ============================================
+    // DEFAULT TEMPLATE - Brand Style with Logo (no background image)
     // ============================================
     
     // Background gradient based on page type
