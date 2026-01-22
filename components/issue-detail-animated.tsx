@@ -218,7 +218,7 @@ export function IssueDetailFeatures({
   const isMounted = useMounted();
 
   return (
-    <section id="features" className="py-20 md:py-28 border-t border-border overflow-hidden">
+    <section id="features" className="py-20 md:py-28 border-t border-border overflow-x-clip overflow-y-visible">
       <div className="container-editorial">
         {/* Section Header with line animation */}
         <div className="mb-16 md:mb-20">
@@ -522,7 +522,7 @@ export function IssueDetailCTA({
 
   return (
     <section
-      className="py-16 md:py-20 relative overflow-hidden"
+      className="py-16 md:py-20 relative overflow-x-clip overflow-y-visible"
       style={{
         background: `linear-gradient(135deg, ${issue.accentColor} 0%, ${issue.accentColor}dd 100%)`,
       }}
@@ -561,7 +561,7 @@ export function IssueDetailCTA({
               </h2>
             </StaggerItem>
             <StaggerItem>
-              <p className="font-body text-lg text-white/80 mb-10 max-w-md mx-auto lg:mx-0">
+              <p className="font-body text-lg text-white/80 mb-10 max-w-md mx-auto lg:mx-0 text-balance">
                 {labels.exploreMore}
               </p>
             </StaggerItem>
@@ -617,9 +617,13 @@ export function IssueDetailCTA({
 
             {/* Floating cover with hover interaction */}
             <Floating duration={6} distance={8}>
-              <div className="relative -mt-24 z-10 transition-transform duration-500 hover:rotate-0" style={{ transform: "rotate(3deg)" }}>
-                <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl" />
-                <div className="relative w-64 xl:w-80 shadow-2xl">
+              <Link 
+                href={`/read/${issue.slug}`}
+                className="group relative lg:-mt-24 z-10 block transition-transform duration-500 hover:rotate-0" 
+                style={{ transform: "rotate(3deg)" }}
+              >
+                <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
+                <div className="relative w-64 xl:w-80 shadow-2xl group-hover:shadow-cover transition-shadow duration-500">
                   <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
                     <Image
                       src={issue.cover}
@@ -630,7 +634,7 @@ export function IssueDetailCTA({
                     />
                   </div>
                 </div>
-              </div>
+              </Link>
             </Floating>
           </ScrollReveal>
         </div>

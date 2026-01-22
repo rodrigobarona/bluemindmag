@@ -22,7 +22,7 @@ export function ReadIssueButton({
       label={label}
       variant="primary"
       size="lg"
-      className={`bg-foreground hover:bg-brand ${className}`}
+      className={`bg-foreground text-background hover:bg-brand hover:text-white ${className}`}
     />
   );
 }

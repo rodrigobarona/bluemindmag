@@ -1,24 +1,31 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
-import Image from 'next/image';
-import { ArrowRight, BookOpen } from 'lucide-react';
-import { SiteLayout } from '@/components/site-layout';
-import { HeroImmersive } from '@/components/hero-immersive';
-import { ScrollReveal } from '@/components/scroll-reveal';
-import { StaggerList } from '@/components/stagger-list';
-import { PullQuoteImage } from '@/components/pull-quote';
-import { IssueCardFeatured, IssueCardMini } from '@/components/issue-card';
-import { HorizontalScroll, HorizontalScrollItem } from '@/components/horizontal-scroll';
-import { JsonLd } from '@/components/json-ld';
-import { getImageForSlot, getSectionImages } from '@/lib/pexels';
-import { getAllIssues, getCurrentIssue, getIssueTranslations } from '@/content/data/issues';
-import { getHomePageContent } from '@/lib/mdx';
-import type { Locale } from '@/content/types/content';
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { SiteLayout } from "@/components/site-layout";
+import { HeroImmersive } from "@/components/hero-immersive";
+import { ScrollReveal } from "@/components/scroll-reveal";
+import { StaggerList } from "@/components/stagger-list";
+import { PullQuoteImage } from "@/components/pull-quote";
+import { IssueCardFeatured, IssueCardMini } from "@/components/issue-card";
+import {
+  HorizontalScroll,
+  HorizontalScrollItem,
+} from "@/components/horizontal-scroll";
+import { JsonLd } from "@/components/json-ld";
+import { getImageForSlot, getSectionImages } from "@/lib/pexels";
+import {
+  getAllIssues,
+  getCurrentIssue,
+  getIssueTranslations,
+} from "@/content/data/issues";
+import { getHomePageContent } from "@/lib/mdx";
+import type { Locale } from "@/content/types/content";
 import {
   generateWebSiteSchema,
   generateOrganizationSchema,
   generatePeriodicalSchema,
-} from '@/lib/schema';
+} from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -28,8 +35,8 @@ export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const tCommon = await getTranslations('Common');
-  const tIssues = await getTranslations('Issues');
+  const tCommon = await getTranslations("Common");
+  const tIssues = await getTranslations("Issues");
   const content = getHomePageContent(locale as Locale);
   const issues = getAllIssues();
   const currentIssue = getCurrentIssue();
@@ -41,13 +48,13 @@ export default async function HomePage({ params }: Props) {
 
   // Fetch dynamic Pexels images using slot-based system (no repeats across pages)
   const [heroImage, quoteImage, newsletterImage] = await Promise.all([
-    getImageForSlot('home:hero'),
-    getImageForSlot('home:quote'),
-    getImageForSlot('home:newsletter'),
+    getImageForSlot("home:hero"),
+    getImageForSlot("home:quote"),
+    getImageForSlot("home:newsletter"),
   ]);
 
   // Get section images for highlights
-  const highlightIds = currentIssue?.highlights.map(h => h.id) || [];
+  const highlightIds = currentIssue?.highlights.map((h) => h.id) || [];
   const sectionImages = await getSectionImages(highlightIds);
 
   // Get translations from MDX (single source of truth)
@@ -72,22 +79,24 @@ export default async function HomePage({ params }: Props) {
       <HeroImmersive
         heroImage={heroImage}
         tagline={content.hero.tagline}
-        issueNumber={currentIssue?.issueNumber?.toString() || '0'}
+        issueNumber={currentIssue?.issueNumber?.toString() || "0"}
         issueDate={
           currentIssue
             ? new Date(currentIssue.date).toLocaleDateString(
-                locale === 'pt' ? 'pt-PT' : 'en-US',
-                { month: 'long', year: 'numeric' }
+                locale === "pt" ? "pt-PT" : "en-US",
+                { month: "long", year: "numeric" },
               )
-            : 'January 2026'
+            : "January 2026"
         }
         issueSlug={currentIssue?.slug}
         issueCover={currentIssue?.cover}
-        issueTitle={currentIssue ? issueTranslations[currentIssue.id]?.title : undefined}
+        issueTitle={
+          currentIssue ? issueTranslations[currentIssue.id]?.title : undefined
+        }
       />
 
       {/* Section 2: Current Issue Feature - Asymmetric layout */}
-                {currentIssue && (
+      {currentIssue && (
         <section className="py-24 md:py-32 lg:py-40 overflow-hidden">
           <div className="container-editorial">
             <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -103,7 +112,7 @@ export default async function HomePage({ params }: Props) {
                     className="absolute -top-16 -left-8 text-display-number pointer-events-none select-none hidden lg:block opacity-[0.08]"
                     style={{ color: currentIssue.accentColor }}
                   >
-                    {currentIssue.issueNumber.toString().padStart(2, '0')}
+                    {currentIssue.issueNumber.toString().padStart(2, "0")}
                   </div>
 
                   <IssueCardFeatured
@@ -144,23 +153,27 @@ export default async function HomePage({ params }: Props) {
                       style={{ backgroundColor: currentIssue.accentColor }}
                     >
                       <BookOpen className="w-5 h-5" />
-                      {tIssues('readIssue')}
+                      {tIssues("readIssue")}
                     </Link>
 
                     <Link
                       href={`/issues/${currentIssue.slug}`}
                       className="inline-flex items-center gap-2 border border-border px-8 py-4 font-ui text-sm font-medium transition-slow issue-secondary-cta"
-                      style={{ '--hover-color': currentIssue.accentColor } as React.CSSProperties}
+                      style={
+                        {
+                          "--hover-color": currentIssue.accentColor,
+                        } as React.CSSProperties
+                      }
                     >
-                      {tIssues('viewDetails')}
+                      {tIssues("viewDetails")}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
                   </div>
                 </div>
               </ScrollReveal>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* Section 3: Quick Contents - Compact cards with thumbnails */}
@@ -170,14 +183,14 @@ export default async function HomePage({ params }: Props) {
             {/* Inline header */}
             <ScrollReveal className="flex items-center justify-between mb-6">
               <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                {tIssues('inThisIssue')}
+                {tIssues("inThisIssue")}
               </span>
               <Link
                 href={`/issues/${currentIssue.slug}#features`}
                 className="font-ui text-xs font-medium transition-colors hover:opacity-70 flex items-center gap-1"
                 style={{ color: currentIssue.accentColor }}
               >
-                {tCommon('viewAll')}
+                {tCommon("viewAll")}
                 <ArrowRight className="w-3 h-3" />
               </Link>
             </ScrollReveal>
@@ -191,10 +204,16 @@ export default async function HomePage({ params }: Props) {
                   if (!highlightTranslation) return null;
 
                   const pexelsImage = sectionImages.get(highlight.id);
-                  const imageSrc = highlight.image || pexelsImage?.srcMedium || '/images/hero/ocean-aerial.jpg';
+                  const imageSrc =
+                    highlight.image ||
+                    pexelsImage?.srcMedium ||
+                    "/images/fallback/ocean-aerial.jpg";
 
                   return (
-                    <HorizontalScrollItem key={highlight.id} className="w-[260px]">
+                    <HorizontalScrollItem
+                      key={highlight.id}
+                      className="w-[260px]"
+                    >
                       <Link
                         href={`/issues/${currentIssue.slug}#features`}
                         className="group block overflow-hidden"
@@ -210,9 +229,7 @@ export default async function HomePage({ params }: Props) {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                           {/* Content inside */}
                           <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                            <span 
-                              className="font-headline text-2xl text-white/90 mb-1"
-                            >
+                            <span className="font-headline text-2xl text-white/90 mb-1">
                               {highlight.page}
                             </span>
                             <h3 className="font-headline text-sm text-white leading-tight line-clamp-2">
@@ -235,7 +252,10 @@ export default async function HomePage({ params }: Props) {
                 if (!highlightTranslation) return null;
 
                 const pexelsImage = sectionImages.get(highlight.id);
-                const imageSrc = highlight.image || pexelsImage?.srcMedium || '/images/hero/ocean-aerial.jpg';
+                const imageSrc =
+                  highlight.image ||
+                  pexelsImage?.srcMedium ||
+                  "/images/fallback/ocean-aerial.jpg";
 
                 return (
                   <Link
@@ -254,7 +274,7 @@ export default async function HomePage({ params }: Props) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                       {/* Content inside */}
                       <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                        <span 
+                        <span
                           className="font-headline text-2xl lg:text-3xl mb-1"
                           style={{ color: currentIssue.accentColor }}
                         >
@@ -297,7 +317,7 @@ export default async function HomePage({ params }: Props) {
                 href="/issues"
                 className="hidden md:flex font-ui text-sm font-medium text-muted-foreground hover:text-brand transition-base items-center gap-2"
               >
-                {tCommon('viewAll')}
+                {tCommon("viewAll")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </ScrollReveal>
@@ -322,7 +342,7 @@ export default async function HomePage({ params }: Props) {
                 href="/issues"
                 className="font-ui text-sm font-medium text-muted-foreground hover:text-brand transition-base inline-flex items-center gap-2"
               >
-                {tCommon('viewAll')}
+                {tCommon("viewAll")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -337,20 +357,20 @@ export default async function HomePage({ params }: Props) {
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
               {content.about.label}
             </span>
-            
+
             <h2 className="font-headline text-3xl md:text-4xl mb-8">
               {content.about.title}
             </h2>
-            
+
             <p className="font-body text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
               {content.about.description}
             </p>
-            
+
             <Link
               href="/about"
               className="font-ui inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-brand transition-base"
             >
-              {tCommon('learnMore')}
+              {tCommon("learnMore")}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </ScrollReveal>

@@ -1,106 +1,113 @@
 /**
  * Pexels API Integration for Blue Mind Magazine
  * Fetches high-quality ocean and surf photography for all sections
- * 
+ *
  * Features:
  * - Slot-based image assignment (different images per page section)
  * - TIME-BASED ROTATION: Images change every hour for variety
  * - Pool caching: 15 images cached per category, rotates hourly
  * - Blur placeholder generation for instant loading feedback
- * 
+ *
  * Cache Strategy:
  * - Pool fetch: Cached for 1 hour (ROTATION_INTERVAL_MINUTES)
  * - Selection: Time-based algorithm ensures different images over time
  * - Different slots always get different images from the pool
  */
 
-import { connection } from 'next/server';
+import { connection } from "next/server";
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY || process.env.PEXELS_API_URL;
-const PEXELS_BASE_URL = 'https://api.pexels.com/v1';
+const PEXELS_BASE_URL = "https://api.pexels.com/v1";
 
 // ============================================
 // IMAGE CATEGORIES & QUERIES
 // ============================================
 
-type ImageCategory = 'hero' | 'quote' | 'science' | 'surfer' | 'portugal' | 'cta' | 'contact';
+type ImageCategory =
+  | "hero"
+  | "quote"
+  | "science"
+  | "surfer"
+  | "portugal"
+  | "cta"
+  | "contact";
 
 // Hero images - Dramatic, cinematic ocean/surf
 const HERO_QUERIES = [
-  'ocean waves aerial view',
-  'surfer silhouette sunset',
-  'underwater ocean blue',
-  'beach sunrise golden hour',
-  'ocean wave barrel',
-  'surfing big waves',
-  'ocean horizon calm',
-  'tropical beach aerial',
-  'stormy ocean waves',
-  'pacific ocean sunset',
+  "ocean waves aerial view",
+  "surfer silhouette sunset",
+  "underwater ocean blue",
+  "beach sunrise golden hour",
+  "ocean wave barrel",
+  "surfing big waves",
+  "ocean horizon calm",
+  "tropical beach aerial",
+  "stormy ocean waves",
+  "pacific ocean sunset",
 ];
 
 // Quote/atmosphere backgrounds - Soft, calm ocean imagery
 const QUOTE_QUERIES = [
-  'calm ocean sunrise peaceful',
-  'ocean horizon minimalist',
-  'beach misty morning',
-  'soft waves sandy beach',
-  'ocean blue gradient calm',
-  'sea foam beach peaceful',
-  'coastline fog morning',
-  'ocean sunset soft colors',
+  "calm ocean sunrise peaceful",
+  "ocean horizon minimalist",
+  "beach misty morning",
+  "soft waves sandy beach",
+  "ocean blue gradient calm",
+  "sea foam beach peaceful",
+  "coastline fog morning",
+  "ocean sunset soft colors",
 ];
 
 // Science/underwater - Ocean blue and marine life (vibrant, not dark)
 const SCIENCE_QUERIES = [
-  'underwater ocean blue light rays',
-  'sea turtle swimming clear water',
-  'dolphins underwater ocean',
-  'coral reef tropical fish',
-  'ocean sunlight underwater',
-  'jellyfish blue ocean',
+  "underwater ocean blue light rays",
+  "sea turtle swimming clear water",
+  "dolphins underwater ocean",
+  "coral reef tropical fish",
+  "ocean sunlight underwater",
+  "jellyfish blue ocean",
 ];
 
 // Surfer lifestyle - specific surfing imagery
 const SURFER_QUERIES = [
-  'surfer carrying surfboard beach',
-  'surfboard sand beach sunset',
-  'surfer walking ocean',
-  'surfer silhouette waves',
-  'surfing lifestyle beach',
-  'surfer paddling out ocean',
+  "surfer carrying surfboard beach",
+  "surfboard sand beach sunset",
+  "surfer walking ocean",
+  "surfer silhouette waves",
+  "surfing lifestyle beach",
+  "surfer paddling out ocean",
 ];
 
 // Portugal/Atlantic specific - Rocky cliffs and dramatic coastlines
 const PORTUGAL_QUERIES = [
-  'dramatic ocean cliffs aerial',
-  'rocky coastline waves crashing',
-  'sea cliff sunset dramatic',
-  'atlantic ocean coast rugged',
-  'coastal rocks waves',
-  'cliffs ocean view dramatic',
+  "dramatic ocean cliffs aerial",
+  "rocky coastline waves crashing",
+  "sea cliff sunset dramatic",
+  "atlantic ocean coast rugged",
+  "coastal rocks waves",
+  "cliffs ocean view dramatic",
 ];
 
 // Newsletter/CTA backgrounds - Blue ocean vibes (turquoise, vibrant, calming)
 const CTA_QUERIES = [
-  'turquoise ocean waves aerial',
-  'crystal clear water tropical beach',
-  'deep blue ocean calm surface',
-  'ocean waves texture blue gradient',
-  'caribbean sea turquoise water',
-  'maldives ocean blue lagoon',
-  'azure ocean horizon peaceful',
-  'teal ocean water texture',
+  "turquoise ocean waves aerial",
+  "crystal clear water tropical beach",
+  "deep blue ocean calm surface",
+  "ocean waves texture blue gradient",
+  "caribbean sea turquoise water",
+  "maldives ocean blue lagoon",
+  "azure ocean horizon peaceful",
+  "teal ocean water texture",
 ];
 
 // Contact page - Warm, golden sunset tones (very warm, inviting)
 const CONTACT_QUERIES = [
-  'palm silhouette sunset orange',
-  'beach hammock sunset tropical',
-  'tropical sunset vibrant colors',
-  'pier sunset golden reflection',
-  'coconut palms golden hour',
-  'beach bonfire night warm',
+  "palm silhouette sunset orange",
+  "beach hammock sunset tropical",
+  "tropical sunset vibrant colors",
+  "pier sunset golden reflection",
+  "coconut palms golden hour",
+  "beach bonfire night warm",
 ];
 
 // Category to queries mapping
@@ -121,47 +128,48 @@ const CATEGORY_QUERIES: Record<ImageCategory, string[]> = {
 /**
  * Each page section gets a unique slot to ensure no image repetition
  * across different pages during user navigation.
- * 
+ *
  * Format: 'page:section' -> { category, index }
  * The index determines which query from the category to use.
  */
-const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> = {
-  // Home page
-  'home:hero': { category: 'hero', index: 0 },
-  'home:quote': { category: 'quote', index: 0 },
-  'home:newsletter': { category: 'cta', index: 0 },
-  
-  // About page - Each section uses completely different visual style
-  'about:hero': { category: 'portugal', index: 0 },      // Dramatic cliffs
-  'about:quote': { category: 'quote', index: 1 },        // Calm ocean atmosphere
-  'about:surfer': { category: 'surfer', index: 0 },
-  'about:newsletter': { category: 'cta', index: 1 },
-  
-  // Contact page - Warm sunset imagery (distinct from dark CTA footer)
-  'contact:hero': { category: 'contact', index: 0 },
-  'contact:newsletter': { category: 'cta', index: 2 },
-  
-  // Issues pages
-  'issues:hero': { category: 'hero', index: 1 },
-  'issues:newsletter': { category: 'cta', index: 3 },
-  
-  // Newsletter page - Use sunny beach hero (not underwater, to contrast with dark CTA)
-  'newsletter:hero': { category: 'hero', index: 3 },
-  'newsletter:newsletter': { category: 'cta', index: 4 },
-  
-  // Legal pages (share same images)
-  'legal:newsletter': { category: 'cta', index: 5 },
-};
+const IMAGE_SLOTS: Record<string, { category: ImageCategory; index: number }> =
+  {
+    // Home page
+    "home:hero": { category: "hero", index: 0 },
+    "home:quote": { category: "quote", index: 0 },
+    "home:newsletter": { category: "cta", index: 0 },
+
+    // About page - Each section uses completely different visual style
+    "about:hero": { category: "portugal", index: 0 }, // Dramatic cliffs
+    "about:quote": { category: "quote", index: 1 }, // Calm ocean atmosphere
+    "about:surfer": { category: "surfer", index: 0 },
+    "about:newsletter": { category: "cta", index: 1 },
+
+    // Contact page - Warm sunset imagery (distinct from dark CTA footer)
+    "contact:hero": { category: "contact", index: 0 },
+    "contact:newsletter": { category: "cta", index: 2 },
+
+    // Issues pages
+    "issues:hero": { category: "hero", index: 1 },
+    "issues:newsletter": { category: "cta", index: 3 },
+
+    // Newsletter page - Use sunny beach hero (not underwater, to contrast with dark CTA)
+    "newsletter:hero": { category: "hero", index: 3 },
+    "newsletter:newsletter": { category: "cta", index: 4 },
+
+    // Legal pages (share same images)
+    "legal:newsletter": { category: "cta", index: 5 },
+  };
 
 // Section-specific queries for issue highlights
 const SECTION_QUERIES: Record<string, string[]> = {
-  'editors-note': ['ocean horizon peaceful', 'calm sea sunrise'],
-  'meet-the-scientist': SCIENCE_QUERIES,
-  'students-peak': ['surfing lesson beach', 'beginner surfer waves'],
-  'surf-science-explained': ['ocean wave breaking', 'wave barrel surfing'],
-  'meet-the-surfer': SURFER_QUERIES,
-  'tips-tricks': ['surfboard wax beach', 'surf gear equipment'],
-  'community-projects': ['beach cleanup volunteers', 'ocean conservation'],
+  "editors-note": ["ocean horizon peaceful", "calm sea sunrise"],
+  "meet-the-scientist": SCIENCE_QUERIES,
+  "students-peak": ["surfing lesson beach", "beginner surfer waves"],
+  "surf-science-explained": ["ocean wave breaking", "wave barrel surfing"],
+  "meet-the-surfer": SURFER_QUERIES,
+  "tips-tricks": ["surfboard wax beach", "surf gear equipment"],
+  "community-projects": ["beach cleanup volunteers", "ocean conservation"],
 };
 
 // ============================================
@@ -219,126 +227,126 @@ export interface ImageResult {
 const FALLBACK_IMAGES: Record<ImageCategory, ImageResult[]> = {
   hero: [
     {
-      src: '/images/hero/ocean-aerial.jpg',
-      srcLarge: '/images/hero/ocean-aerial.jpg',
-      srcMedium: '/images/hero/ocean-aerial.jpg',
-      srcSmall: '/images/hero/ocean-aerial.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Aerial view of ocean waves',
-      avgColor: '#0d4f6c',
-      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+      src: "/images/fallback/ocean-aerial.jpg",
+      srcLarge: "/images/fallback/ocean-aerial.jpg",
+      srcMedium: "/images/fallback/ocean-aerial.jpg",
+      srcSmall: "/images/fallback/ocean-aerial.jpg",
+      photographer: "Blue Mind",
+      alt: "Aerial view of ocean waves",
+      avgColor: "#0d4f6c",
+      blurDataURL: generateBlurPlaceholder("#0d4f6c"),
     },
     {
-      src: '/images/hero/surfer-sunset.jpg',
-      srcLarge: '/images/hero/surfer-sunset.jpg',
-      srcMedium: '/images/hero/surfer-sunset.jpg',
-      srcSmall: '/images/hero/surfer-sunset.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Surfer silhouette at golden sunset',
-      avgColor: '#c9956c',
-      blurDataURL: generateBlurPlaceholder('#c9956c'),
+      src: "/images/fallback/surfer-sunset.jpg",
+      srcLarge: "/images/fallback/surfer-sunset.jpg",
+      srcMedium: "/images/fallback/surfer-sunset.jpg",
+      srcSmall: "/images/fallback/surfer-sunset.jpg",
+      photographer: "Blue Mind",
+      alt: "Surfer silhouette at golden sunset",
+      avgColor: "#c9956c",
+      blurDataURL: generateBlurPlaceholder("#c9956c"),
     },
     {
-      src: '/images/hero/underwater-blue.jpg',
-      srcLarge: '/images/hero/underwater-blue.jpg',
-      srcMedium: '/images/hero/underwater-blue.jpg',
-      srcSmall: '/images/hero/underwater-blue.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Underwater ocean blue light rays',
-      avgColor: '#0a3d5c',
-      blurDataURL: generateBlurPlaceholder('#0a3d5c'),
+      src: "/images/fallback/underwater-blue.jpg",
+      srcLarge: "/images/fallback/underwater-blue.jpg",
+      srcMedium: "/images/fallback/underwater-blue.jpg",
+      srcSmall: "/images/fallback/underwater-blue.jpg",
+      photographer: "Blue Mind",
+      alt: "Underwater ocean blue light rays",
+      avgColor: "#0a3d5c",
+      blurDataURL: generateBlurPlaceholder("#0a3d5c"),
     },
     {
-      src: '/images/hero/beach-golden-hour.jpg',
-      srcLarge: '/images/hero/beach-golden-hour.jpg',
-      srcMedium: '/images/hero/beach-golden-hour.jpg',
-      srcSmall: '/images/hero/beach-golden-hour.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Beach at golden hour with waves',
-      avgColor: '#d4a574',
-      blurDataURL: generateBlurPlaceholder('#d4a574'),
+      src: "/images/fallback/beach-golden-hour.jpg",
+      srcLarge: "/images/fallback/beach-golden-hour.jpg",
+      srcMedium: "/images/fallback/beach-golden-hour.jpg",
+      srcSmall: "/images/fallback/beach-golden-hour.jpg",
+      photographer: "Blue Mind",
+      alt: "Beach at golden hour with waves",
+      avgColor: "#d4a574",
+      blurDataURL: generateBlurPlaceholder("#d4a574"),
     },
   ],
   quote: [
     {
-      src: '/images/hero/ocean-aerial.jpg',
-      srcLarge: '/images/hero/ocean-aerial.jpg',
-      srcMedium: '/images/hero/ocean-aerial.jpg',
-      srcSmall: '/images/hero/ocean-aerial.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Ocean mist at dawn',
-      avgColor: '#5a7d8c',
-      blurDataURL: generateBlurPlaceholder('#5a7d8c'),
+      src: "/images/fallback/ocean-aerial.jpg",
+      srcLarge: "/images/fallback/ocean-aerial.jpg",
+      srcMedium: "/images/fallback/ocean-aerial.jpg",
+      srcSmall: "/images/fallback/ocean-aerial.jpg",
+      photographer: "Blue Mind",
+      alt: "Ocean mist at dawn",
+      avgColor: "#5a7d8c",
+      blurDataURL: generateBlurPlaceholder("#5a7d8c"),
     },
   ],
   science: [
     {
-      src: '/images/hero/underwater-blue.jpg',
-      srcLarge: '/images/hero/underwater-blue.jpg',
-      srcMedium: '/images/hero/underwater-blue.jpg',
-      srcSmall: '/images/hero/underwater-blue.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Ocean science imagery',
-      avgColor: '#0a3d5c',
-      blurDataURL: generateBlurPlaceholder('#0a3d5c'),
+      src: "/images/fallback/underwater-blue.jpg",
+      srcLarge: "/images/fallback/underwater-blue.jpg",
+      srcMedium: "/images/fallback/underwater-blue.jpg",
+      srcSmall: "/images/fallback/underwater-blue.jpg",
+      photographer: "Blue Mind",
+      alt: "Ocean science imagery",
+      avgColor: "#0a3d5c",
+      blurDataURL: generateBlurPlaceholder("#0a3d5c"),
     },
   ],
   surfer: [
     {
-      src: '/images/hero/surfer-sunset.jpg',
-      srcLarge: '/images/hero/surfer-sunset.jpg',
-      srcMedium: '/images/hero/surfer-sunset.jpg',
-      srcSmall: '/images/hero/surfer-sunset.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Surfer lifestyle',
-      avgColor: '#c9956c',
-      blurDataURL: generateBlurPlaceholder('#c9956c'),
+      src: "/images/fallback/surfer-sunset.jpg",
+      srcLarge: "/images/fallback/surfer-sunset.jpg",
+      srcMedium: "/images/fallback/surfer-sunset.jpg",
+      srcSmall: "/images/fallback/surfer-sunset.jpg",
+      photographer: "Blue Mind",
+      alt: "Surfer lifestyle",
+      avgColor: "#c9956c",
+      blurDataURL: generateBlurPlaceholder("#c9956c"),
     },
   ],
   portugal: [
     {
-      src: '/images/hero/ocean-aerial.jpg',
-      srcLarge: '/images/hero/ocean-aerial.jpg',
-      srcMedium: '/images/hero/ocean-aerial.jpg',
-      srcSmall: '/images/hero/ocean-aerial.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Portuguese coastline',
-      avgColor: '#0d4f6c',
-      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+      src: "/images/fallback/ocean-aerial.jpg",
+      srcLarge: "/images/fallback/ocean-aerial.jpg",
+      srcMedium: "/images/fallback/ocean-aerial.jpg",
+      srcSmall: "/images/fallback/ocean-aerial.jpg",
+      photographer: "Blue Mind",
+      alt: "Portuguese coastline",
+      avgColor: "#0d4f6c",
+      blurDataURL: generateBlurPlaceholder("#0d4f6c"),
     },
   ],
   cta: [
     {
-      src: '/images/hero/ocean-aerial.jpg',
-      srcLarge: '/images/hero/ocean-aerial.jpg',
-      srcMedium: '/images/hero/ocean-aerial.jpg',
-      srcSmall: '/images/hero/ocean-aerial.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Ocean blue gradient',
-      avgColor: '#0d4f6c',
-      blurDataURL: generateBlurPlaceholder('#0d4f6c'),
+      src: "/images/fallback/ocean-aerial.jpg",
+      srcLarge: "/images/fallback/ocean-aerial.jpg",
+      srcMedium: "/images/fallback/ocean-aerial.jpg",
+      srcSmall: "/images/fallback/ocean-aerial.jpg",
+      photographer: "Blue Mind",
+      alt: "Ocean blue gradient",
+      avgColor: "#0d4f6c",
+      blurDataURL: generateBlurPlaceholder("#0d4f6c"),
     },
     {
-      src: '/images/hero/beach-golden-hour.jpg',
-      srcLarge: '/images/hero/beach-golden-hour.jpg',
-      srcMedium: '/images/hero/beach-golden-hour.jpg',
-      srcSmall: '/images/hero/beach-golden-hour.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Beach aerial view',
-      avgColor: '#d4a574',
-      blurDataURL: generateBlurPlaceholder('#d4a574'),
+      src: "/images/fallback/beach-golden-hour.jpg",
+      srcLarge: "/images/fallback/beach-golden-hour.jpg",
+      srcMedium: "/images/fallback/beach-golden-hour.jpg",
+      srcSmall: "/images/fallback/beach-golden-hour.jpg",
+      photographer: "Blue Mind",
+      alt: "Beach aerial view",
+      avgColor: "#d4a574",
+      blurDataURL: generateBlurPlaceholder("#d4a574"),
     },
   ],
   contact: [
     {
-      src: '/images/hero/beach-golden-hour.jpg',
-      srcLarge: '/images/hero/beach-golden-hour.jpg',
-      srcMedium: '/images/hero/beach-golden-hour.jpg',
-      srcSmall: '/images/hero/beach-golden-hour.jpg',
-      photographer: 'Blue Mind',
-      alt: 'Beach sunset golden hour',
-      avgColor: '#d4a574',
-      blurDataURL: generateBlurPlaceholder('#d4a574'),
+      src: "/images/fallback/beach-golden-hour.jpg",
+      srcLarge: "/images/fallback/beach-golden-hour.jpg",
+      srcMedium: "/images/fallback/beach-golden-hour.jpg",
+      srcSmall: "/images/fallback/beach-golden-hour.jpg",
+      photographer: "Blue Mind",
+      alt: "Beach sunset golden hour",
+      avgColor: "#d4a574",
+      blurDataURL: generateBlurPlaceholder("#d4a574"),
     },
   ],
 };
@@ -353,16 +361,16 @@ const FALLBACK_IMAGES: Record<ImageCategory, ImageResult[]> = {
  */
 export function generateBlurPlaceholder(avgColor: string): string {
   // Ensure color is valid
-  const color = avgColor.startsWith('#') ? avgColor : '#5a7d8c';
-  
+  const color = avgColor.startsWith("#") ? avgColor : "#5a7d8c";
+
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 5">
     <filter id="b" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="1"/>
     </filter>
     <rect width="100%" height="100%" fill="${color}" filter="url(#b)"/>
   </svg>`;
-  
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
 // ============================================
@@ -373,7 +381,7 @@ export function generateBlurPlaceholder(avgColor: string): string {
  * Get the current time period for image rotation.
  * Images rotate every ROTATION_INTERVAL_MINUTES.
  * This provides variety while still allowing some caching benefits.
- * 
+ *
  * Note: Uses connection() to signal dynamic rendering requirement.
  * This is required in Next.js 16 for non-deterministic operations.
  */
@@ -383,7 +391,7 @@ async function getCurrentTimePeriod(): Promise<number> {
   // Signal to Next.js that this needs dynamic rendering
   // Required for non-deterministic operations (new Date, Math.random, etc.)
   await connection();
-  
+
   const now = new Date();
   // Calculate minutes since epoch, divided by interval
   const minutesSinceEpoch = Math.floor(now.getTime() / (1000 * 60));
@@ -393,26 +401,29 @@ async function getCurrentTimePeriod(): Promise<number> {
 /**
  * Generate an index based on slot name AND current time period.
  * This provides variety across different slots AND rotates images over time.
- * 
+ *
  * - Different slots get different images (slot hash)
  * - Same slot gets different images over time (time period)
  * - Pool is still cached (1h) so we don't hit API on every request
  */
-async function getTimeBasedIndex(slot: string, poolSize: number): Promise<number> {
+async function getTimeBasedIndex(
+  slot: string,
+  poolSize: number,
+): Promise<number> {
   // Combine slot hash with time period for rotation
   const timePeriod = await getCurrentTimePeriod();
-  
+
   // Simple hash of slot name
   let slotHash = 0;
   for (let i = 0; i < slot.length; i++) {
     const char = slot.charCodeAt(i);
-    slotHash = ((slotHash << 5) - slotHash) + char;
+    slotHash = (slotHash << 5) - slotHash + char;
     slotHash = slotHash & slotHash; // Convert to 32bit integer
   }
-  
+
   // Combine slot hash with time period for variety over time
   const combinedHash = Math.abs(slotHash + timePeriod * 7919); // 7919 is a prime number for better distribution
-  
+
   return combinedHash % poolSize;
 }
 
@@ -442,7 +453,7 @@ function transformPhoto(photo: PexelsPhoto, query?: string): ImageResult {
     srcSmall: photo.src.medium,
     photographer: photo.photographer,
     photographerUrl: photo.photographer_url,
-    alt: photo.alt || `${query || 'Ocean'} photography`,
+    alt: photo.alt || `${query || "Ocean"} photography`,
     avgColor: photo.avg_color,
     pexelsUrl: photo.url,
     blurDataURL: generateBlurPlaceholder(photo.avg_color),
@@ -452,14 +463,17 @@ function transformPhoto(photo: PexelsPhoto, query?: string): ImageResult {
 /**
  * Get fallback image for a category
  */
-function getFallbackImage(category: ImageCategory, index: number = 0): ImageResult {
+function getFallbackImage(
+  category: ImageCategory,
+  index: number = 0,
+): ImageResult {
   const fallbacks = FALLBACK_IMAGES[category] || FALLBACK_IMAGES.hero;
   return fallbacks[index % fallbacks.length];
 }
 
 /**
  * Fetch images from Pexels API (internal)
- * 
+ *
  * Cache strategy:
  * - Pool data is cached for 1 hour (3600 seconds)
  * - This matches ROTATION_INTERVAL_MINUTES for consistency
@@ -470,14 +484,14 @@ async function fetchFromPexels(
   options: {
     perPage?: number;
     page?: number;
-    orientation?: 'landscape' | 'portrait' | 'square';
-  } = {}
+    orientation?: "landscape" | "portrait" | "square";
+  } = {},
 ): Promise<PexelsSearchResponse | null> {
   if (!PEXELS_API_KEY) {
     return null;
   }
 
-  const { perPage = 1, page = 1, orientation = 'landscape' } = options;
+  const { perPage = 1, page = 1, orientation = "landscape" } = options;
 
   try {
     const params = new URLSearchParams({
@@ -499,13 +513,13 @@ async function fetchFromPexels(
     });
 
     if (!response.ok) {
-      console.error('Pexels API error:', response.status, response.statusText);
+      console.error("Pexels API error:", response.status, response.statusText);
       return null;
     }
 
     return response.json();
   } catch (error) {
-    console.error('Pexels fetch error:', error);
+    console.error("Pexels fetch error:", error);
     return null;
   }
 }
@@ -518,17 +532,20 @@ async function fetchFromPexels(
  * Get image pool for a category
  * Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES) via next.revalidate
  */
-async function getCachedImagePool(category: ImageCategory, queryIndex: number): Promise<ImageResult[]> {
+async function getCachedImagePool(
+  category: ImageCategory,
+  queryIndex: number,
+): Promise<ImageResult[]> {
   try {
     const queries = CATEGORY_QUERIES[category];
     const query = queries[queryIndex % queries.length];
-    
+
     // Fetch 15 images to build a pool for rotation
     // Pool is cached for 1 hour at fetch level
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
-      return response.photos.map(photo => transformPhoto(photo, query));
+      return response.photos.map((photo) => transformPhoto(photo, query));
     }
 
     // Return fallback if API fails
@@ -543,13 +560,15 @@ async function getCachedImagePool(category: ImageCategory, queryIndex: number): 
 /**
  * Internal function to fetch image for a slot
  * Selects from a cached pool using time-based rotation.
- * 
+ *
  * - Pool is cached for 1 hour (API data)
  * - Selection rotates every hour (ROTATION_INTERVAL_MINUTES)
  * - Different slots always show different images
  * - Dynamically rendered due to time-based selection
  */
-async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | null> {
+async function fetchImageForSlotInternal(
+  slot: string,
+): Promise<ImageResult | null> {
   const config = IMAGE_SLOTS[slot];
   if (!config) {
     console.warn(`Unknown image slot: ${slot}`);
@@ -558,7 +577,7 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
 
   // Get the cached pool of images for this category
   const pool = await getCachedImagePool(config.category, config.index);
-  
+
   // TIME-BASED SELECTION: Pick an image based on slot + current time period
   // Images rotate every ROTATION_INTERVAL_MINUTES for variety
   const selectedIndex = await getTimeBasedIndex(slot, pool.length);
@@ -569,12 +588,12 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
 
 /**
  * Get image for a specific slot with TIME-BASED rotation
- * 
+ *
  * Slots are formatted as 'page:section', e.g.:
  * - 'home:hero'
  * - 'about:quote'
  * - 'contact:newsletter'
- * 
+ *
  * Cache strategy:
  * - Pool of 15 images is fetched from Pexels API
  * - Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES)
@@ -582,20 +601,24 @@ async function fetchImageForSlotInternal(slot: string): Promise<ImageResult | nu
  * - Different slots always show different images
  * - Same slot shows different images over time
  */
-export async function getImageForSlot(slot: string): Promise<ImageResult | null> {
+export async function getImageForSlot(
+  slot: string,
+): Promise<ImageResult | null> {
   return fetchImageForSlotInternal(slot);
 }
 
 /**
  * Get image for a slot with FULLY RANDOM selection
  * Use this for dynamic pages where you want different images on every request.
- * 
+ *
  * Note: Pool is still cached (1h), but selection is random each time.
  */
-export async function getRandomImageForSlot(slot: string): Promise<ImageResult | null> {
+export async function getRandomImageForSlot(
+  slot: string,
+): Promise<ImageResult | null> {
   // Signal dynamic rendering for random selection
   await connection();
-  
+
   const config = IMAGE_SLOTS[slot];
   if (!config) {
     console.warn(`Unknown image slot: ${slot}`);
@@ -611,24 +634,27 @@ export async function getRandomImageForSlot(slot: string): Promise<ImageResult |
  * Get image pool for a section
  * Pool is cached for 1 hour (ROTATION_INTERVAL_MINUTES) via next.revalidate
  */
-async function getCachedSectionPool(section: string, queryIndex: number): Promise<ImageResult[]> {
+async function getCachedSectionPool(
+  section: string,
+  queryIndex: number,
+): Promise<ImageResult[]> {
   try {
     const queries = SECTION_QUERIES[section] || HERO_QUERIES;
     const query = queries[queryIndex % queries.length];
-    
+
     // Fetch 15 images to build a pool for rotation
     // Pool is cached for 1 hour at fetch level
     const response = await fetchFromPexels(query, { perPage: 15, page: 1 });
 
     if (response?.photos && response.photos.length > 0) {
-      return response.photos.map(photo => transformPhoto(photo, query));
+      return response.photos.map((photo) => transformPhoto(photo, query));
     }
 
-    return [getFallbackImage('hero', 0)];
+    return [getFallbackImage("hero", 0)];
   } catch {
     // Ensure we never throw and cause SSR bailout
     console.error(`[Pexels] getCachedSectionPool error for ${section}`);
-    return [getFallbackImage('hero', 0)];
+    return [getFallbackImage("hero", 0)];
   }
 }
 
@@ -637,19 +663,27 @@ async function getCachedSectionPool(section: string, queryIndex: number): Promis
  * Pool is cached (1h), selection rotates every hour for variety.
  * Dynamically rendered due to time-based selection.
  */
-export async function getSectionImage(section: string, index: number): Promise<ImageResult | null> {
+export async function getSectionImage(
+  section: string,
+  index: number,
+): Promise<ImageResult | null> {
   // Get the cached pool
   const pool = await getCachedSectionPool(section, index);
-  
+
   // TIME-BASED SELECTION: Rotates every ROTATION_INTERVAL_MINUTES
-  const selectedIndex = await getTimeBasedIndex(`section-${section}-${index}`, pool.length);
-  return pool[selectedIndex] || getFallbackImage('hero', index);
+  const selectedIndex = await getTimeBasedIndex(
+    `section-${section}-${index}`,
+    pool.length,
+  );
+  return pool[selectedIndex] || getFallbackImage("hero", index);
 }
 
 /**
  * Get images for multiple issue highlights
  */
-export async function getSectionImages(sections: string[]): Promise<Map<string, ImageResult>> {
+export async function getSectionImages(
+  sections: string[],
+): Promise<Map<string, ImageResult>> {
   const imageMap = new Map<string, ImageResult>();
 
   for (let i = 0; i < sections.length; i++) {
@@ -671,42 +705,42 @@ export async function getSectionImages(sections: string[]): Promise<Map<string, 
  * @deprecated Use getImageForSlot('home:hero') instead
  */
 export async function getHeroImage(): Promise<ImageResult | null> {
-  return getImageForSlot('home:hero');
+  return getImageForSlot("home:hero");
 }
 
 /**
  * @deprecated Use getImageForSlot('home:quote') instead
  */
 export async function getQuoteImage(): Promise<ImageResult | null> {
-  return getImageForSlot('home:quote');
+  return getImageForSlot("home:quote");
 }
 
 /**
  * @deprecated Use getImageForSlot with appropriate slot instead
  */
 export async function getScienceImage(): Promise<ImageResult | null> {
-  return getImageForSlot('about:hero');
+  return getImageForSlot("about:hero");
 }
 
 /**
  * @deprecated Use getImageForSlot('about:surfer') instead
  */
 export async function getSurferImage(): Promise<ImageResult | null> {
-  return getImageForSlot('about:surfer');
+  return getImageForSlot("about:surfer");
 }
 
 /**
  * @deprecated Use getImageForSlot('about:hero') instead
  */
 export async function getPortugalImage(): Promise<ImageResult | null> {
-  return getImageForSlot('about:hero');
+  return getImageForSlot("about:hero");
 }
 
 /**
  * @deprecated Use getImageForSlot with appropriate slot instead
  */
 export async function getCtaImage(): Promise<ImageResult | null> {
-  return getImageForSlot('home:newsletter');
+  return getImageForSlot("home:newsletter");
 }
 
 /**
@@ -721,7 +755,7 @@ export async function getHeroImages(count: number = 3): Promise<ImageResult[]> {
     if (response && response.photos.length > 0) {
       images.push(transformPhoto(response.photos[0], HERO_QUERIES[i]));
     } else {
-      images.push(getFallbackImage('hero', i));
+      images.push(getFallbackImage("hero", i));
     }
   }
 
@@ -733,12 +767,12 @@ export async function getHeroImages(count: number = 3): Promise<ImageResult[]> {
  */
 export async function searchSurfImages(
   customQuery: string,
-  count: number = 6
+  count: number = 6,
 ): Promise<ImageResult[]> {
   const response = await fetchFromPexels(customQuery, { perPage: count });
 
   if (response && response.photos.length > 0) {
-    return response.photos.map(photo => transformPhoto(photo, customQuery));
+    return response.photos.map((photo) => transformPhoto(photo, customQuery));
   }
 
   return [];
@@ -749,7 +783,7 @@ export async function searchSurfImages(
  */
 export async function getCuratedImages(
   category: ImageCategory,
-  count: number = 3
+  count: number = 3,
 ): Promise<ImageResult[]> {
   const queries = CATEGORY_QUERIES[category] || HERO_QUERIES;
   const images: ImageResult[] = [];

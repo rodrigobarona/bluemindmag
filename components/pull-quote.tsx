@@ -93,9 +93,12 @@ export function PullQuoteImage({
   const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.1, 1]);
 
   // Use fallback if no image provided
-  const imageSrc = image?.srcLarge || image?.src || '/images/hero/ocean-aerial.jpg';
-  const imageAlt = image?.alt || 'Ocean atmosphere';
-  const blurDataURL = image?.blurDataURL || (image?.avgColor ? generateBlurPlaceholder(image.avgColor) : undefined);
+  const imageSrc =
+    image?.srcLarge || image?.src || "/images/fallback/ocean-aerial.jpg";
+  const imageAlt = image?.alt || "Ocean atmosphere";
+  const blurDataURL =
+    image?.blurDataURL ||
+    (image?.avgColor ? generateBlurPlaceholder(image.avgColor) : undefined);
 
   return (
     <section
@@ -111,15 +114,15 @@ export function PullQuoteImage({
           src={imageSrc}
           alt={imageAlt}
           fill
-          placeholder={blurDataURL ? 'blur' : 'empty'}
+          placeholder={blurDataURL ? "blur" : "empty"}
           blurDataURL={blurDataURL}
           className="object-cover"
           sizes="100vw"
           quality={85}
         />
-        
+
         {/* Film grain */}
-        <div 
+        <div
           className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.02]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
@@ -129,12 +132,13 @@ export function PullQuoteImage({
 
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/60" />
-      
+
       {/* Vignette */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.3) 100%)',
+          background:
+            "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.3) 100%)",
         }}
       />
 
@@ -172,7 +176,7 @@ export function PullQuoteImage({
           transition={{ duration: 0.6, delay: 0.6 }}
           className="absolute bottom-6 right-6 font-ui text-xs text-white/30 z-10"
         >
-          Photo:{' '}
+          Photo:{" "}
           {image.photographerUrl ? (
             <a
               href={image.photographerUrl}
@@ -185,7 +189,7 @@ export function PullQuoteImage({
           ) : (
             image.photographer
           )}
-          {' / Pexels'}
+          {" / Pexels"}
         </motion.div>
       )}
     </section>
