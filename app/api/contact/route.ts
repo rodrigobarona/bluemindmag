@@ -33,7 +33,12 @@ function escapeHtml(text: string): string {
 export async function POST(request: NextRequest) {
   try {
     // Verify the request is from a human using BotID
-    const verification = await checkBotId();
+    // In development, bypass verification since BotID requires Vercel infrastructure
+    const verification = await checkBotId({
+      developmentOptions: {
+        bypass: 'HUMAN',
+      },
+    });
     if (verification.isBot) {
       return NextResponse.json(
         { error: 'Access denied' },
