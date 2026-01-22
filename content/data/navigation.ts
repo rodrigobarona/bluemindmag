@@ -5,7 +5,7 @@ import type { NavLink, SocialLink, SiteConfig } from "../types/content";
 // ============================================
 
 export const siteConfig: SiteConfig = {
-  name: "Blue Mind Magazine",
+  name: "Blue Mind Magazine - Where surf and science meet",
   tagline: "From surfers, to surfers",
   url: "https://bluemindmag.com",
   email: "info@bluemindmag.com",
