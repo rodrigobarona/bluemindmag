@@ -2,6 +2,9 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { getBaseUrl } from "@/lib/utils";
 
+// Force edge runtime for OG image generation
+export const runtime = "edge";
+
 // ============================================
 // BLUE MIND MAGAZINE - OG IMAGE GENERATOR
 // Brand colors and design system
@@ -22,7 +25,51 @@ const FALLBACK_IMAGES: Record<string, string> = {
   default: "/images/fallback/ocean-aerial.jpg",
 };
 
+// Load fonts once at module level (best practice for Satori performance)
+// This caches the font data and prevents repeated parsing
+const leagueGothicPromise = fetch(
+  new URL("../../../public/fonts/LeagueGothic-Regular.woff", import.meta.url)
+).then((res) => res.arrayBuffer());
+
+const dmSansRegularPromise = fetch(
+  new URL("../../../public/fonts/DMSans-Regular.woff", import.meta.url)
+).then((res) => res.arrayBuffer());
+
+const dmSansBoldPromise = fetch(
+  new URL("../../../public/fonts/DMSans-Bold.woff", import.meta.url)
+).then((res) => res.arrayBuffer());
+
 export async function GET(request: NextRequest) {
+  // Await font data
+  const [leagueGothicData, dmSansRegularData, dmSansBoldData] =
+    await Promise.all([
+      leagueGothicPromise,
+      dmSansRegularPromise,
+      dmSansBoldPromise,
+    ]);
+
+  // Font configuration for ImageResponse (declared as global-like for performance)
+  const fonts = [
+    {
+      name: "League Gothic",
+      data: leagueGothicData,
+      weight: 400 as const,
+      style: "normal" as const,
+    },
+    {
+      name: "DM Sans",
+      data: dmSansRegularData,
+      weight: 400 as const,
+      style: "normal" as const,
+    },
+    {
+      name: "DM Sans",
+      data: dmSansBoldData,
+      weight: 700 as const,
+      style: "normal" as const,
+    },
+  ];
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
@@ -163,6 +210,7 @@ export async function GET(request: NextRequest) {
               />
               <div
                 style={{
+                  fontFamily: "DM Sans",
                   fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: 4,
@@ -177,13 +225,15 @@ export async function GET(request: NextRequest) {
             {/* Title */}
             <div
               style={{
+                fontFamily: "League Gothic",
                 fontSize: displayTitle.length > 20 ? 48 : 56,
-                fontWeight: 700,
+                fontWeight: 400,
                 color: "white",
                 lineHeight: 1.1,
                 marginBottom: 16,
                 display: "flex",
                 textShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                textTransform: "uppercase",
               }}
             >
               {displayTitle}
@@ -192,6 +242,7 @@ export async function GET(request: NextRequest) {
             {/* Subtitle */}
             <div
               style={{
+                fontFamily: "DM Sans",
                 fontSize: 24,
                 color: "rgba(255,255,255,0.85)",
                 marginBottom: 32,
@@ -211,6 +262,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
+                  fontFamily: "DM Sans",
                   fontSize: 14,
                   color: "rgba(255,255,255,0.5)",
                   display: "flex",
@@ -224,6 +276,160 @@ export async function GET(request: NextRequest) {
         {
           width: 1200,
           height: 630,
+          fonts,
+        },
+      );
+    }
+
+    // ============================================
+    // HOMEPAGE SPECIAL TEMPLATE - Matches hero design
+    // ============================================
+    if (type === "default" || type === "home") {
+      const backgroundUrl = `${baseUrl}${FALLBACK_IMAGES.home}`;
+
+      return new ImageResponse(
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+          }}
+        >
+          {/* Background Image */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={backgroundUrl}
+            alt=""
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+
+          {/* Dark overlay for text readability */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage:
+                "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%)",
+              display: "flex",
+            }}
+          />
+
+          {/* Main content - centered like hero */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              position: "relative",
+              padding: "0 80px",
+            }}
+          >
+            {/* Surf Science label */}
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 14,
+                fontWeight: 400,
+                letterSpacing: 8,
+                color: "rgba(255,255,255,0.7)",
+                marginBottom: 24,
+                display: "flex",
+                textTransform: "uppercase",
+              }}
+            >
+              SURF SCIENCE
+            </div>
+
+            {/* BLUE MIND masthead - Large */}
+            <div
+              style={{
+                fontFamily: "League Gothic",
+                fontSize: 120,
+                fontWeight: 400,
+                color: "white",
+                lineHeight: 1,
+                marginBottom: 32,
+                display: "flex",
+                textShadow: "0 4px 40px rgba(0,0,0,0.6)",
+                letterSpacing: 8,
+                textTransform: "uppercase",
+              }}
+            >
+              BLUE MIND
+            </div>
+
+            {/* Tagline in quotes */}
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 28,
+                fontWeight: 400,
+                color: "rgba(255,255,255,0.9)",
+                marginBottom: 48,
+                display: "flex",
+                textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                fontStyle: "italic",
+                maxWidth: 600,
+                textAlign: "center",
+              }}
+            >
+              &ldquo;{displaySubtitle}&rdquo;
+            </div>
+
+            {/* Accent line with brand gradient */}
+            <div
+              style={{
+                width: 120,
+                height: 5,
+                backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
+                borderRadius: 3,
+                display: "flex",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+              }}
+            />
+          </div>
+
+          {/* Footer with domain */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "40px 60px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 16,
+                color: "rgba(255,255,255,0.6)",
+                display: "flex",
+                textShadow: "0 1px 10px rgba(0,0,0,0.5)",
+              }}
+            >
+              bluemindmag.com
+            </div>
+          </div>
+        </div>,
+        {
+          width: 1200,
+          height: 630,
+          fonts,
         },
       );
     }
@@ -247,8 +453,6 @@ export async function GET(request: NextRequest) {
             return "GET IN TOUCH";
           case "issues":
             return "MAGAZINE ARCHIVE";
-          case "home":
-            return "SURF SCIENCE MAGAZINE";
           default:
             return "SURF SCIENCE";
         }
@@ -332,6 +536,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
+                  fontFamily: "DM Sans",
                   fontSize: 12,
                   fontWeight: 700,
                   letterSpacing: 3,
@@ -359,13 +564,15 @@ export async function GET(request: NextRequest) {
             {/* Title */}
             <div
               style={{
+                fontFamily: "League Gothic",
                 fontSize: titleFontSize,
-                fontWeight: 700,
+                fontWeight: 400,
                 color: "white",
                 lineHeight: 1.1,
                 marginBottom: 24,
                 display: "flex",
                 textShadow: "0 4px 30px rgba(0,0,0,0.5)",
+                textTransform: "uppercase",
               }}
             >
               {displayTitle}
@@ -374,6 +581,7 @@ export async function GET(request: NextRequest) {
             {/* Subtitle */}
             <div
               style={{
+                fontFamily: "DM Sans",
                 fontSize: 28,
                 color: "rgba(255,255,255,0.9)",
                 marginBottom: 40,
@@ -409,6 +617,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
+                fontFamily: "DM Sans",
                 fontSize: 16,
                 color: "rgba(255,255,255,0.6)",
                 display: "flex",
@@ -422,6 +631,7 @@ export async function GET(request: NextRequest) {
         {
           width: 1200,
           height: 630,
+          fonts,
         },
       );
     }
@@ -498,6 +708,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
+                fontFamily: "DM Sans",
                 fontSize: 12,
                 fontWeight: 700,
                 letterSpacing: 3,
@@ -524,13 +735,15 @@ export async function GET(request: NextRequest) {
           {/* Title */}
           <div
             style={{
+              fontFamily: "League Gothic",
               fontSize: 64,
-              fontWeight: 700,
+              fontWeight: 400,
               color: "white",
               lineHeight: 1.1,
               marginBottom: 24,
               display: "flex",
               textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+              textTransform: "uppercase",
             }}
           >
             {displayTitle}
@@ -539,6 +752,7 @@ export async function GET(request: NextRequest) {
           {/* Subtitle */}
           <div
             style={{
+              fontFamily: "DM Sans",
               fontSize: 28,
               color: "rgba(255,255,255,0.5)",
               marginBottom: 40,
@@ -571,6 +785,7 @@ export async function GET(request: NextRequest) {
         >
           <div
             style={{
+              fontFamily: "DM Sans",
               fontSize: 16,
               color: "rgba(255,255,255,0.4)",
               display: "flex",
@@ -583,6 +798,7 @@ export async function GET(request: NextRequest) {
       {
         width: 1200,
         height: 630,
+        fonts,
       },
     );
   } catch (error) {
@@ -603,17 +819,20 @@ export async function GET(request: NextRequest) {
       >
         <div
           style={{
+            fontFamily: "League Gothic",
             fontSize: 72,
-            fontWeight: 700,
+            fontWeight: 400,
             color: BRAND_BLUE,
             marginBottom: 16,
             display: "flex",
+            textTransform: "uppercase",
           }}
         >
           BLUE MIND
         </div>
         <div
           style={{
+            fontFamily: "DM Sans",
             fontSize: 24,
             color: "rgba(255,255,255,0.6)",
             display: "flex",
@@ -625,6 +844,7 @@ export async function GET(request: NextRequest) {
       {
         width: 1200,
         height: 630,
+        fonts,
       },
     );
   }

@@ -3,8 +3,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 import { withBotId } from 'botid/next/config';
 
 const nextConfig: NextConfig = {
-  // Enable "use cache" directive for serverless-compatible caching
-  cacheComponents: true,
   images: {
     remotePatterns: [
       {
