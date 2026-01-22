@@ -1,9 +1,16 @@
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
 
-// Brand colors
-const BRAND_COLOR = '#0097B2';
-const WARM_COLOR = '#D4A574';
+// ============================================
+// BLUE MIND MAGAZINE - OG IMAGE GENERATOR
+// Brand colors and design system
+// ============================================
+
+// Brand colors from globals.css
+const BRAND_BLUE = '#0097B2';
+const WARM_GOLDEN = '#D4A574';
+const DARK_BG = '#1a1a1a';
+const LIGHT_BG = '#faf8f5';
 
 // Base URL for assets
 const getBaseUrl = () => {
@@ -19,22 +26,24 @@ export async function GET(request: NextRequest) {
     const title = searchParams.get('title') || 'Blue Mind Magazine';
     const subtitle = searchParams.get('subtitle') || 'Where surf and science meet';
     const type = searchParams.get('type') || 'default';
-    const cover = searchParams.get('cover'); // Issue cover path
-    const accentColorParam = searchParams.get('accentColor'); // Custom accent color
-    const issueNumber = searchParams.get('issueNumber'); // Issue number for badge
+    const cover = searchParams.get('cover');
+    const accentColorParam = searchParams.get('accentColor');
+    const issueNumber = searchParams.get('issueNumber');
 
     const baseUrl = getBaseUrl();
+    const logoUrl = `${baseUrl}/images/logo.png`;
 
-    // Use custom accent color if provided, otherwise use defaults
-    const accentColor = accentColorParam || BRAND_COLOR;
+    // Use custom accent color if provided
+    const accentColor = accentColorParam || BRAND_BLUE;
 
     // Truncate text if too long
-    const displayTitle = title.length > 50 ? title.substring(0, 47) + '...' : title;
-    const displaySubtitle = subtitle.length > 60 ? subtitle.substring(0, 57) + '...' : subtitle;
+    const displayTitle = title.length > 45 ? title.substring(0, 42) + '...' : title;
+    const displaySubtitle = subtitle.length > 55 ? subtitle.substring(0, 52) + '...' : subtitle;
 
-    // Render different templates based on type
+    // ============================================
+    // ISSUE / READ TEMPLATE - Magazine Cover Style
+    // ============================================
     if ((type === 'issue' || type === 'read') && cover) {
-      // Issue/Read template with cover - inspired by IssueDetailCTA
       return new ImageResponse(
         (
           <div
@@ -42,34 +51,32 @@ export async function GET(request: NextRequest) {
               height: '100%',
               width: '100%',
               display: 'flex',
-              background: `linear-gradient(135deg, ${accentColor} 0%, ${accentColor}dd 100%)`,
+              backgroundImage: `linear-gradient(135deg, ${accentColor} 0%, ${accentColor}cc 100%)`,
               position: 'relative',
             }}
           >
-            {/* Decorative blur circle - top right */}
+            {/* Decorative circles for depth */}
             <div
               style={{
                 position: 'absolute',
-                top: -80,
-                right: -80,
-                width: 350,
-                height: 350,
-                borderRadius: 175,
-                background: 'white',
+                top: -100,
+                right: -100,
+                width: 400,
+                height: 400,
+                borderRadius: 200,
+                backgroundColor: 'white',
                 opacity: 0.1,
               }}
             />
-
-            {/* Decorative blur circle - bottom left */}
             <div
               style={{
                 position: 'absolute',
-                bottom: -60,
-                left: -60,
-                width: 250,
-                height: 250,
-                borderRadius: 125,
-                background: 'white',
+                bottom: -80,
+                left: -80,
+                width: 300,
+                height: 300,
+                borderRadius: 150,
+                backgroundColor: 'white',
                 opacity: 0.08,
               }}
             />
@@ -79,13 +86,13 @@ export async function GET(request: NextRequest) {
               <div
                 style={{
                   position: 'absolute',
-                  right: 40,
-                  top: 155,
-                  fontSize: 320,
+                  right: 60,
+                  bottom: 80,
+                  fontSize: 400,
                   fontWeight: 900,
-                  color: 'rgba(255,255,255,0.12)',
-                  lineHeight: 1,
-                  letterSpacing: -16,
+                  color: 'rgba(255,255,255,0.1)',
+                  lineHeight: 0.8,
+                  letterSpacing: -20,
                   display: 'flex',
                 }}
               >
@@ -93,25 +100,28 @@ export async function GET(request: NextRequest) {
               </div>
             )}
 
-            {/* Magazine cover - left side with shadow */}
+            {/* Magazine cover with shadow and rotation */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                padding: '40px 0 40px 60px',
+                justifyContent: 'center',
+                padding: 60,
+                width: 340,
               }}
             >
               <div
                 style={{
                   display: 'flex',
-                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+                  transform: 'rotate(-3deg)',
+                  boxShadow: '0 30px 60px rgba(0,0,0,0.4)',
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={`${baseUrl}${cover}`}
-                  width={220}
-                  height={311}
+                  width={240}
+                  height={339}
                   alt=""
                   style={{
                     objectFit: 'cover',
@@ -120,39 +130,56 @@ export async function GET(request: NextRequest) {
               </div>
             </div>
 
-            {/* Content - right side */}
+            {/* Content area */}
             <div
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                padding: '40px 60px 40px 40px',
                 flex: 1,
+                padding: '60px 60px 60px 20px',
               }}
             >
-              {/* Label */}
+              {/* Type label */}
               <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  letterSpacing: 3,
-                  color: 'rgba(255,255,255,0.7)',
-                  marginBottom: 16,
                   display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: 24,
                 }}
               >
-                {type === 'read' ? 'READ NOW' : 'BLUE MIND MAGAZINE'}
+                <div
+                  style={{
+                    width: 40,
+                    height: 3,
+                    backgroundColor: 'rgba(255,255,255,0.6)',
+                    marginRight: 16,
+                    display: 'flex',
+                  }}
+                />
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 4,
+                    color: 'rgba(255,255,255,0.8)',
+                    display: 'flex',
+                  }}
+                >
+                  {type === 'read' ? 'READ NOW' : 'BLUE MIND MAGAZINE'}
+                </div>
               </div>
 
               {/* Title */}
               <div
                 style={{
-                  fontSize: displayTitle.length > 25 ? 44 : 52,
+                  fontSize: displayTitle.length > 20 ? 48 : 56,
                   fontWeight: 700,
                   color: 'white',
                   lineHeight: 1.1,
-                  marginBottom: 12,
+                  marginBottom: 16,
                   display: 'flex',
+                  textShadow: '0 2px 10px rgba(0,0,0,0.2)',
                 }}
               >
                 {displayTitle}
@@ -161,38 +188,32 @@ export async function GET(request: NextRequest) {
               {/* Subtitle */}
               <div
                 style={{
-                  fontSize: 22,
-                  color: 'rgba(255,255,255,0.8)',
-                  marginBottom: 24,
+                  fontSize: 24,
+                  color: 'rgba(255,255,255,0.85)',
+                  marginBottom: 32,
                   display: 'flex',
                 }}
               >
                 {displaySubtitle}
               </div>
 
-              {/* Accent line */}
+              {/* Bottom info */}
               <div
                 style={{
-                  width: 60,
-                  height: 3,
-                  backgroundColor: 'rgba(255,255,255,0.4)',
-                  borderRadius: 2,
                   display: 'flex',
-                }}
-              />
-
-              {/* Spacer */}
-              <div style={{ flex: 1, display: 'flex' }} />
-
-              {/* Domain */}
-              <div
-                style={{
-                  fontSize: 14,
-                  color: 'rgba(255,255,255,0.5)',
-                  display: 'flex',
+                  alignItems: 'center',
+                  marginTop: 'auto',
                 }}
               >
-                bluemindmag.com
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: 'rgba(255,255,255,0.5)',
+                    display: 'flex',
+                  }}
+                >
+                  bluemindmag.com
+                </div>
               </div>
             </div>
           </div>
@@ -204,58 +225,42 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Default template for other page types
-    const getBackgroundStyle = () => {
+    // ============================================
+    // DEFAULT TEMPLATE - Brand Style with Logo
+    // ============================================
+    
+    // Background gradient based on page type
+    const getBackground = () => {
       switch (type) {
         case 'about':
-          return {
-            background: `linear-gradient(135deg, ${BRAND_COLOR}15 0%, #000000 50%, ${WARM_COLOR}10 100%)`,
-          };
+          return `linear-gradient(145deg, ${DARK_BG} 0%, #2a2a2a 50%, ${DARK_BG} 100%)`;
         case 'newsletter':
-          return {
-            background: `linear-gradient(180deg, #000000 0%, ${BRAND_COLOR}20 100%)`,
-          };
+          return `linear-gradient(180deg, ${DARK_BG} 0%, #1f3a3f 100%)`;
         case 'contact':
-          return {
-            background: `linear-gradient(135deg, ${WARM_COLOR}15 0%, #000000 50%, ${BRAND_COLOR}10 100%)`,
-          };
+          return `linear-gradient(135deg, #2d2520 0%, ${DARK_BG} 50%, #1a2428 100%)`;
         case 'issues':
-          return {
-            background: `linear-gradient(135deg, ${BRAND_COLOR}20 0%, #000000 60%, ${BRAND_COLOR}10 100%)`,
-          };
+          return `linear-gradient(135deg, #1a2a2d 0%, ${DARK_BG} 60%, #1a2a2d 100%)`;
         case 'legal':
-          return {
-            background: '#0a0a0a',
-          };
+          return DARK_BG;
         default:
-          return {
-            background: `linear-gradient(135deg, #000000 0%, ${BRAND_COLOR}15 50%, #000000 100%)`,
-          };
+          return `linear-gradient(145deg, ${DARK_BG} 0%, #1a2428 50%, ${DARK_BG} 100%)`;
       }
     };
 
-    // Get page-specific label (already uppercase)
+    // Type label
     const getTypeLabel = () => {
       switch (type) {
-        case 'about':
-          return 'ABOUT US';
-        case 'newsletter':
-          return 'NEWSLETTER';
-        case 'contact':
-          return 'GET IN TOUCH';
-        case 'issues':
-          return 'MAGAZINE ARCHIVE';
-        case 'legal':
-          return 'LEGAL';
-        default:
-          return 'SURF SCIENCE';
+        case 'about': return 'ABOUT US';
+        case 'newsletter': return 'NEWSLETTER';
+        case 'contact': return 'GET IN TOUCH';
+        case 'issues': return 'MAGAZINE ARCHIVE';
+        case 'legal': return 'LEGAL';
+        default: return 'SURF SCIENCE';
       }
     };
 
-    const backgroundStyle = getBackgroundStyle();
-
-    // Adjust font size based on title length
-    const titleFontSize = displayTitle.length > 30 ? 52 : displayTitle.length > 20 ? 62 : 72;
+    // Title font size based on length
+    const titleFontSize = displayTitle.length > 25 ? 52 : displayTitle.length > 15 ? 64 : 72;
 
     return new ImageResponse(
       (
@@ -265,105 +270,89 @@ export async function GET(request: NextRequest) {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            ...backgroundStyle,
+            backgroundImage: getBackground(),
             position: 'relative',
           }}
         >
-          {/* Decorative circle - top right */}
+          {/* Decorative gradient overlay */}
           <div
             style={{
               position: 'absolute',
-              top: -100,
-              right: -100,
-              width: 400,
-              height: 400,
-              borderRadius: 200,
-              background: BRAND_COLOR,
-              opacity: 0.08,
+              top: 0,
+              right: 0,
+              width: 600,
+              height: 600,
+              backgroundImage: `radial-gradient(circle at 100% 0%, ${BRAND_BLUE}20 0%, transparent 50%)`,
+              display: 'flex',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: 500,
+              height: 500,
+              backgroundImage: `radial-gradient(circle at 0% 100%, ${WARM_GOLDEN}15 0%, transparent 50%)`,
+              display: 'flex',
             }}
           />
 
-          {/* Decorative circle - bottom left */}
+          {/* Header with logo */}
           <div
             style={{
-              position: 'absolute',
-              bottom: -80,
-              left: -80,
-              width: 300,
-              height: 300,
-              borderRadius: 150,
-              background: WARM_COLOR,
-              opacity: 0.06,
-            }}
-          />
-
-          {/* Header with branding */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 40,
-              left: 40,
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '40px 60px',
             }}
           >
-            {/* Brand circle */}
+            {/* Logo */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logoUrl}
+                height={50}
+                alt=""
+                style={{
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
+
+            {/* Type badge */}
             <div
               style={{
-                width: 44,
-                height: 44,
-                backgroundColor: BRAND_COLOR,
-                borderRadius: 22,
-                opacity: 0.9,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: 18,
-                fontWeight: 700,
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                padding: '8px 20px',
+                borderRadius: 4,
               }}
             >
-              BM
-            </div>
-            <div
-              style={{
-                fontSize: 14,
-                color: '#ffffff50',
-                letterSpacing: 3,
-                marginLeft: 12,
-                display: 'flex',
-              }}
-            >
-              BLUE MIND MAGAZINE
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: 3,
+                  color: BRAND_BLUE,
+                  display: 'flex',
+                }}
+              >
+                {getTypeLabel()}
+              </div>
             </div>
           </div>
 
-          {/* Type label - top right */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 40,
-              right: 40,
-              fontSize: 12,
-              color: BRAND_COLOR,
-              letterSpacing: 3,
-              fontWeight: 600,
-              display: 'flex',
-            }}
-          >
-            {getTypeLabel()}
-          </div>
-
-          {/* Main content */}
+          {/* Main content - centered */}
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '0 100px',
+              flex: 1,
+              padding: '0 80px',
             }}
           >
             {/* Title */}
@@ -371,22 +360,22 @@ export async function GET(request: NextRequest) {
               style={{
                 fontSize: titleFontSize,
                 fontWeight: 700,
-                color: '#ffffff',
-                letterSpacing: 1,
-                marginBottom: 20,
+                color: 'white',
                 lineHeight: 1.1,
+                marginBottom: 24,
                 display: 'flex',
+                textShadow: '0 2px 20px rgba(0,0,0,0.3)',
               }}
             >
               {displayTitle}
             </div>
 
-            {/* Subtitle */}
+            {/* Subtitle with brand color */}
             <div
               style={{
-                fontSize: 26,
-                color: type === 'legal' ? '#ffffff60' : BRAND_COLOR,
-                marginBottom: 32,
+                fontSize: 28,
+                color: type === 'legal' ? 'rgba(255,255,255,0.5)' : BRAND_BLUE,
+                marginBottom: 40,
                 display: 'flex',
               }}
             >
@@ -396,28 +385,28 @@ export async function GET(request: NextRequest) {
             {/* Accent line */}
             <div
               style={{
-                width: 80,
+                width: 100,
                 height: 4,
-                backgroundColor: BRAND_COLOR,
+                backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
                 borderRadius: 2,
                 display: 'flex',
               }}
             />
           </div>
 
-          {/* Footer with domain */}
+          {/* Footer */}
           <div
             style={{
-              position: 'absolute',
-              bottom: 40,
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
+              padding: '40px 60px',
             }}
           >
             <div
               style={{
                 fontSize: 16,
-                color: '#ffffff40',
+                color: 'rgba(255,255,255,0.4)',
                 display: 'flex',
               }}
             >
@@ -433,7 +422,8 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error('OG Image generation error:', error);
-    // Return a simple fallback image
+    
+    // Fallback - simple branded image
     return new ImageResponse(
       (
         <div
@@ -444,28 +434,28 @@ export async function GET(request: NextRequest) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: '#000000',
+            backgroundColor: DARK_BG,
           }}
         >
           <div
             style={{
-              fontSize: 60,
+              fontSize: 72,
               fontWeight: 700,
-              color: '#ffffff',
+              color: BRAND_BLUE,
+              marginBottom: 16,
               display: 'flex',
             }}
           >
-            Blue Mind Magazine
+            BLUE MIND
           </div>
           <div
             style={{
               fontSize: 24,
-              color: BRAND_COLOR,
-              marginTop: 20,
+              color: 'rgba(255,255,255,0.6)',
               display: 'flex',
             }}
           >
-            Where surf and science meet
+            Surf Science Magazine
           </div>
         </div>
       ),
