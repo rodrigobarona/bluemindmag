@@ -23,6 +23,8 @@ import {
 } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';
 import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
+import { getAboutPageContent } from '@/lib/mdx';
+import type { Locale } from '@/content/types/content';
 
 type Props = {
   params: Promise<{ locale: string }>;
