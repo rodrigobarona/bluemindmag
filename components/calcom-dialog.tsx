@@ -35,7 +35,7 @@ export function CalcomDialog({
       {/* Custom trigger button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left ${className}`}
+        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left cursor-pointer ${className}`}
       >
         <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
           <IconCoffee className="h-6 w-6 text-brand" />
@@ -54,7 +54,7 @@ export function CalcomDialog({
       {/* Dialog with Cal.com embed */}
       <DialogPortal>
         {/* Custom backdrop with blur */}
-        <DialogOverlay className="bg-black/60 backdrop-blur-sm" />
+        <DialogOverlay className="bg-black/40 backdrop-blur-sm" />
         
         <DialogContent
           className="
@@ -62,9 +62,8 @@ export function CalcomDialog({
             bg-[#EEEFF2] dark:bg-[#0F0F0F]
             /* Mobile: full screen */
             w-[calc(100%-2rem)] h-[90vh] max-w-none
-            /* Desktop: compact size fitting the calendar */
-            md:w-auto md:h-auto md:max-w-[480px] md:min-h-[600px] md:max-h-[85vh]
-            lg:max-w-[520px]
+            /* Desktop: wider with proper height */
+            lg:w-[1100px] lg:h-[680px] lg:max-w-[90vw] lg:max-h-[85vh]
           "
           showCloseButton={false}
         >
@@ -83,7 +82,7 @@ export function CalcomDialog({
           {/* Cal.com iframe */}
           <iframe
             src={embedUrl}
-            className="w-full h-full min-h-[90vh] md:min-h-[600px] border-0"
+            className="w-full h-full min-h-[90vh] lg:min-h-[680px] border-0"
             title="Schedule a meeting with Pedro Seixas"
             allow="camera; microphone; payment"
           />
