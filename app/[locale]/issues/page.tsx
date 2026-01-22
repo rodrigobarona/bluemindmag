@@ -17,6 +17,7 @@ import {
   generateBreadcrumbSchema,
 } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';
+import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -28,8 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = t('title');
   const description = t('description');
+  
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/issues`;
 
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues`;
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues`;
 
   return {
     title,
@@ -37,8 +42,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Blue Mind Magazine`,
       description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: 'website',
-      images: [ogImageUrl],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',

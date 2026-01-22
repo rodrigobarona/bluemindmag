@@ -21,6 +21,7 @@ import { generateNewsletterPageSchema, generateBreadcrumbSchema } from "@/lib/sc
 import { siteConfig } from "@/content/data/navigation";
 import { getNewsletterPageContent } from "@/lib/mdx";
 import type { Locale } from "@/content/types/content";
+import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -34,7 +35,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = content?.description || "";
   const freeNewsletter = content?.freeNewsletter || "";
 
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(freeNewsletter)}&type=newsletter`;
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/newsletter`;
+
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(freeNewsletter)}&type=newsletter`;
 
   return {
     title,
@@ -42,8 +47,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Blue Mind Magazine`,
       description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: "website",
-      images: [ogImageUrl],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",

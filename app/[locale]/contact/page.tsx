@@ -20,6 +20,7 @@ import { generateBlurPlaceholder } from "@/lib/image-utils";
 import { generateContactPageSchema, generateBreadcrumbSchema } from "@/lib/schema";
 import { getContactPageContent } from "@/lib/mdx";
 import type { Locale } from "@/content/types/content";
+import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -33,7 +34,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = content?.description || "";
   const heroLabel = content?.hero.label || "";
 
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(heroLabel)}&type=contact`;
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/contact`;
+
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(heroLabel)}&type=contact`;
 
   return {
     title,
@@ -41,8 +46,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Blue Mind Magazine`,
       description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: "website",
-      images: [ogImageUrl],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",

@@ -8,6 +8,7 @@ import { IconX } from '@tabler/icons-react';
 import { JsonLd } from '@/components/json-ld';
 import { FlipbookFrame } from '@/components/flipbook-frame';
 import { siteConfig } from '@/content/data/navigation';
+import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
 import { generateReadIssueSchema, generateBreadcrumbSchema } from '@/lib/schema';
 
 type Props = {
@@ -34,7 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Get translations from MDX (single source of truth)
   const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
-  const baseUrl = siteConfig.url;
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/read/${slug}`;
 
   const title = `${t('readIssue')} ${issue.issueNumber} - ${translation.title}`;
   const description = translation.description;
@@ -56,6 +59,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Blue Mind Magazine`,
       description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: 'article',
       publishedTime: issue.date,
       images: [

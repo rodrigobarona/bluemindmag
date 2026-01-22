@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     const issueNumber = searchParams.get("issueNumber");
 
     const baseUrl = getBaseUrl();
-    const logoUrl = `${baseUrl}/images/logo.png`;
+    const logoUrl = `${baseUrl}/images/logo-white.png`; // Use white logo for better visibility
 
     // Use custom accent color if provided
     const accentColor = accentColorParam || BRAND_BLUE;
@@ -462,6 +462,207 @@ export async function GET(request: NextRequest) {
       const titleFontSize =
         displayTitle.length > 25 ? 56 : displayTitle.length > 15 ? 68 : 80;
 
+      // ============================================
+      // NEWSLETTER SPECIAL TEMPLATE - Centered design
+      // ============================================
+      if (type === "newsletter") {
+        return new ImageResponse(
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
+            {/* Background image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={backgroundUrl}
+              alt=""
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+
+            {/* Dark overlay */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage:
+                  "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%)",
+                display: "flex",
+              }}
+            />
+
+            {/* Top left logo and badge */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "40px 60px",
+                position: "relative",
+              }}
+            >
+              {/* Logo */}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logoUrl}
+                  height={60}
+                  alt=""
+                  style={{
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+
+              {/* Type badge */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  padding: "10px 24px",
+                  borderRadius: 4,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "DM Sans",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 3,
+                    color: "white",
+                    display: "flex",
+                  }}
+                >
+                  NEWSLETTER
+                </div>
+              </div>
+            </div>
+
+            {/* Main content - centered */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+                padding: "0 80px",
+                position: "relative",
+              }}
+            >
+              {/* Optional: Magazine label */}
+              <div
+                style={{
+                  fontFamily: "DM Sans",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  letterSpacing: 4,
+                  color: "rgba(255,255,255,0.6)",
+                  marginBottom: 24,
+                  display: "flex",
+                  textTransform: "uppercase",
+                }}
+              >
+                SURF SCIENCE MAGAZINE
+              </div>
+
+              {/* Title - Bigger and more dramatic */}
+              <div
+                style={{
+                  fontFamily: "League Gothic",
+                  fontSize: 110,
+                  fontWeight: 400,
+                  color: "white",
+                  lineHeight: 0.95,
+                  marginBottom: 36,
+                  display: "flex",
+                  textShadow: "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
+                  textTransform: "uppercase",
+                  letterSpacing: 6,
+                }}
+              >
+                {displayTitle}
+              </div>
+
+              {/* Subtitle - Larger and clearer */}
+              <div
+                style={{
+                  fontFamily: "DM Sans",
+                  fontSize: 36,
+                  color: "rgba(255,255,255,0.95)",
+                  marginBottom: 56,
+                  display: "flex",
+                  textShadow: "0 3px 30px rgba(0,0,0,0.6)",
+                  fontWeight: 500,
+                }}
+              >
+                {displaySubtitle}
+              </div>
+
+              {/* Accent line - Longer and thicker */}
+              <div
+                style={{
+                  width: 150,
+                  height: 6,
+                  backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
+                  borderRadius: 3,
+                  display: "flex",
+                  boxShadow: "0 3px 15px rgba(0,0,0,0.4)",
+                }}
+              />
+            </div>
+
+            {/* Footer - More visible */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "40px 60px",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "DM Sans",
+                  fontSize: 18,
+                  color: "rgba(255,255,255,0.7)",
+                  display: "flex",
+                  textShadow: "0 2px 15px rgba(0,0,0,0.6)",
+                  fontWeight: 500,
+                }}
+              >
+                bluemindmag.com
+              </div>
+            </div>
+          </div>,
+          {
+            width: 1200,
+            height: 630,
+            fonts,
+          },
+        );
+      }
+
+      // ============================================
+      // STANDARD TEMPLATE - For other pages
+      // ============================================
+
       return new ImageResponse(
         <div
           style={{
@@ -511,12 +712,12 @@ export async function GET(request: NextRequest) {
               position: "relative",
             }}
           >
-            {/* Logo */}
+            {/* Logo - Bigger */}
             <div style={{ display: "flex", alignItems: "center" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={logoUrl}
-                height={50}
+                height={60}
                 alt=""
                 style={{
                   objectFit: "contain",
@@ -524,23 +725,23 @@ export async function GET(request: NextRequest) {
               />
             </div>
 
-            {/* Type badge */}
+            {/* Type badge - Bigger and white text */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 backgroundColor: "rgba(0,0,0,0.4)",
-                padding: "8px 20px",
+                padding: "10px 24px",
                 borderRadius: 4,
               }}
             >
               <div
                 style={{
                   fontFamily: "DM Sans",
-                  fontSize: 12,
+                  fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: 3,
-                  color: BRAND_BLUE,
+                  color: "white",
                   display: "flex",
                 }}
               >
@@ -561,51 +762,69 @@ export async function GET(request: NextRequest) {
               position: "relative",
             }}
           >
-            {/* Title */}
+            {/* Magazine label - Consistent across all pages */}
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: 4,
+                color: "rgba(255,255,255,0.6)",
+                marginBottom: 24,
+                display: "flex",
+                textTransform: "uppercase",
+              }}
+            >
+              SURF SCIENCE MAGAZINE
+            </div>
+
+            {/* Title - Bigger */}
             <div
               style={{
                 fontFamily: "League Gothic",
-                fontSize: titleFontSize,
+                fontSize: titleFontSize + 12,
                 fontWeight: 400,
                 color: "white",
-                lineHeight: 1.1,
-                marginBottom: 24,
+                lineHeight: 0.95,
+                marginBottom: 36,
                 display: "flex",
-                textShadow: "0 4px 30px rgba(0,0,0,0.5)",
+                textShadow: "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
                 textTransform: "uppercase",
+                letterSpacing: 6,
               }}
             >
               {displayTitle}
             </div>
 
-            {/* Subtitle */}
+            {/* Subtitle - Bigger */}
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 28,
-                color: "rgba(255,255,255,0.9)",
-                marginBottom: 40,
+                fontSize: 36,
+                color: "rgba(255,255,255,0.95)",
+                marginBottom: 56,
                 display: "flex",
-                textShadow: "0 2px 20px rgba(0,0,0,0.5)",
+                textShadow: "0 3px 30px rgba(0,0,0,0.6)",
+                fontWeight: 500,
               }}
             >
               {displaySubtitle}
             </div>
 
-            {/* Accent line with brand gradient */}
+            {/* Accent line with brand gradient - Longer and thicker */}
             <div
               style={{
-                width: 120,
-                height: 5,
+                width: 150,
+                height: 6,
                 backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
                 borderRadius: 3,
                 display: "flex",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.3)",
+                boxShadow: "0 3px 15px rgba(0,0,0,0.4)",
               }}
             />
           </div>
 
-          {/* Footer */}
+          {/* Footer - More visible */}
           <div
             style={{
               display: "flex",
@@ -618,10 +837,11 @@ export async function GET(request: NextRequest) {
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 16,
-                color: "rgba(255,255,255,0.6)",
+                fontSize: 18,
+                color: "rgba(255,255,255,0.7)",
                 display: "flex",
-                textShadow: "0 1px 10px rgba(0,0,0,0.5)",
+                textShadow: "0 2px 15px rgba(0,0,0,0.6)",
+                fontWeight: 500,
               }}
             >
               bluemindmag.com
@@ -683,12 +903,12 @@ export async function GET(request: NextRequest) {
             padding: "40px 60px",
           }}
         >
-          {/* Logo */}
+          {/* Logo - Bigger */}
           <div style={{ display: "flex", alignItems: "center" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={logoUrl}
-              height={50}
+              height={60}
               alt=""
               style={{
                 objectFit: "contain",
@@ -696,23 +916,23 @@ export async function GET(request: NextRequest) {
             />
           </div>
 
-          {/* Type badge */}
+          {/* Type badge - Bigger and white text */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               backgroundColor: "rgba(255,255,255,0.1)",
-              padding: "8px 20px",
+              padding: "10px 24px",
               borderRadius: 4,
             }}
           >
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 700,
                 letterSpacing: 3,
-                color: BRAND_BLUE,
+                color: "white",
                 display: "flex",
               }}
             >
@@ -732,41 +952,43 @@ export async function GET(request: NextRequest) {
             padding: "0 80px",
           }}
         >
-          {/* Title */}
+          {/* Title - Bigger */}
           <div
             style={{
               fontFamily: "League Gothic",
-              fontSize: 64,
+              fontSize: 76,
               fontWeight: 400,
               color: "white",
-              lineHeight: 1.1,
-              marginBottom: 24,
+              lineHeight: 1,
+              marginBottom: 28,
               display: "flex",
-              textShadow: "0 2px 20px rgba(0,0,0,0.3)",
+              textShadow: "0 4px 30px rgba(0,0,0,0.4)",
               textTransform: "uppercase",
+              letterSpacing: 2,
             }}
           >
             {displayTitle}
           </div>
 
-          {/* Subtitle */}
+          {/* Subtitle - Bigger */}
           <div
             style={{
               fontFamily: "DM Sans",
-              fontSize: 28,
-              color: "rgba(255,255,255,0.5)",
-              marginBottom: 40,
+              fontSize: 30,
+              color: "rgba(255,255,255,0.6)",
+              marginBottom: 48,
               display: "flex",
+              fontWeight: 500,
             }}
           >
             {displaySubtitle}
           </div>
 
-          {/* Accent line */}
+          {/* Accent line - Longer and thicker */}
           <div
             style={{
-              width: 100,
-              height: 4,
+              width: 120,
+              height: 5,
               backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
               borderRadius: 2,
               display: "flex",
@@ -774,7 +996,7 @@ export async function GET(request: NextRequest) {
           />
         </div>
 
-        {/* Footer */}
+        {/* Footer - More visible */}
         <div
           style={{
             display: "flex",
@@ -786,9 +1008,10 @@ export async function GET(request: NextRequest) {
           <div
             style={{
               fontFamily: "DM Sans",
-              fontSize: 16,
-              color: "rgba(255,255,255,0.4)",
+              fontSize: 18,
+              color: "rgba(255,255,255,0.5)",
               display: "flex",
+              fontWeight: 500,
             }}
           >
             bluemindmag.com

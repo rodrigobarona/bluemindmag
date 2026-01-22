@@ -14,6 +14,7 @@ import { getIssueBySlug, getAllIssues, getIssueTranslations } from "@/content/da
 import type { Locale } from "@/content/types/content";
 import { getCtaImage } from "@/lib/pexels";
 import { siteConfig } from "@/content/data/navigation";
+import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
 import {
   generateIssueSchema,
   generateBreadcrumbSchema,
@@ -44,7 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Get translations from MDX (single source of truth)
   const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
-  const baseUrl = siteConfig.url;
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/issues/${slug}`;
 
   // Build OG image URL with issue-specific parameters
   const ogParams = new URLSearchParams({
@@ -63,6 +66,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${translation.title} | Blue Mind Magazine`,
       description: translation.description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: "article",
       publishedTime: issue.date,
       images: [
@@ -73,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           alt: translation.title,
         },
         {
-          url: `${baseUrl}${issue.cover}`,
+          url: `${canonicalUrl}${issue.cover}`,
           width: 800,
           height: 1200,
           alt: `${translation.title} Cover`,

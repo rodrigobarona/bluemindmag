@@ -7,6 +7,7 @@ import { siteConfig } from '@/content/data/navigation';
 import { getLegalPageContent } from '@/lib/mdx';
 import type { Locale } from '@/content/types/content';
 import ReactMarkdown from 'react-markdown';
+import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -19,7 +20,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = pageContent?.frontmatter.title || 'Terms of Use';
   const description = pageContent?.frontmatter.description || '';
 
-  const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent('Legal')}&type=legal`;
+  const baseUrl = getBaseUrl();
+  const canonicalUrl = getCanonicalUrl();
+  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/terms`;
+
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent('Legal')}&type=legal`;
 
   return {
     title,
@@ -27,8 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${title} | Blue Mind Magazine`,
       description,
+      url: pageUrl,
+      siteName: 'Blue Mind Magazine',
+      locale: locale === 'en' ? 'en_US' : 'pt_PT',
       type: 'website',
-      images: [ogImageUrl],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
