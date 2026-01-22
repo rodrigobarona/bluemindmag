@@ -61,12 +61,23 @@ export async function POST(request: NextRequest) {
 
     // Check for required environment variables
     if (!BEEHIIV_API_KEY || !BEEHIIV_PUBLICATION_ID) {
-      console.error('Missing Beehiiv configuration');
+      console.error('Missing Beehiiv configuration:', {
+        hasApiKey: !!BEEHIIV_API_KEY,
+        hasPublicationId: !!BEEHIIV_PUBLICATION_ID,
+      });
       return NextResponse.json(
         { error: 'Newsletter service not configured' },
         { status: 500 }
       );
     }
+
+    // Log environment variable info for debugging (length only, not the actual values)
+    console.log('[Newsletter] Beehiiv config check:', {
+      apiKeyLength: BEEHIIV_API_KEY.length,
+      apiKeyPrefix: BEEHIIV_API_KEY.substring(0, 4) + '...',
+      publicationId: BEEHIIV_PUBLICATION_ID,
+      email: email,
+    });
 
     // Subscribe to Beehiiv
     const response = await fetch(
