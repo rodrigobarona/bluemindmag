@@ -40,3 +40,11 @@ export function getBaseUrl(): string {
 export function getCanonicalUrl(): string {
   return process.env.NEXT_PUBLIC_BASE_URL || 'https://bluemindmag.com';
 }
+
+/**
+ * Get the contact email address from environment variables.
+ * Falls back to empty string if not configured (should be set in production).
+ */
+export function getContactEmail(): string {
+  return process.env.RESEND_TO_EMAIL || process.env.NEXT_PUBLIC_CONTACT_EMAIL || '';
+}

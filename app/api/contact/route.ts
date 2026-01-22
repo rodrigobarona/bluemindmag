@@ -7,9 +7,9 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
-// Email configuration from environment variables
-const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || 'Blue Mind Magazine <contact@updates.bluemindmag.com>';
-const EMAIL_TO = process.env.RESEND_TO_EMAIL || 'contact@updates.bluemindmag.com';
+// Email configuration from environment variables (required)
+const EMAIL_FROM = process.env.RESEND_FROM_EMAIL;
+const EMAIL_TO = process.env.RESEND_TO_EMAIL;
 
 interface ContactFormData {
   name: string;
@@ -41,9 +41,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Resend is configured
-    if (!resend) {
-      console.error('Resend API key not configured');
+    // Check if Resend and email addresses are configured
+    if (!resend || !EMAIL_FROM || !EMAIL_TO) {
+      console.error('Email service not fully configured:', {
+        hasResend: !!resend,
+        hasFromEmail: !!EMAIL_FROM,
+        hasToEmail: !!EMAIL_TO,
+      });
       return NextResponse.json(
         { error: 'Email service not configured' },
         { status: 503 }
