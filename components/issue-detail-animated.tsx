@@ -619,12 +619,11 @@ export function IssueDetailCTA({
             <Floating duration={6} distance={8}>
               <Link 
                 href={`/read/${issue.slug}`}
-                className="group relative lg:-mt-24 z-10 block transition-transform duration-500 hover:rotate-0" 
-                style={{ transform: "rotate(3deg)" }}
+                className="group relative lg:-mt-24 z-10 block rotate-3 transition-transform duration-500 ease-out hover:rotate-0"
               >
                 <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
-                <div className="relative w-64 xl:w-80 shadow-2xl group-hover:shadow-cover transition-shadow duration-500">
-                  <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
+                <div className="relative w-64 xl:w-80 shadow-2xl group-hover:shadow-cover transition-all duration-500">
+                  <div className="aspect-magazine-cover relative overflow-hidden">
                     <Image
                       src={issue.cover}
                       alt={translation.title}
@@ -632,6 +631,13 @@ export function IssueDetailCTA({
                       className="object-cover"
                       sizes="320px"
                     />
+                  </div>
+                  {/* CTA on hover - button positioned outside the image container */}
+                  <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none">
+                    <span className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 font-ui text-sm font-medium shadow-lg translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <BookOpen className="w-4 h-4" />
+                      {labels.readIssue}
+                    </span>
                   </div>
                 </div>
               </Link>
