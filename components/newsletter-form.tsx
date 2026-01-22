@@ -25,8 +25,10 @@ export function NewsletterForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[NewsletterForm] Form submitted with email:', email);
 
     if (!email || !email.includes('@')) {
+      console.log('[NewsletterForm] Email validation failed');
       setStatus('error');
       setErrorMessage(t('errors.invalidEmail'));
       return;
@@ -35,8 +37,10 @@ export function NewsletterForm({
     startTransition(async () => {
       setStatus('loading');
       setErrorMessage('');
+      console.log('[NewsletterForm] Starting API request...');
 
       try {
+        console.log('[NewsletterForm] Fetching /api/newsletter...');
         const response = await fetch('/api/newsletter', {
           method: 'POST',
           headers: {
@@ -45,15 +49,22 @@ export function NewsletterForm({
           body: JSON.stringify({ email }),
         });
 
+        console.log('[NewsletterForm] Response status:', response.status);
+        console.log('[NewsletterForm] Response ok:', response.ok);
+
         const data = await response.json();
+        console.log('[NewsletterForm] Response data:', data);
 
         if (!response.ok) {
+          console.error('[NewsletterForm] API error:', data.error);
           throw new Error(data.error || 'Failed to subscribe');
         }
 
+        console.log('[NewsletterForm] SUCCESS!');
         setStatus('success');
         setEmail('');
       } catch (error) {
+        console.error('[NewsletterForm] Catch error:', error);
         setStatus('error');
         setErrorMessage(
           error instanceof Error ? error.message : t('errors.generic')
