@@ -378,7 +378,7 @@ export function IssueDetailFeatures({
                     </motion.div>
                     {/* Excerpt below */}
                     <TextReveal delay={0.2} className="max-w-3xl">
-                      <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed">
+                      <p className="font-body text-lg md:text-xl text-muted-foreground leading-relaxed text-balance">
                         {highlightTranslation.excerpt}
                       </p>
                     </TextReveal>
@@ -490,7 +490,7 @@ export function IssueDetailFeatures({
 
                     {/* Excerpt */}
                     <TextReveal delay={0.2}>
-                      <p className="font-body text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
+                      <p className="font-body text-muted-foreground text-base md:text-lg mb-6 leading-relaxed text-balance">
                         {highlightTranslation.excerpt}
                       </p>
                     </TextReveal>
