@@ -282,8 +282,8 @@ export default async function NewsletterPage({ params }: Props) {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {features.map((feature, index) => (
-              <ScrollReveal key={index} delay={index * 0.1}>
-                <div className="group p-8 bg-muted/30 border border-border hover:border-brand/30 hover:bg-brand/5 transition-all duration-300">
+              <ScrollReveal key={index} delay={index * 0.1} className="h-full">
+                <div className="group p-8 bg-muted/30 border border-border hover:border-brand/30 hover:bg-brand/5 transition-all duration-300 h-full">
                   <div className="p-3 bg-brand/10 rounded-xl w-fit mb-5 group-hover:bg-brand/20 transition-colors">
                     <feature.icon className="h-6 w-6 text-brand" />
                   </div>
