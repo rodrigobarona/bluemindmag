@@ -34,8 +34,9 @@ export function CalcomDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {/* Custom trigger button */}
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left cursor-pointer ${className}`}
+        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left !cursor-pointer ${className}`}
       >
         <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
           <IconCoffee className="h-6 w-6 text-brand" />
