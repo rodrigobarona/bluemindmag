@@ -64,24 +64,63 @@ export function NewsletterForm({
 
   // Success state
   if (status === 'success') {
+    const isFooterVariant = variant === 'footer';
+    
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         className={cn(
-          'flex items-center justify-center gap-3 py-4',
+          'flex flex-col items-center justify-center text-center',
+          isFooterVariant ? 'py-6' : 'py-4',
           className
         )}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand/10">
-          <Check className="h-5 w-5 text-brand" />
-        </div>
-        <div className="text-left">
-          <p className="font-medium text-foreground">{t('success.title')}</p>
-          <p className="text-sm text-muted-foreground">
+        {/* Animated checkmark circle */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
+          className={cn(
+            'flex h-16 w-16 items-center justify-center rounded-full mb-4',
+            isFooterVariant 
+              ? 'bg-white/20 backdrop-blur-sm border border-white/30' 
+              : 'bg-brand/10 border border-brand/20'
+          )}
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.4, type: 'spring', stiffness: 200, damping: 15 }}
+          >
+            <Check className={cn(
+              'h-8 w-8',
+              isFooterVariant ? 'text-white' : 'text-brand'
+            )} strokeWidth={2.5} />
+          </motion.div>
+        </motion.div>
+        
+        {/* Success text */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="space-y-2"
+        >
+          <h3 className={cn(
+            'text-xl font-semibold',
+            isFooterVariant ? 'text-white' : 'text-foreground'
+          )}>
+            {t('success.title')}
+          </h3>
+          <p className={cn(
+            'text-sm max-w-xs mx-auto',
+            isFooterVariant ? 'text-white/80' : 'text-muted-foreground'
+          )}>
             {t('success.description')}
           </p>
-        </div>
+        </motion.div>
       </motion.div>
     );
   }
