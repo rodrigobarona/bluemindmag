@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { ReadIssueCTA, ViewDetailsCTA, IssueHoverCTA } from "./issue-cta";
+import { useReducedMotion, ANIMATION_CONFIG } from "@/lib/use-reduced-motion";
 import type {
   Issue,
   IssueTranslation,
@@ -40,6 +41,7 @@ export function IssueShowcase({
     viewDetails: locale === "pt" ? "Ver Detalhes" : "View Details",
   };
   const mergedLabels = { ...defaultLabels, ...labels };
+  const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -50,34 +52,34 @@ export function IssueShowcase({
   // Smooth spring animation for the tilt
   const springConfig = { damping: 25, stiffness: 150 };
   const rotateX = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], [12, -12]),
+    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [12, -12]),
     springConfig
   );
   const rotateY = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], [-12, 12]),
+    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-12, 12]),
     springConfig
   );
 
   // Parallax layers
   const glowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], [-20, 20]),
+    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
     springConfig
   );
   const glowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], [-20, 20]),
+    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
     springConfig
   );
   const shadowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], [30, -30]),
+    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
     springConfig
   );
   const shadowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], [30, -30]),
+    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
     springConfig
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || prefersReducedMotion) return;
 
     const rect = containerRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -228,10 +230,14 @@ export function IssueShowcase({
           {/* Issue Details */}
           <motion.div
             className="text-center lg:text-left"
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.base }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ 
+              duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slower, 
+              delay: prefersReducedMotion ? 0 : 0.2, 
+              ease: ANIMATION_CONFIG.ease.out 
+            }}
           >
             <span
               className="font-ui text-xs font-medium uppercase tracking-[0.3em] mb-3 block"
@@ -259,10 +265,13 @@ export function IssueShowcase({
                     <motion.div
                       key={index}
                       className="flex items-start gap-3 text-left"
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+                      transition={{ 
+                        delay: prefersReducedMotion ? 0 : 0.3 + index * ANIMATION_CONFIG.stagger.base, 
+                        duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base 
+                      }}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full mt-2.5 flex-shrink-0"
@@ -285,10 +294,13 @@ export function IssueShowcase({
             {/* CTA */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.5 }}
+              transition={{ 
+                delay: prefersReducedMotion ? 0 : 0.6, 
+                duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base 
+              }}
             >
               <ReadIssueCTA
                 slug={issue.slug}

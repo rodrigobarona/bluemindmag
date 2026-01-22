@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Instagram, Linkedin } from 'lucide-react';
+import { motion } from 'motion/react';
 import {
   footerNavLinks,
   socialLinks,
@@ -13,6 +14,7 @@ import { LanguageDropdown } from './language-dropdown';
 import { NewsletterForm } from './newsletter-form';
 import { ManageCookiesButton } from './manage-cookies-button';
 import { SponsorsCarousel } from './sponsors-carousel';
+import { useReducedMotion, ANIMATION_CONFIG } from '@/lib/use-reduced-motion';
 import type { ImageResult } from '@/lib/pexels';
 import type { Sponsor } from '@/content/types/content';
 import { generateBlurPlaceholder } from '@/lib/image-utils';
@@ -25,6 +27,7 @@ interface FooterProps {
 export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
   const t = useTranslations('Navigation');
   const tFooter = useTranslations('Footer');
+  const prefersReducedMotion = useReducedMotion();
 
   const currentYear = new Date().getFullYear();
 
@@ -100,7 +103,16 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
         )}
         
         <div className="container-narrow relative z-10">
-          <div className="text-center">
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.base }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ 
+              duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slower,
+              ease: ANIMATION_CONFIG.ease.out
+            }}
+          >
             <span className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${newsletterImage ? 'text-white/60' : 'text-background/60'}`}>
               Newsletter
             </span>
@@ -114,22 +126,42 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
             </p>
 
             {/* Newsletter Form */}
-            <div className="max-w-md mx-auto mb-6">
+            <motion.div 
+              className="max-w-md mx-auto mb-6"
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ 
+                duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slow,
+                delay: prefersReducedMotion ? 0 : 0.2,
+                ease: ANIMATION_CONFIG.ease.out
+              }}
+            >
               <NewsletterForm variant="footer" />
-            </div>
+            </motion.div>
 
             {/* Learn more link */}
-            <Link
-              href="/newsletter"
-              className={`inline-flex items-center gap-2 font-ui text-sm transition-colors ${
-                newsletterImage 
-                  ? 'text-white/60 hover:text-white' 
-                  : 'text-background/60 hover:text-background'
-              }`}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ 
+                duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base,
+                delay: prefersReducedMotion ? 0 : 0.4
+              }}
             >
-              {tFooter('newsletter.learnMore')}
-            </Link>
-          </div>
+              <Link
+                href="/newsletter"
+                className={`inline-flex items-center gap-2 font-ui text-sm transition-colors ${
+                  newsletterImage 
+                    ? 'text-white/60 hover:text-white' 
+                    : 'text-background/60 hover:text-background'
+                }`}
+              >
+                {tFooter('newsletter.learnMore')}
+              </Link>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from 'motion/react';
 import { Children, type ReactNode } from 'react';
+import { useReducedMotion, ANIMATION_CONFIG } from '@/lib/use-reduced-motion';
 
 interface StaggerListProps {
   children: ReactNode;
@@ -14,21 +15,22 @@ interface StaggerListProps {
   margin?: string;
 }
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
 const getItemVariants = (
   direction: 'up' | 'down' | 'left' | 'right' | 'none',
-  distance: number
+  distance: number,
+  prefersReducedMotion: boolean
 ): Variants => {
+  // If reduced motion is preferred, only animate opacity
+  if (prefersReducedMotion) {
+    return {
+      hidden: { opacity: 0 },
+      visible: {
+        opacity: 1,
+        transition: { duration: 0.01 },
+      },
+    };
+  }
+
   const directions = {
     up: { y: distance },
     down: { y: -distance },
@@ -47,8 +49,8 @@ const getItemVariants = (
       y: 0,
       x: 0,
       transition: {
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1],
+        duration: ANIMATION_CONFIG.duration.slow,
+        ease: ANIMATION_CONFIG.ease.out,
       },
     },
   };
@@ -56,6 +58,7 @@ const getItemVariants = (
 
 /**
  * StaggerList - Animates children with staggered timing
+ * Respects prefers-reduced-motion for accessibility
  * 
  * @example
  * <StaggerList staggerDelay={0.1}>
@@ -67,25 +70,27 @@ const getItemVariants = (
 export function StaggerList({
   children,
   className = '',
-  staggerDelay = 0.1,
+  staggerDelay = ANIMATION_CONFIG.stagger.base,
   initialDelay = 0.2,
   direction = 'up',
-  distance = 40,
+  distance = ANIMATION_CONFIG.distance.base,
   once = true,
   margin = '-50px',
 }: StaggerListProps) {
-  const customContainerVariants: Variants = {
+  const prefersReducedMotion = useReducedMotion();
+
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: staggerDelay,
-        delayChildren: initialDelay,
+        staggerChildren: prefersReducedMotion ? 0 : staggerDelay,
+        delayChildren: prefersReducedMotion ? 0 : initialDelay,
       },
     },
   };
 
-  const itemVariants = getItemVariants(direction, distance);
+  const itemVariants = getItemVariants(direction, distance, prefersReducedMotion);
 
   return (
     <motion.div
@@ -93,7 +98,7 @@ export function StaggerList({
       initial="hidden"
       whileInView="visible"
       viewport={{ once, margin }}
-      variants={customContainerVariants}
+      variants={containerVariants}
     >
       {Children.map(children, (child) => (
         <motion.div variants={itemVariants}>{child}</motion.div>
@@ -104,11 +109,12 @@ export function StaggerList({
 
 /**
  * StaggerText - Stagger animation for text/headings
+ * Respects prefers-reduced-motion
  */
 export function StaggerText({
   children,
   className = '',
-  staggerDelay = 0.05,
+  staggerDelay = ANIMATION_CONFIG.stagger.fast,
   once = true,
 }: {
   children: string;
@@ -116,7 +122,13 @@ export function StaggerText({
   staggerDelay?: number;
   once?: boolean;
 }) {
+  const prefersReducedMotion = useReducedMotion();
   const words = children.split(' ');
+
+  // If reduced motion, render without animation wrapper
+  if (prefersReducedMotion) {
+    return <span className={className}>{children}</span>;
+  }
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -131,14 +143,14 @@ export function StaggerText({
   const wordVariants: Variants = {
     hidden: {
       opacity: 0,
-      y: 20,
+      y: ANIMATION_CONFIG.distance.small,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        ease: [0.16, 1, 0.3, 1],
+        duration: ANIMATION_CONFIG.duration.base,
+        ease: ANIMATION_CONFIG.ease.out,
       },
     },
   };
@@ -166,6 +178,7 @@ export function StaggerText({
 
 /**
  * StaggerLetters - Letter-by-letter animation
+ * Respects prefers-reduced-motion
  */
 export function StaggerLetters({
   children,
@@ -178,7 +191,13 @@ export function StaggerLetters({
   staggerDelay?: number;
   once?: boolean;
 }) {
+  const prefersReducedMotion = useReducedMotion();
   const letters = children.split('');
+
+  // If reduced motion, render without animation wrapper
+  if (prefersReducedMotion) {
+    return <span className={className}>{children}</span>;
+  }
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -199,7 +218,7 @@ export function StaggerLetters({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: ANIMATION_CONFIG.duration.fast,
         ease: 'easeOut',
       },
     },

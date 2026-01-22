@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "motion/react";
 import { type ReactNode, useState, useEffect, useRef } from "react";
+import { useReducedMotion, ANIMATION_CONFIG } from "@/lib/use-reduced-motion";
 
 // Hook to prevent hydration mismatch
 function useMounted() {
@@ -27,13 +28,14 @@ export function ScrollReveal({
   children,
   className,
   delay = 0,
-  duration = 0.6,
+  duration = ANIMATION_CONFIG.duration.slow,
   direction = "up",
-  distance = 40,
+  distance = ANIMATION_CONFIG.distance.base,
   once = true,
   threshold = 0.1,
 }: ScrollRevealProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
   const elementRef = useRef<HTMLDivElement>(null);
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
@@ -65,6 +67,10 @@ export function ScrollReveal({
   }, [isMounted]);
 
   const getInitialPosition = () => {
+    // If reduced motion, don't use position transforms
+    if (prefersReducedMotion) {
+      return { y: 0, x: 0 };
+    }
     switch (direction) {
       case "up":
         return { y: distance, x: 0 };
@@ -89,9 +95,9 @@ export function ScrollReveal({
       x: 0,
       y: 0,
       transition: {
-        duration,
-        delay,
-        ease: [0.25, 0.4, 0.25, 1],
+        duration: prefersReducedMotion ? 0.01 : duration,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: ANIMATION_CONFIG.ease.smooth,
       },
     },
   };
@@ -117,6 +123,51 @@ export function ScrollReveal({
   );
 }
 
+// Simple opacity fade on scroll
+interface ScrollFadeProps {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  duration?: number;
+  once?: boolean;
+  margin?: string;
+}
+
+export function ScrollFade({
+  children,
+  className,
+  delay = 0,
+  duration = ANIMATION_CONFIG.duration.slow,
+  once = true,
+  margin = "-50px",
+}: ScrollFadeProps) {
+  const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
+
+  if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once, margin }}
+      transition={{
+        duration: prefersReducedMotion ? 0.01 : duration,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: "easeOut",
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Scale on scroll - alias for ScaleReveal for backwards compatibility
+export { ScaleReveal as ScrollScale };
+
 // Staggered children animation wrapper
 interface StaggerContainerProps {
   children: ReactNode;
@@ -129,19 +180,20 @@ interface StaggerContainerProps {
 export function StaggerContainer({
   children,
   className,
-  staggerDelay = 0.1,
+  staggerDelay = ANIMATION_CONFIG.stagger.base,
   once = true,
   threshold = 0.2,
 }: StaggerContainerProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: staggerDelay,
-        delayChildren: 0.1,
+        staggerChildren: prefersReducedMotion ? 0 : staggerDelay,
+        delayChildren: prefersReducedMotion ? 0 : 0.1,
       },
     },
   };
@@ -175,9 +227,12 @@ export function StaggerItem({
   children,
   className,
   direction = "up",
-  distance = 30,
+  distance = ANIMATION_CONFIG.distance.small,
 }: StaggerItemProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   const getInitialPosition = () => {
+    if (prefersReducedMotion) return {};
     switch (direction) {
       case "up":
         return { y: distance };
@@ -202,8 +257,8 @@ export function StaggerItem({
       x: 0,
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: [0.25, 0.4, 0.25, 1],
+        duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slow,
+        ease: ANIMATION_CONFIG.ease.smooth,
       },
     },
   };
@@ -224,8 +279,14 @@ interface ParallaxProps {
 
 export function Parallax({ children, className, speed = 0.5 }: ParallaxProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
 
   if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
+  // Disable parallax for reduced motion
+  if (prefersReducedMotion) {
     return <div className={className}>{children}</div>;
   }
 
@@ -257,8 +318,14 @@ export function Floating({
   distance = 15,
 }: FloatingProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
 
   if (!isMounted) {
+    return <div className={className}>{children}</div>;
+  }
+
+  // Disable floating animation for reduced motion
+  if (prefersReducedMotion) {
     return <div className={className}>{children}</div>;
   }
 
@@ -294,6 +361,7 @@ export function ScaleReveal({
   once = true,
 }: ScaleRevealProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
 
   if (!isMounted) {
     return <div className={className}>{children}</div>;
@@ -302,13 +370,13 @@ export function ScaleReveal({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once, amount: 0.3 }}
       transition={{
-        duration: 0.7,
-        delay,
-        ease: [0.25, 0.4, 0.25, 1],
+        duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slow,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: ANIMATION_CONFIG.ease.smooth,
       }}
     >
       {children}
@@ -329,10 +397,11 @@ export function LineDraw({
   className,
   direction = "horizontal",
   delay = 0,
-  duration = 0.8,
+  duration = ANIMATION_CONFIG.duration.slower,
   style,
 }: LineDrawProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
   const isHorizontal = direction === "horizontal";
 
   if (!isMounted) {
@@ -342,13 +411,13 @@ export function LineDraw({
   return (
     <motion.div
       className={className}
-      initial={{ scaleX: isHorizontal ? 0 : 1, scaleY: isHorizontal ? 1 : 0 }}
+      initial={{ scaleX: prefersReducedMotion ? 1 : (isHorizontal ? 0 : 1), scaleY: prefersReducedMotion ? 1 : (isHorizontal ? 1 : 0) }}
       whileInView={{ scaleX: 1, scaleY: 1 }}
       viewport={{ once: true, amount: 0.5 }}
       transition={{
-        duration,
-        delay,
-        ease: [0.25, 0.4, 0.25, 1],
+        duration: prefersReducedMotion ? 0.01 : duration,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: ANIMATION_CONFIG.ease.smooth,
       }}
       style={{ transformOrigin: isHorizontal ? "left" : "top", ...style }}
     />
@@ -368,6 +437,7 @@ export function TextReveal({
   delay = 0,
 }: TextRevealProps) {
   const isMounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
 
   if (!isMounted) {
     return <div className={className}>{children}</div>;
@@ -376,13 +446,17 @@ export function TextReveal({
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
+      initial={{ 
+        opacity: 0, 
+        y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small, 
+        filter: prefersReducedMotion ? "blur(0px)" : "blur(10px)" 
+      }}
       whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, amount: 0.5 }}
       transition={{
-        duration: 0.8,
-        delay,
-        ease: [0.25, 0.4, 0.25, 1],
+        duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slower,
+        delay: prefersReducedMotion ? 0 : delay,
+        ease: ANIMATION_CONFIG.ease.smooth,
       }}
     >
       {children}

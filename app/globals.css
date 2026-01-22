@@ -1008,3 +1008,28 @@
     font-size: 1.125rem;
   }
 }
+
+/* ============================================
+   REDUCED MOTION - Accessibility
+   Respects user's motion preferences (WCAG 2.1)
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable parallax and Ken Burns effects */
+  .ken-burns {
+    animation: none !important;
+  }
+
+  /* Ensure smooth scroll is disabled */
+  html {
+    scroll-behavior: auto !important;
+  }
+}

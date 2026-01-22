@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, useMotionValue, useAnimationFrame } from "motion/react";
 import type { Sponsor } from "@/content/types/content";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 interface SponsorsCarouselProps {
   sponsors: Sponsor[];
@@ -73,6 +74,7 @@ function SponsorTrack({ sponsors }: { sponsors: Array<Sponsor & { dimensions: { 
 }
 
 export function SponsorsCarousel({ sponsors, title, variant = "default", speed = 50 }: SponsorsCarouselProps) {
+  const prefersReducedMotion = useReducedMotion();
   const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(0);
@@ -99,7 +101,8 @@ export function SponsorsCarousel({ sponsors, title, variant = "default", speed =
 
   // Animate frame by frame for seamless loop
   useAnimationFrame((_, delta) => {
-    if (isPaused || trackWidth === 0) return;
+    // Skip animation if user prefers reduced motion or paused
+    if (prefersReducedMotion || isPaused || trackWidth === 0) return;
     
     // Move left by speed * delta (in seconds)
     const moveBy = (speed * delta) / 1000;
