@@ -119,16 +119,13 @@ export default async function ReadIssuePage({ params }: Props) {
 
       {/* Header with close button and issue indicator */}
       <header className="flipbook-reader__header">
-        {/* Brand and issue info - from MDX content */}
-        <div className="flex items-center gap-4">
-          <Link href="/" className="font-headline text-xl text-white tracking-wider hover:text-white/80 transition-colors">
-            BLUE MIND
-          </Link>
-          <span className="text-white/30 hidden sm:inline">|</span>
-          <div className="hidden sm:block font-ui text-white/70 text-sm">
-            {translation.title} · {translation.subtitle}
-          </div>
-        </div>
+        {/* Issue info - from MDX content */}
+        <Link 
+          href={`/issues/${slug}`}
+          className="font-ui text-white/70 text-sm hover:text-white transition-colors"
+        >
+          {translation.title} · {translation.subtitle}
+        </Link>
 
         {/* ESC hint - center */}
         <div className="text-white/40 text-xs font-ui hidden md:block absolute left-1/2 -translate-x-1/2">
