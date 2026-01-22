@@ -125,10 +125,10 @@ export async function generateMetadata({
     icons: {
       icon: [
         { url: '/favicon.ico', sizes: 'any' },
-        { url: '/bluemind-avatar.png', type: 'image/png', sizes: '194x194' },
+        { url: '/bluemind-avatar.png', type: 'image/png', sizes: '839x839' },
       ],
       apple: [
-        { url: '/bluemind-avatar.png', sizes: '194x194', type: 'image/png' },
+        { url: '/bluemind-avatar.png', sizes: '180x180', type: 'image/png' },
       ],
       shortcut: '/favicon.ico',
     },
