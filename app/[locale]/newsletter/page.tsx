@@ -275,7 +275,7 @@ export default async function NewsletterPage({ params }: Props) {
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
               {content.whatYouGet}
             </span>
-            <h2 className="font-headline text-4xl md:text-5xl">
+            <h2 className="font-headline text-4xl md:text-5xl text-balance">
               {content.features.title}
             </h2>
           </ScrollReveal>
@@ -340,10 +340,10 @@ export default async function NewsletterPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
                 {content.notSure.title}
               </span>
-              <h2 className="font-headline text-4xl md:text-5xl mb-6">
+              <h2 className="font-headline text-4xl md:text-5xl mb-6 text-balance">
                 {content.readFirst.title}
               </h2>
-              <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
+              <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto text-balance">
                 {content.notSure.description}
               </p>
 

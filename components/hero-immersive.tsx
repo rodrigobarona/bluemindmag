@@ -139,7 +139,7 @@ export function HeroImmersive({
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="tagline text-white/90 text-center max-w-md mb-10"
+          className="tagline text-white/90 text-center max-w-md mb-10 text-balance"
         >
           &ldquo;{tagline}&rdquo;
         </motion.p>

@@ -246,11 +246,11 @@ export function IssueShowcase({
               {translation.subtitle}
             </span>
 
-            <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-6">
+            <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-6 text-balance">
               {translation.title}
             </h2>
 
-            <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0">
+            <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0 text-balance">
               {translation.description}
             </p>
 

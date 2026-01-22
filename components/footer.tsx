@@ -117,7 +117,7 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
               Newsletter
             </span>
             
-            <h2 className={`font-headline text-4xl md:text-5xl lg:text-6xl mb-6 ${newsletterImage ? 'text-white' : 'text-background'}`}>
+            <h2 className={`font-headline text-4xl md:text-5xl lg:text-6xl mb-6 text-balance ${newsletterImage ? 'text-white' : 'text-background'}`}>
               {tFooter('newsletter.title')}
             </h2>
             
@@ -176,7 +176,7 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
                 BLUE MIND
               </span>
             </Link>
-              <p className="font-accent text-base md:text-lg text-background/60 max-w-xs mb-8">
+              <p className="font-accent text-base md:text-lg text-background/60 max-w-xs mb-8 text-balance">
               {siteConfig.tagline}
             </p>
               {/* Social Links & Language */}

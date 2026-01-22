@@ -185,10 +185,10 @@ export default async function ContactPage({ params }: Props) {
             <div className="lg:col-span-7">
               {/* Form Header */}
               <div className="mb-10">
-                <h2 className="font-headline text-3xl md:text-4xl mb-4">
+                <h2 className="font-headline text-3xl md:text-4xl mb-4 text-balance">
                   {content.ways.email.label}
                 </h2>
-                <p className="text-muted-foreground max-w-lg leading-relaxed">
+                <p className="text-muted-foreground max-w-lg leading-relaxed text-balance">
                   {content.ways.email.description}
                 </p>
               </div>
@@ -308,10 +308,10 @@ export default async function ContactPage({ params }: Props) {
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
               {content.contribute.title}
             </span>
-            <h2 className="font-headline text-3xl md:text-4xl mb-4">
+            <h2 className="font-headline text-3xl md:text-4xl mb-4 text-balance">
               {content.contribute.description}
             </h2>
-            <p className="text-muted-foreground mb-8 leading-relaxed text-lg">
+            <p className="text-muted-foreground mb-8 leading-relaxed text-lg text-balance">
               {content.contribute.guidelines}
             </p>
             <Link

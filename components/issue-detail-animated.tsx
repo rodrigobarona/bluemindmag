@@ -124,13 +124,13 @@ export function IssueDetailHero({
             </StaggerItem>
 
             <StaggerItem>
-              <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl mb-6">
+              <h1 className="font-headline text-5xl md:text-6xl lg:text-7xl mb-6 text-balance">
                 {translation.title}
               </h1>
             </StaggerItem>
 
             <StaggerItem>
-              <p className="font-body text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed">
+              <p className="font-body text-lg text-muted-foreground mb-8 max-w-lg leading-relaxed text-balance">
                 {translation.description}
               </p>
             </StaggerItem>
@@ -231,7 +231,7 @@ export function IssueDetailFeatures({
             </span>
           </TextReveal>
           <TextReveal delay={0.1}>
-            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl">
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl text-balance">
               {labels.features}
             </h2>
           </TextReveal>
@@ -556,7 +556,7 @@ export function IssueDetailCTA({
               </span>
             </StaggerItem>
             <StaggerItem>
-              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl text-white mb-6 text-balance">
                 {labels.startReading}
               </h2>
             </StaggerItem>
@@ -670,7 +670,7 @@ export function MoreIssuesAnimated({
       <div className="container-editorial">
         <ScrollReveal direction="up" distance={30} duration={0.5}>
           <div className="flex items-center justify-between mb-12">
-            <h2 className="font-headline text-2xl md:text-3xl">
+            <h2 className="font-headline text-2xl md:text-3xl text-balance">
               {labels.moreIssues}
             </h2>
             <motion.div whileHover={{ x: 4 }} transition={{ type: "spring" }}>

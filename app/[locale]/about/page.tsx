@@ -170,11 +170,11 @@ export default async function AboutPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                 {content.theMagazine}
               </span>
-              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8 text-balance">
                 {content.magazine.title}
               </h2>
               <div className="space-y-6 font-body text-lg text-muted-foreground leading-relaxed">
-                <p>{content.magazine.description}</p>
+                <p className="text-balance">{content.magazine.description}</p>
               </div>
             </ScrollReveal>
             
@@ -183,10 +183,10 @@ export default async function AboutPage({ params }: Props) {
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                   {content.missionLabel}
                 </span>
-                <h3 className="font-headline text-2xl md:text-3xl mb-6">
+                <h3 className="font-headline text-2xl md:text-3xl mb-6 text-balance">
                   {content.mission.title}
                 </h3>
-                <p className="font-body text-muted-foreground leading-relaxed">
+                <p className="font-body text-muted-foreground leading-relaxed text-balance">
                   {content.mission.description}
                 </p>
               </div>
@@ -250,13 +250,13 @@ export default async function AboutPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
                 {content.editor.title}
               </span>
-              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-3">
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-3 text-balance">
                 {content.editor.name}
               </h2>
-              <p className="font-ui text-xl text-muted-foreground mb-8">
+              <p className="font-ui text-xl text-muted-foreground mb-8 text-balance">
                 {content.editor.credentials}
               </p>
-              <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
+              <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed text-balance">
                 {content.editor.bio}
               </p>
 
@@ -301,10 +301,10 @@ export default async function AboutPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
                 {content.publisher.title}
               </span>
-              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8 text-balance">
                 {content.publisher.name}
               </h2>
-              <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed">
+              <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed text-balance">
                 {content.publisher.description}
               </p>
 
@@ -379,11 +379,11 @@ export default async function AboutPage({ params }: Props) {
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-brand mb-4 block">
               {content.supporters.title}
             </span>
-            <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8">
+            <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl mb-8 text-balance">
               {content.supporters.smi.name}
             </h2>
             <div className="space-y-6 mb-10">
-              <p className="font-body text-lg text-muted-foreground leading-relaxed">
+              <p className="font-body text-lg text-muted-foreground leading-relaxed text-balance">
                 {content.supporters.smi.description}
               </p>
               {content.supporters.smi.description2 && (

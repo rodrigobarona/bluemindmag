@@ -172,7 +172,7 @@ export default async function IssuesPage({ params }: Props) {
             <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
               {t('featured')}
             </span>
-            <h2 className="font-headline text-3xl md:text-4xl">
+            <h2 className="font-headline text-3xl md:text-4xl text-balance">
               {t('current')}
             </h2>
           </div>
@@ -199,7 +199,7 @@ export default async function IssuesPage({ params }: Props) {
               <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                 {t('pastIssues')}
               </span>
-              <h2 className="font-headline text-3xl md:text-4xl">
+              <h2 className="font-headline text-3xl md:text-4xl text-balance">
                 {tHome('archive.label')}
               </h2>
             </ScrollReveal>

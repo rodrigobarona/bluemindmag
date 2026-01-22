@@ -137,11 +137,11 @@ export default async function HomePage({ params }: Props) {
                     {issueTranslations[currentIssue.id].subtitle}
                   </span>
 
-                  <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-8">
+                  <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-8 text-balance">
                     {issueTranslations[currentIssue.id].title}
                   </h2>
 
-                  <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl">
+                  <p className="font-body text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl text-balance">
                     {issueTranslations[currentIssue.id].description}
                   </p>
 
@@ -309,7 +309,7 @@ export default async function HomePage({ params }: Props) {
                 <span className="font-ui text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground mb-4 block">
                   {content.archive.label}
                 </span>
-                <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl">
+                <h2 className="font-headline text-3xl md:text-4xl lg:text-5xl text-balance">
                   {content.archive.title}
                 </h2>
               </div>
@@ -358,11 +358,11 @@ export default async function HomePage({ params }: Props) {
               {content.about.label}
             </span>
 
-            <h2 className="font-headline text-3xl md:text-4xl mb-8">
+            <h2 className="font-headline text-3xl md:text-4xl mb-8 text-balance">
               {content.about.title}
             </h2>
 
-            <p className="font-body text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
+            <p className="font-body text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto text-balance">
               {content.about.description}
             </p>
 

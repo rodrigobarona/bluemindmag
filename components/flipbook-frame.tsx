@@ -48,12 +48,12 @@ function FlipbookPlaceholder({
       </div>
 
       {/* Title */}
-      <h2 className="font-headline text-2xl md:text-3xl text-foreground mb-4 tracking-wide uppercase">
+      <h2 className="font-headline text-2xl md:text-3xl text-foreground mb-4 tracking-wide uppercase text-balance">
         {t.title}
       </h2>
 
       {/* Description */}
-      <p className="font-body text-muted-foreground mb-8 max-w-md leading-relaxed">
+      <p className="font-body text-muted-foreground mb-8 max-w-md leading-relaxed text-balance">
         {t.description}
       </p>
 
