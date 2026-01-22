@@ -30,16 +30,43 @@ function escapeHtml(text: string): string {
   return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
-export async function POST(request: NextRequest) {
+// Helper function to safely check for bots with fail-open approach
+async function isMaliciousBot(): Promise<boolean> {
   try {
-    // Verify the request is from a human using BotID
-    // In development, bypass verification since BotID requires Vercel infrastructure
     const verification = await checkBotId({
       developmentOptions: {
         bypass: 'HUMAN',
       },
     });
-    if (verification.isBot) {
+
+    // Log verification result for debugging (remove in production if too noisy)
+    console.log('[BotID Contact] Verification result:', {
+      isBot: verification.isBot,
+      isHuman: verification.isHuman,
+      isVerifiedBot: verification.isVerifiedBot,
+      bypassed: verification.bypassed,
+    });
+
+    // Only block if it's a bot AND not a verified good bot (like search engines)
+    // This prevents blocking legitimate crawlers while still blocking malicious bots
+    if (verification.isBot && !verification.isVerifiedBot) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    // If BotID verification fails, log the error but allow the request through
+    // This is a "fail-open" approach - better to let some bots through than block real users
+    console.error('[BotID Contact] Verification error (allowing request):', error);
+    return false;
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Check for malicious bots (fail-open: errors allow request through)
+    if (await isMaliciousBot()) {
+      console.log('[Contact] Blocked bot request');
       return NextResponse.json(
         { error: 'Access denied' },
         { status: 403 }
