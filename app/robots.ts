@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', '/api/og'],  // Allow OG image generation for social media
         disallow: ['/api/', '/_next/', '/private/'],
       },
       // AI/LLM crawler specific rules - allow access to content
@@ -49,13 +49,29 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Googlebot',
-        allow: '/',
+        allow: ['/', '/api/og'],  // Allow OG image generation
         disallow: ['/api/', '/_next/', '/private/'],
       },
       {
         userAgent: 'Bingbot',
-        allow: '/',
+        allow: ['/', '/api/og'],  // Allow OG image generation
         disallow: ['/api/', '/_next/', '/private/'],
+      },
+      // Social media crawlers need OG images
+      {
+        userAgent: 'Twitterbot',
+        allow: ['/', '/api/og'],
+        disallow: [],
+      },
+      {
+        userAgent: 'facebookexternalhit',
+        allow: ['/', '/api/og'],
+        disallow: [],
+      },
+      {
+        userAgent: 'LinkedInBot',
+        allow: ['/', '/api/og'],
+        disallow: [],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

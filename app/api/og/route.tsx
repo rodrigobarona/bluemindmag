@@ -26,61 +26,18 @@ const FALLBACK_IMAGES: Record<string, string> = {
   default: "/images/fallback/ocean-aerial.jpg",
 };
 
-// Load fonts once at module level (best practice for Satori performance)
-// Using Google Fonts API for reliable Edge Runtime access
-const GOOGLE_FONTS_API = "https://fonts.googleapis.com/css2";
-
-// Fetch font files from Google Fonts (more reliable than self-hosted in Edge Runtime)
-const leagueGothicPromise = fetch(
-  "https://fonts.gstatic.com/s/leaguegothic/v11/qFdR35CBi4tvBz81xy7WG7ep-BQAY7Krj7feObpH_-amidQ6Q9hn.woff2"
-).then((res) => {
-  if (!res.ok) {
-    console.warn("Failed to load League Gothic font");
-    return new ArrayBuffer(0);
-  }
-  return res.arrayBuffer();
-}).catch((error) => {
-  console.warn("League Gothic font loading error:", error);
-  return new ArrayBuffer(0);
-});
-
-const dmSansPromise = fetch(
-  "https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZ2IHSeH.woff2"
-).then((res) => {
-  if (!res.ok) {
-    console.warn("Failed to load DM Sans font");
-    return new ArrayBuffer(0);
-  }
-  return res.arrayBuffer();
-}).catch((error) => {
-  console.warn("DM Sans font loading error:", error);
-  return new ArrayBuffer(0);
-});
+// ============================================
+// FONT LOADING - DISABLED FOR NOW
+// Satori only supports TTF/OTF fonts, not WOFF/WOFF2
+// Using system fonts as fallback until TTF fonts are available
+// ============================================
 
 export async function GET(request: NextRequest) {
   try {
-    // Await font data
-    const [leagueGothicData, dmSansData] = await Promise.all([
-      leagueGothicPromise,
-      dmSansPromise,
-    ]);
-
-    // Font configuration for ImageResponse
-    // Filter out any fonts that failed to load, but always include at least one fallback
-    const fonts = [
-      leagueGothicData.byteLength > 0 ? {
-        name: "League Gothic",
-        data: leagueGothicData,
-        weight: 400 as const,
-        style: "normal" as const,
-      } : null,
-      dmSansData.byteLength > 0 ? {
-        name: "DM Sans",
-        data: dmSansData,
-        weight: 400 as const,
-        style: "normal" as const,
-      } : null,
-    ].filter((font): font is { name: string; data: ArrayBuffer; weight: 400; style: "normal" } => font !== null);
+    // No custom fonts for now - use system fonts
+    // League Gothic can fall back to Impact, Arial Black
+    // DM Sans can fall back to system-ui, sans-serif
+    const fonts: Array<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" }> = [];
 
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
