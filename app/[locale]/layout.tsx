@@ -109,7 +109,14 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [ogImageUrl],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: "Blue Mind Magazine - Surf Science Publication",
+        },
+      ],
     },
     robots: {
       index: true,
