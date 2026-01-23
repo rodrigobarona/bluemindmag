@@ -15,15 +15,15 @@ const BRAND_BLUE = "#0097B2";
 const WARM_GOLDEN = "#D4A574";
 const DARK_BG = "#1a1a1a";
 
-// Fallback images mapping by page type (local assets - NO REPEATS)
+// Fallback images mapping by page type (NEW Pexels downloads - vibrant & colorful!)
 const FALLBACK_IMAGES: Record<string, string> = {
-  home: "/images/fallback/ocean-aerial.jpg",        // Dramatic aerial for homepage
-  about: "/images/fallback/surfer-sunset.jpg",      // Surfer lifestyle for about
-  contact: "/images/fallback/beach-golden-hour.jpg", // Warm inviting for contact
-  newsletter: "/images/fallback/underwater-blue.jpg", // Deep blue for newsletter
-  issues: "/images/fallback/ocean-aerial.jpg",       // Can share with home (different template style)
-  legal: "/images/fallback/underwater-blue.jpg",     // Can share with newsletter (minimal template)
-  default: "/images/fallback/ocean-aerial.jpg",
+  home: "/images/fallback/home-og.jpg", // Tropical beach sunset - warm colors (#8F7D71)
+  about: "/images/fallback/about-og.jpg", // Surfer at golden hour (#B69A93)
+  contact: "/images/fallback/contact-og.jpg", // Tropical sunset vibrant orange (#714B4A)
+  newsletter: "/images/fallback/newsletter-og.jpg", // Turquoise waves aerial (#719FAE)
+  issues: "/images/fallback/issues-og.jpg", // Colorful surfboards (#B3B3AB)
+  legal: "/images/fallback/legal-og.jpg", // Calm ocean blue (#9FB9C6)
+  default: "/images/fallback/home-og.jpg",
 };
 
 // ============================================
@@ -34,7 +34,9 @@ const FALLBACK_IMAGES: Record<string, string> = {
 async function loadGoogleFont(font: string, text: string) {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
   const css = await (await fetch(url)).text();
-  const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/);
+  const resource = css.match(
+    /src: url\((.+)\) format\('(opentype|truetype)'\)/,
+  );
 
   if (resource) {
     const response = await fetch(resource[1]);
@@ -43,7 +45,7 @@ async function loadGoogleFont(font: string, text: string) {
     }
   }
 
-  throw new Error('failed to load font data');
+  throw new Error("failed to load font data");
 }
 
 export async function GET(request: NextRequest) {
@@ -70,25 +72,44 @@ export async function GET(request: NextRequest) {
 
     // Load fonts dynamically based on the text being rendered
     // This is more efficient than loading all fonts upfront
+    // Using the EXACT same fonts as in layout.tsx:
+    // - League Gothic for headlines (--font-headline)
+    // - DM Sans for UI/labels (--font-ui)
+    // - Cormorant Garamond for taglines (--font-accent)
     const allText = `${displayTitle}${displaySubtitle}BLUE MIND`;
-    
-    const [interData, interBoldData] = await Promise.all([
-      loadGoogleFont('Inter', allText),
-      loadGoogleFont('Inter:wght@700', allText),
-    ]);
+
+    const [leagueGothicData, dmSansData, dmSansBoldData, cormorantData] =
+      await Promise.all([
+        loadGoogleFont("League+Gothic", allText),
+        loadGoogleFont("DM+Sans", allText),
+        loadGoogleFont("DM+Sans:wght@700", allText),
+        loadGoogleFont("Cormorant+Garamond:ital@1", allText), // Italic for taglines
+      ]);
 
     const fonts = [
       {
-        name: 'Inter',
-        data: interData,
+        name: "League Gothic",
+        data: leagueGothicData,
         weight: 400 as const,
-        style: 'normal' as const,
+        style: "normal" as const,
       },
       {
-        name: 'Inter',
-        data: interBoldData,
+        name: "DM Sans",
+        data: dmSansData,
+        weight: 400 as const,
+        style: "normal" as const,
+      },
+      {
+        name: "DM Sans",
+        data: dmSansBoldData,
         weight: 700 as const,
-        style: 'normal' as const,
+        style: "normal" as const,
+      },
+      {
+        name: "Cormorant Garamond",
+        data: cormorantData,
+        weight: 400 as const,
+        style: "italic" as const,
       },
     ];
 
@@ -203,7 +224,7 @@ export async function GET(request: NextRequest) {
                 />
                 <div
                   style={{
-                    fontFamily: "Inter",
+                    fontFamily: "DM Sans",
                     fontSize: 15,
                     fontWeight: 700,
                     letterSpacing: 4,
@@ -222,7 +243,7 @@ export async function GET(request: NextRequest) {
               {/* Title */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "League Gothic",
                   fontSize: displayTitle.length > 20 ? 64 : 72,
                   fontWeight: 400,
                   color: "white",
@@ -240,7 +261,7 @@ export async function GET(request: NextRequest) {
               {/* Subtitle/Description */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 30,
                   color: "rgba(255,255,255,0.9)",
                   marginBottom: 32,
@@ -254,7 +275,7 @@ export async function GET(request: NextRequest) {
               {/* Domain */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 16,
                   color: "rgba(255,255,255,0.6)",
                   display: "flex",
@@ -338,7 +359,7 @@ export async function GET(request: NextRequest) {
             }}
           />
 
-          {/* Dark overlay for text readability */}
+          {/* Dark overlay for text readability - DARKER for better contrast */}
           <div
             style={{
               position: "absolute",
@@ -347,7 +368,7 @@ export async function GET(request: NextRequest) {
               right: 0,
               bottom: 0,
               backgroundImage:
-                "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.6) 100%)",
+                "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.75) 100%)",
               display: "flex",
             }}
           />
@@ -364,52 +385,56 @@ export async function GET(request: NextRequest) {
               padding: "0 80px",
             }}
           >
-            {/* Surf Science label - smaller and more subtle */}
+            {/* Surf Science label - MUCH BIGGER to balance headline */}
             <div
               style={{
-                fontFamily: "Inter",
-                fontSize: 13,
-                fontWeight: 400,
-                letterSpacing: 8,
-                color: "rgba(255,255,255,0.7)",
-                marginBottom: 28,
-                display: "flex",
-                textTransform: "uppercase",
-              }}
-            >
-              SURF SCIENCE
-            </div>
-
-            {/* BLUE MIND masthead - HUGE like the hero */}
-            <div
-              style={{
-                fontFamily: "Inter",
-                fontSize: 140,
-                fontWeight: 400,
-                color: "white",
-                lineHeight: 1,
+                fontFamily: "DM Sans",
+                fontSize: 20,
+                fontWeight: 600,
+                letterSpacing: 12,
+                color: "rgba(255,255,255,0.85)",
                 marginBottom: 36,
                 display: "flex",
-                textShadow: "0 4px 40px rgba(0,0,0,0.6), 0 2px 20px rgba(0,0,0,0.4)",
-                letterSpacing: 10,
+                textTransform: "uppercase",
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+              }}
+            >
+              SURF SCIENCE MAGAZINE
+            </div>
+
+            {/* BLUE MIND masthead - MASSIVE with TIGHT letter spacing like hero */}
+            <div
+              style={{
+                fontFamily: "League Gothic",
+                fontSize: 240,
+                fontWeight: 400,
+                color: "white",
+                lineHeight: 0.85,
+                marginBottom: 44,
+                display: "flex",
+                textShadow:
+                  "0 6px 50px rgba(0,0,0,0.9), 0 3px 30px rgba(0,0,0,0.7)",
+                letterSpacing: -4,
                 textTransform: "uppercase",
               }}
             >
               BLUE MIND
             </div>
 
-            {/* Tagline in quotes - elegant, not italic */}
+            {/* Tagline in quotes - MUCH BIGGER for better balance */}
             <div
               style={{
-                fontFamily: "Inter",
-                fontSize: 28,
+                fontFamily: "Cormorant Garamond",
+                fontSize: 46,
                 fontWeight: 400,
-                color: "rgba(255,255,255,0.9)",
+                fontStyle: "italic",
+                color: "rgba(255,255,255,0.95)",
                 marginBottom: 0,
                 display: "flex",
-                textShadow: "0 3px 25px rgba(0,0,0,0.5)",
-                maxWidth: 600,
+                textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                maxWidth: 800,
                 textAlign: "center",
+                letterSpacing: "0.03em",
               }}
             >
               &ldquo;{displaySubtitle}&rdquo;
@@ -428,12 +453,12 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "Inter",
-                fontSize: 14,
-                color: "rgba(255,255,255,0.5)",
+                fontFamily: "DM Sans",
+                fontSize: 20,
+                color: "rgba(255,255,255,0.7)",
                 display: "flex",
-                textShadow: "0 2px 15px rgba(0,0,0,0.6)",
-                fontWeight: 400,
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+                fontWeight: 500,
               }}
             >
               bluemindmag.com
@@ -554,7 +579,7 @@ export async function GET(request: NextRequest) {
               >
                 <div
                   style={{
-                    fontFamily: "Inter",
+                    fontFamily: "DM Sans",
                     fontSize: 14,
                     fontWeight: 700,
                     letterSpacing: 3,
@@ -582,7 +607,7 @@ export async function GET(request: NextRequest) {
               {/* Optional: Magazine label */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 13,
                   fontWeight: 600,
                   letterSpacing: 4,
@@ -598,14 +623,15 @@ export async function GET(request: NextRequest) {
               {/* Title - Bigger and more dramatic */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "League Gothic",
                   fontSize: 110,
                   fontWeight: 400,
                   color: "white",
                   lineHeight: 0.95,
                   marginBottom: 36,
                   display: "flex",
-                  textShadow: "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
+                  textShadow:
+                    "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
                   textTransform: "uppercase",
                   letterSpacing: 6,
                 }}
@@ -616,7 +642,7 @@ export async function GET(request: NextRequest) {
               {/* Subtitle - Larger and clearer */}
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 36,
                   color: "rgba(255,255,255,0.95)",
                   marginBottom: 56,
@@ -653,7 +679,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 18,
                   color: "rgba(255,255,255,0.7)",
                   display: "flex",
@@ -751,7 +777,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
-                  fontFamily: "Inter",
+                  fontFamily: "DM Sans",
                   fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: 3,
@@ -779,7 +805,7 @@ export async function GET(request: NextRequest) {
             {/* Magazine label - Consistent across all pages */}
             <div
               style={{
-                fontFamily: "Inter",
+                fontFamily: "DM Sans",
                 fontSize: 13,
                 fontWeight: 600,
                 letterSpacing: 4,
@@ -795,14 +821,15 @@ export async function GET(request: NextRequest) {
             {/* Title - Bigger */}
             <div
               style={{
-                fontFamily: "Inter",
+                fontFamily: "League Gothic",
                 fontSize: titleFontSize + 12,
                 fontWeight: 400,
                 color: "white",
                 lineHeight: 0.95,
                 marginBottom: 36,
                 display: "flex",
-                textShadow: "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
+                textShadow:
+                  "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
                 textTransform: "uppercase",
                 letterSpacing: 6,
               }}
@@ -813,7 +840,7 @@ export async function GET(request: NextRequest) {
             {/* Subtitle - Bigger */}
             <div
               style={{
-                fontFamily: "Inter",
+                fontFamily: "DM Sans",
                 fontSize: 36,
                 color: "rgba(255,255,255,0.95)",
                 marginBottom: 56,
@@ -850,7 +877,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "Inter",
+                fontFamily: "DM Sans",
                 fontSize: 18,
                 color: "rgba(255,255,255,0.7)",
                 display: "flex",
@@ -942,7 +969,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "Inter",
+                fontFamily: "DM Sans",
                 fontSize: 14,
                 fontWeight: 700,
                 letterSpacing: 3,
@@ -969,7 +996,7 @@ export async function GET(request: NextRequest) {
           {/* Title - Bigger */}
           <div
             style={{
-              fontFamily: "Inter",
+              fontFamily: "League Gothic",
               fontSize: 76,
               fontWeight: 400,
               color: "white",
@@ -987,7 +1014,7 @@ export async function GET(request: NextRequest) {
           {/* Subtitle - Bigger */}
           <div
             style={{
-              fontFamily: "Inter",
+              fontFamily: "DM Sans",
               fontSize: 30,
               color: "rgba(255,255,255,0.6)",
               marginBottom: 48,
@@ -1021,7 +1048,7 @@ export async function GET(request: NextRequest) {
         >
           <div
             style={{
-              fontFamily: "Inter",
+              fontFamily: "DM Sans",
               fontSize: 18,
               color: "rgba(255,255,255,0.5)",
               display: "flex",
@@ -1040,7 +1067,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error("OG Image generation error:", error);
-    
+
     // Return a simple fallback image on error
     return new ImageResponse(
       <div
