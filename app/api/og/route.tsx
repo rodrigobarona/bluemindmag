@@ -91,9 +91,8 @@ export async function GET(request: NextRequest) {
         weight: 700 as const,
         style: "normal" as const,
       } : null,
-    ].filter(Boolean);
+    ].filter((font): font is { name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" } => font !== null);
 
-  try {
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
     const subtitle =
@@ -1054,52 +1053,6 @@ export async function GET(request: NextRequest) {
           >
             bluemindmag.com
           </div>
-        </div>
-      </div>,
-      {
-        width: 1200,
-        height: 630,
-        fonts,
-      },
-    );
-  } catch (error) {
-    console.error("OG Image generation error:", error);
-
-    // Fallback - simple branded image
-    return new ImageResponse(
-      <div
-        style={{
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: DARK_BG,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: "League Gothic",
-            fontSize: 72,
-            fontWeight: 400,
-            color: BRAND_BLUE,
-            marginBottom: 16,
-            display: "flex",
-            textTransform: "uppercase",
-          }}
-        >
-          BLUE MIND
-        </div>
-        <div
-          style={{
-            fontFamily: "DM Sans",
-            fontSize: 24,
-            color: "rgba(255,255,255,0.6)",
-            display: "flex",
-          }}
-        >
-          Surf Science Magazine
         </div>
       </div>,
       {
