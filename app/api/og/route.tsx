@@ -826,12 +826,6 @@ export async function GET(request: NextRequest) {
             fonts,
           },
         );
-        
-        // #region agent log
-        console.log('[OG-DEBUG] Old generic template (should not reach) ImageResponse created');
-        // #endregion
-        
-        return oldGenericResponse;
       }
 
       // ============================================
