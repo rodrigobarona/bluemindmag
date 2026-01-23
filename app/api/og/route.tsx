@@ -454,6 +454,22 @@ export async function GET(request: NextRequest) {
         displaySubtitle,
         usingCanonicalUrl: true 
       });
+      
+      // Test if background image is accessible
+      try {
+        const imgTest = await fetch(backgroundUrl, { method: 'HEAD' });
+        console.log('[OG-DEBUG] Background image accessibility test:', { 
+          url: backgroundUrl, 
+          status: imgTest.status, 
+          ok: imgTest.ok,
+          contentType: imgTest.headers.get('content-type')
+        });
+      } catch (err) {
+        console.error('[OG-DEBUG] Background image fetch failed:', { 
+          url: backgroundUrl, 
+          error: err instanceof Error ? err.message : 'unknown' 
+        });
+      }
       // #endregion
 
       const imageResponse = new ImageResponse(
