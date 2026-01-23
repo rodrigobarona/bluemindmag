@@ -7,7 +7,7 @@ import { siteConfig } from '@/content/data/navigation';
 import { getLegalPageContent } from '@/lib/mdx';
 import type { Locale } from '@/content/types/content';
 import ReactMarkdown from 'react-markdown';
-import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
+import { getCanonicalUrl } from '@/lib/utils';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -20,11 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = pageContent?.frontmatter.title || 'Terms of Use';
   const description = pageContent?.frontmatter.description || '';
 
-  const baseUrl = getBaseUrl();
   const canonicalUrl = getCanonicalUrl();
   const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/terms`;
 
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent('Legal')}&type=legal`;
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent('Legal')}&type=legal`;
 
   return {
     title,

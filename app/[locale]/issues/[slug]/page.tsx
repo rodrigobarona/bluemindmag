@@ -14,7 +14,7 @@ import { getIssueBySlug, getAllIssues, getIssueTranslations } from "@/content/da
 import type { Locale } from "@/content/types/content";
 import { getCtaImage } from "@/lib/pexels";
 import { siteConfig } from "@/content/data/navigation";
-import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
+import { getCanonicalUrl } from "@/lib/utils";
 import {
   generateIssueSchema,
   generateBreadcrumbSchema,
@@ -45,7 +45,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Get translations from MDX (single source of truth)
   const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
-  const baseUrl = getBaseUrl();
   const canonicalUrl = getCanonicalUrl();
   const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/issues/${slug}`;
 
@@ -59,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     issueNumber: String(issue.issueNumber),
     date: issue.date,
   });
-  const ogImageUrl = `${baseUrl}/api/og?${ogParams.toString()}`;
+  const ogImageUrl = `${canonicalUrl}/api/og?${ogParams.toString()}`;
 
   return {
     title: `${translation.title} - ${translation.subtitle}`,

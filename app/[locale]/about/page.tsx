@@ -22,7 +22,7 @@ import {
   generateBreadcrumbSchema,
 } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';
-import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
+import { getCanonicalUrl } from '@/lib/utils';
 import { getAboutPageContent } from '@/lib/mdx';
 import type { Locale } from '@/content/types/content';
 
@@ -38,11 +38,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = content?.magazine.description || '';
   const subtitle = content?.subtitle || '';
 
-  const baseUrl = getBaseUrl();
   const canonicalUrl = getCanonicalUrl();
   const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/about`;
 
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}&type=about`;
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(subtitle)}&type=about`;
 
   return {
     title,

@@ -65,11 +65,9 @@ export async function generateMetadata({
 
   // Use canonical URL for SEO (always production domain)
   const canonicalUrl = getCanonicalUrl();
-  // Use base URL for OG images (works with preview deployments)
-  const baseUrl = getBaseUrl();
 
-  // OG image URL - uses homepage tagline
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
+  // OG image URL - always use canonical URL for stable social media sharing
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
 
   return {
     title: {

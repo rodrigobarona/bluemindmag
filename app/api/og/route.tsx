@@ -27,49 +27,71 @@ const FALLBACK_IMAGES: Record<string, string> = {
 };
 
 // Load fonts once at module level (best practice for Satori performance)
-// This caches the font data and prevents repeated parsing
+// Using deployed URLs for reliable Edge Runtime access
+const FONT_BASE_URL = "https://bluemindmag.com";
+
 const leagueGothicPromise = fetch(
-  new URL("../../../public/fonts/LeagueGothic-Regular.woff", import.meta.url)
-).then((res) => res.arrayBuffer());
+  `${FONT_BASE_URL}/fonts/LeagueGothic-Regular.woff`
+).then((res) => {
+  if (!res.ok) throw new Error(`Failed to load League Gothic: ${res.status}`);
+  return res.arrayBuffer();
+}).catch((error) => {
+  console.error("League Gothic font loading error:", error);
+  return new ArrayBuffer(0);
+});
 
 const dmSansRegularPromise = fetch(
-  new URL("../../../public/fonts/DMSans-Regular.woff", import.meta.url)
-).then((res) => res.arrayBuffer());
+  `${FONT_BASE_URL}/fonts/DMSans-Regular.woff`
+).then((res) => {
+  if (!res.ok) throw new Error(`Failed to load DM Sans Regular: ${res.status}`);
+  return res.arrayBuffer();
+}).catch((error) => {
+  console.error("DM Sans Regular font loading error:", error);
+  return new ArrayBuffer(0);
+});
 
 const dmSansBoldPromise = fetch(
-  new URL("../../../public/fonts/DMSans-Bold.woff", import.meta.url)
-).then((res) => res.arrayBuffer());
+  `${FONT_BASE_URL}/fonts/DMSans-Bold.woff`
+).then((res) => {
+  if (!res.ok) throw new Error(`Failed to load DM Sans Bold: ${res.status}`);
+  return res.arrayBuffer();
+}).catch((error) => {
+  console.error("DM Sans Bold font loading error:", error);
+  return new ArrayBuffer(0);
+});
 
 export async function GET(request: NextRequest) {
-  // Await font data
-  const [leagueGothicData, dmSansRegularData, dmSansBoldData] =
-    await Promise.all([
-      leagueGothicPromise,
-      dmSansRegularPromise,
-      dmSansBoldPromise,
-    ]);
+  try {
+    // Await font data
+    const [leagueGothicData, dmSansRegularData, dmSansBoldData] =
+      await Promise.all([
+        leagueGothicPromise,
+        dmSansRegularPromise,
+        dmSansBoldPromise,
+      ]);
 
-  // Font configuration for ImageResponse (declared as global-like for performance)
-  const fonts = [
-    {
-      name: "League Gothic",
-      data: leagueGothicData,
-      weight: 400 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "DM Sans",
-      data: dmSansRegularData,
-      weight: 400 as const,
-      style: "normal" as const,
-    },
-    {
-      name: "DM Sans",
-      data: dmSansBoldData,
-      weight: 700 as const,
-      style: "normal" as const,
-    },
-  ];
+    // Font configuration for ImageResponse (declared as global-like for performance)
+    // Filter out any fonts that failed to load
+    const fonts = [
+      leagueGothicData.byteLength > 0 ? {
+        name: "League Gothic",
+        data: leagueGothicData,
+        weight: 400 as const,
+        style: "normal" as const,
+      } : null,
+      dmSansRegularData.byteLength > 0 ? {
+        name: "DM Sans",
+        data: dmSansRegularData,
+        weight: 400 as const,
+        style: "normal" as const,
+      } : null,
+      dmSansBoldData.byteLength > 0 ? {
+        name: "DM Sans",
+        data: dmSansBoldData,
+        weight: 700 as const,
+        style: "normal" as const,
+      } : null,
+    ].filter(Boolean);
 
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -1084,6 +1106,48 @@ export async function GET(request: NextRequest) {
         width: 1200,
         height: 630,
         fonts,
+      },
+    );
+  } catch (error) {
+    console.error("OG Image generation error:", error);
+    
+    // Return a simple fallback image on error
+    return new ImageResponse(
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#0097B2",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 72,
+            fontWeight: 700,
+            color: "white",
+            display: "flex",
+          }}
+        >
+          BLUE MIND
+        </div>
+        <div
+          style={{
+            fontSize: 24,
+            color: "rgba(255,255,255,0.8)",
+            display: "flex",
+            marginTop: 16,
+          }}
+        >
+          Surf Science Magazine
+        </div>
+      </div>,
+      {
+        width: 1200,
+        height: 630,
       },
     );
   }

@@ -17,7 +17,7 @@ import {
   generateBreadcrumbSchema,
 } from '@/lib/schema';
 import { siteConfig } from '@/content/data/navigation';
-import { getBaseUrl, getCanonicalUrl } from '@/lib/utils';
+import { getCanonicalUrl } from '@/lib/utils';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -30,11 +30,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = t('title');
   const description = t('description');
   
-  const baseUrl = getBaseUrl();
   const canonicalUrl = getCanonicalUrl();
   const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/issues`;
 
-  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues`;
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(title)}&subtitle=${encodeURIComponent(t('subtitle'))}&type=issues`;
 
   return {
     title,
