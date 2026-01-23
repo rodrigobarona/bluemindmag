@@ -27,51 +27,46 @@ const FALLBACK_IMAGES: Record<string, string> = {
 };
 
 // Load fonts once at module level (best practice for Satori performance)
-// Using deployed URLs for reliable Edge Runtime access
-const FONT_BASE_URL = "https://bluemindmag.com";
+// Using Google Fonts API for reliable Edge Runtime access
+const GOOGLE_FONTS_API = "https://fonts.googleapis.com/css2";
 
+// Fetch font files from Google Fonts (more reliable than self-hosted in Edge Runtime)
 const leagueGothicPromise = fetch(
-  `${FONT_BASE_URL}/fonts/LeagueGothic-Regular.woff`
+  "https://fonts.gstatic.com/s/leaguegothic/v11/qFdR35CBi4tvBz81xy7WG7ep-BQAY7Krj7feObpH_-amidQ6Q9hn.woff2"
 ).then((res) => {
-  if (!res.ok) throw new Error(`Failed to load League Gothic: ${res.status}`);
+  if (!res.ok) {
+    console.warn("Failed to load League Gothic font");
+    return new ArrayBuffer(0);
+  }
   return res.arrayBuffer();
 }).catch((error) => {
-  console.error("League Gothic font loading error:", error);
+  console.warn("League Gothic font loading error:", error);
   return new ArrayBuffer(0);
 });
 
-const dmSansRegularPromise = fetch(
-  `${FONT_BASE_URL}/fonts/DMSans-Regular.woff`
+const dmSansPromise = fetch(
+  "https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZ2IHSeH.woff2"
 ).then((res) => {
-  if (!res.ok) throw new Error(`Failed to load DM Sans Regular: ${res.status}`);
+  if (!res.ok) {
+    console.warn("Failed to load DM Sans font");
+    return new ArrayBuffer(0);
+  }
   return res.arrayBuffer();
 }).catch((error) => {
-  console.error("DM Sans Regular font loading error:", error);
-  return new ArrayBuffer(0);
-});
-
-const dmSansBoldPromise = fetch(
-  `${FONT_BASE_URL}/fonts/DMSans-Bold.woff`
-).then((res) => {
-  if (!res.ok) throw new Error(`Failed to load DM Sans Bold: ${res.status}`);
-  return res.arrayBuffer();
-}).catch((error) => {
-  console.error("DM Sans Bold font loading error:", error);
+  console.warn("DM Sans font loading error:", error);
   return new ArrayBuffer(0);
 });
 
 export async function GET(request: NextRequest) {
   try {
     // Await font data
-    const [leagueGothicData, dmSansRegularData, dmSansBoldData] =
-      await Promise.all([
-        leagueGothicPromise,
-        dmSansRegularPromise,
-        dmSansBoldPromise,
-      ]);
+    const [leagueGothicData, dmSansData] = await Promise.all([
+      leagueGothicPromise,
+      dmSansPromise,
+    ]);
 
-    // Font configuration for ImageResponse (declared as global-like for performance)
-    // Filter out any fonts that failed to load
+    // Font configuration for ImageResponse
+    // Filter out any fonts that failed to load, but always include at least one fallback
     const fonts = [
       leagueGothicData.byteLength > 0 ? {
         name: "League Gothic",
@@ -79,19 +74,13 @@ export async function GET(request: NextRequest) {
         weight: 400 as const,
         style: "normal" as const,
       } : null,
-      dmSansRegularData.byteLength > 0 ? {
+      dmSansData.byteLength > 0 ? {
         name: "DM Sans",
-        data: dmSansRegularData,
+        data: dmSansData,
         weight: 400 as const,
         style: "normal" as const,
       } : null,
-      dmSansBoldData.byteLength > 0 ? {
-        name: "DM Sans",
-        data: dmSansBoldData,
-        weight: 700 as const,
-        style: "normal" as const,
-      } : null,
-    ].filter((font): font is { name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" } => font !== null);
+    ].filter((font): font is { name: string; data: ArrayBuffer; weight: 400; style: "normal" } => font !== null);
 
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
