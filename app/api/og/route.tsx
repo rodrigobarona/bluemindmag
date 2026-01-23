@@ -15,16 +15,74 @@ const BRAND_BLUE = "#0097B2";
 const WARM_GOLDEN = "#D4A574";
 const DARK_BG = "#1a1a1a";
 
-// Fallback images mapping by page type (NEW Pexels downloads - vibrant & colorful!)
-const FALLBACK_IMAGES: Record<string, string> = {
-  home: "/images/fallback/home-og.jpg", // Tropical beach sunset - warm colors (#8F7D71)
-  about: "/images/fallback/about-og.jpg", // Surfer at golden hour (#B69A93)
-  contact: "/images/fallback/contact-og.jpg", // Tropical sunset vibrant orange (#714B4A)
-  newsletter: "/images/fallback/newsletter-og.jpg", // Turquoise waves aerial (#719FAE)
-  issues: "/images/fallback/issues-og.jpg", // Colorful surfboards (#B3B3AB)
-  legal: "/images/fallback/legal-og.jpg", // Calm ocean blue (#9FB9C6)
-  default: "/images/fallback/home-og.jpg",
+// Fallback images mapping by page type (6 images per category for random variety!)
+const FALLBACK_IMAGES: Record<string, string[]> = {
+  home: [
+    "/images/fallback/home-og-1.jpg",
+    "/images/fallback/home-og-2.jpg",
+    "/images/fallback/home-og-3.jpg",
+    "/images/fallback/home-og-4.jpg",
+    "/images/fallback/home-og-5.jpg",
+    "/images/fallback/home-og-6.jpg",
+  ],
+  about: [
+    "/images/fallback/about-og-1.jpg",
+    "/images/fallback/about-og-2.jpg",
+    "/images/fallback/about-og-3.jpg",
+    "/images/fallback/about-og-4.jpg",
+    "/images/fallback/about-og-5.jpg",
+    "/images/fallback/about-og-6.jpg",
+  ],
+  contact: [
+    "/images/fallback/contact-og-1.jpg",
+    "/images/fallback/contact-og-2.jpg",
+    "/images/fallback/contact-og-3.jpg",
+    "/images/fallback/contact-og-4.jpg",
+    "/images/fallback/contact-og-5.jpg",
+    "/images/fallback/contact-og-6.jpg",
+  ],
+  newsletter: [
+    "/images/fallback/newsletter-og-1.jpg",
+    "/images/fallback/newsletter-og-2.jpg",
+    "/images/fallback/newsletter-og-3.jpg",
+    "/images/fallback/newsletter-og-4.jpg",
+    "/images/fallback/newsletter-og-5.jpg",
+    "/images/fallback/newsletter-og-6.jpg",
+  ],
+  issues: [
+    "/images/fallback/issues-og-1.jpg",
+    "/images/fallback/issues-og-2.jpg",
+    "/images/fallback/issues-og-3.jpg",
+    "/images/fallback/issues-og-4.jpg",
+    "/images/fallback/issues-og-5.jpg",
+    "/images/fallback/issues-og-6.jpg",
+  ],
+  legal: [
+    "/images/fallback/legal-og-1.jpg",
+    "/images/fallback/legal-og-2.jpg",
+    "/images/fallback/legal-og-3.jpg",
+    "/images/fallback/legal-og-4.jpg",
+    "/images/fallback/legal-og-5.jpg",
+    "/images/fallback/legal-og-6.jpg",
+  ],
 };
+
+// Get random image from category
+function getRandomImage(category: keyof typeof FALLBACK_IMAGES): string {
+  const images = FALLBACK_IMAGES[category];
+  if (!images || images.length === 0) {
+    // #region agent log
+    console.warn('[OG-DEBUG] No images for category, using fallback:', { category });
+    // #endregion
+    return FALLBACK_IMAGES.home[0]; // Fallback to first home image
+  }
+  const randomIndex = Math.floor(Math.random() * images.length);
+  const selectedImage = images[randomIndex];
+  // #region agent log
+  console.log('[OG-DEBUG] Random image selected:', { category, index: randomIndex, path: selectedImage });
+  // #endregion
+  return selectedImage;
+}
 
 // ============================================
 // FONT LOADING - Google Fonts Pattern
@@ -32,23 +90,56 @@ const FALLBACK_IMAGES: Record<string, string> = {
 // ============================================
 
 async function loadGoogleFont(font: string, text: string) {
+  // #region agent log
+  console.log('[OG-DEBUG] Loading font:', { font, textLength: text.length, timestamp: Date.now() });
+  // #endregion
+  
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
-  const css = await (await fetch(url)).text();
-  const resource = css.match(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/,
-  );
+  
+  try {
+    const cssResponse = await fetch(url);
+    // #region agent log
+    console.log('[OG-DEBUG] Font CSS fetch:', { font, status: cssResponse.status, ok: cssResponse.ok });
+    // #endregion
+    
+    const css = await cssResponse.text();
+    const resource = css.match(
+      /src: url\((.+)\) format\('(opentype|truetype)'\)/,
+    );
 
-  if (resource) {
-    const response = await fetch(resource[1]);
-    if (response.status == 200) {
-      return await response.arrayBuffer();
+    if (resource) {
+      // #region agent log
+      console.log('[OG-DEBUG] Font TTF URL found:', { font, url: resource[1].substring(0, 80) });
+      // #endregion
+      
+      const response = await fetch(resource[1]);
+      if (response.status == 200) {
+        const buffer = await response.arrayBuffer();
+        // #region agent log
+        console.log('[OG-DEBUG] Font loaded successfully:', { font, size: buffer.byteLength });
+        // #endregion
+        return buffer;
+      }
     }
-  }
 
-  throw new Error("failed to load font data");
+    throw new Error("failed to load font data");
+  } catch (error) {
+    // #region agent log
+    console.error('[OG-DEBUG] Font loading failed:', { font, error: error instanceof Error ? error.message : 'unknown' });
+    // #endregion
+    throw error;
+  }
 }
 
 export async function GET(request: NextRequest) {
+  // #region agent log
+  console.log('[OG-DEBUG] === OG Image Request Started ===', { 
+    timestamp: Date.now(),
+    url: request.url,
+    userAgent: request.headers.get('user-agent')?.substring(0, 100)
+  });
+  // #endregion
+  
   try {
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
@@ -59,6 +150,10 @@ export async function GET(request: NextRequest) {
     const accentColorParam = searchParams.get("accentColor");
     const issueNumber = searchParams.get("issueNumber");
     const date = searchParams.get("date");
+
+    // #region agent log
+    console.log('[OG-DEBUG] Request params:', { title, subtitle, type, cover, issueNumber, date });
+    // #endregion
 
     const baseUrl = getBaseUrl();
     const logoUrl = `${baseUrl}/images/logo-white.png`;
@@ -78,6 +173,10 @@ export async function GET(request: NextRequest) {
     // - Cormorant Garamond for taglines (--font-accent)
     const allText = `${displayTitle}${displaySubtitle}BLUE MIND`;
 
+    // #region agent log
+    console.log('[OG-DEBUG] Starting font loads...', { textLength: allText.length });
+    // #endregion
+
     const [leagueGothicData, dmSansData, dmSansBoldData, cormorantData] =
       await Promise.all([
         loadGoogleFont("League+Gothic", allText),
@@ -85,6 +184,15 @@ export async function GET(request: NextRequest) {
         loadGoogleFont("DM+Sans:wght@700", allText),
         loadGoogleFont("Cormorant+Garamond:ital@1", allText), // Italic for taglines
       ]);
+
+    // #region agent log
+    console.log('[OG-DEBUG] All fonts loaded:', { 
+      leagueGothic: leagueGothicData.byteLength,
+      dmSans: dmSansData.byteLength,
+      dmSansBold: dmSansBoldData.byteLength,
+      cormorant: cormorantData.byteLength
+    });
+    // #endregion
 
     const fonts = [
       {
@@ -332,7 +440,11 @@ export async function GET(request: NextRequest) {
     // HOMEPAGE SPECIAL TEMPLATE - Matches hero design
     // ============================================
     if (type === "default" || type === "home") {
-      const backgroundUrl = `${baseUrl}${FALLBACK_IMAGES.home}`;
+      const backgroundUrl = `${baseUrl}${getRandomImage("home")}`;
+      
+      // #region agent log
+      console.log('[OG-DEBUG] Creating home template ImageResponse:', { backgroundUrl, displayTitle, displaySubtitle });
+      // #endregion
 
       return new ImageResponse(
         <div
@@ -478,7 +590,8 @@ export async function GET(request: NextRequest) {
     // ============================================
     // Use local fallback images for non-issue pages (legal pages excluded)
     if (type !== "legal") {
-      const fallbackImage = FALLBACK_IMAGES[type] || FALLBACK_IMAGES.default;
+      const categoryKey = (type === "default" ? "home" : type) as keyof typeof FALLBACK_IMAGES;
+      const fallbackImage = getRandomImage(categoryKey);
       const backgroundUrl = `${baseUrl}${fallbackImage}`;
 
       // Type label
@@ -728,7 +841,7 @@ export async function GET(request: NextRequest) {
             }}
           />
 
-          {/* Dark overlay for text readability */}
+          {/* Dark overlay for text readability - DARKER for better contrast */}
           <div
             style={{
               position: "absolute",
@@ -737,58 +850,12 @@ export async function GET(request: NextRequest) {
               right: 0,
               bottom: 0,
               backgroundImage:
-                "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)",
+                "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.75) 100%)",
               display: "flex",
             }}
           />
 
-          {/* Header with logo */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "40px 60px",
-              position: "relative",
-            }}
-          >
-            {/* Logo - Bigger */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={logoUrl}
-                height={60}
-                alt=""
-                style={{
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-
-            {/* Type badge - Bigger and white text */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "rgba(0,0,0,0.4)",
-                padding: "10px 24px",
-                borderRadius: 4,
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "DM Sans",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  letterSpacing: 3,
-                  color: "white",
-                  display: "flex",
-                }}
-              >
-                {getTypeLabel()}
-              </div>
-            </div>
-          </div>
+          {/* No header - cleaner like homepage */}
 
           {/* Main content - centered */}
           <div
@@ -802,67 +869,60 @@ export async function GET(request: NextRequest) {
               position: "relative",
             }}
           >
-            {/* Magazine label - Consistent across all pages */}
+            {/* Magazine label - MUCH BIGGER to balance headline */}
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 13,
+                fontSize: 20,
                 fontWeight: 600,
-                letterSpacing: 4,
-                color: "rgba(255,255,255,0.6)",
-                marginBottom: 24,
+                letterSpacing: 12,
+                color: "rgba(255,255,255,0.85)",
+                marginBottom: 36,
                 display: "flex",
                 textTransform: "uppercase",
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
               }}
             >
               SURF SCIENCE MAGAZINE
             </div>
 
-            {/* Title - Bigger */}
+            {/* Title - MASSIVE with TIGHT letter spacing like hero */}
             <div
               style={{
                 fontFamily: "League Gothic",
-                fontSize: titleFontSize + 12,
+                fontSize: 240,
                 fontWeight: 400,
                 color: "white",
-                lineHeight: 0.95,
-                marginBottom: 36,
+                lineHeight: 0.85,
+                marginBottom: 44,
                 display: "flex",
                 textShadow:
-                  "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
+                  "0 6px 50px rgba(0,0,0,0.9), 0 3px 30px rgba(0,0,0,0.7)",
+                letterSpacing: -4,
                 textTransform: "uppercase",
-                letterSpacing: 6,
               }}
             >
               {displayTitle}
             </div>
 
-            {/* Subtitle - Bigger */}
+            {/* Subtitle - MUCH BIGGER with italic font */}
             <div
               style={{
-                fontFamily: "DM Sans",
-                fontSize: 36,
+                fontFamily: "Cormorant Garamond",
+                fontSize: 46,
+                fontWeight: 400,
+                fontStyle: "italic",
                 color: "rgba(255,255,255,0.95)",
-                marginBottom: 56,
+                marginBottom: 0,
                 display: "flex",
-                textShadow: "0 3px 30px rgba(0,0,0,0.6)",
-                fontWeight: 500,
+                textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                maxWidth: 800,
+                textAlign: "center",
+                letterSpacing: "0.03em",
               }}
             >
-              {displaySubtitle}
+              &ldquo;{displaySubtitle}&rdquo;
             </div>
-
-            {/* Accent line with brand gradient - Longer and thicker */}
-            <div
-              style={{
-                width: 150,
-                height: 6,
-                backgroundImage: `linear-gradient(90deg, ${BRAND_BLUE}, ${WARM_GOLDEN})`,
-                borderRadius: 3,
-                display: "flex",
-                boxShadow: "0 3px 15px rgba(0,0,0,0.4)",
-              }}
-            />
           </div>
 
           {/* Footer - More visible */}
@@ -871,17 +931,17 @@ export async function GET(request: NextRequest) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: "40px 60px",
+              padding: "32px 60px",
               position: "relative",
             }}
           >
             <div
               style={{
                 fontFamily: "DM Sans",
-                fontSize: 18,
+                fontSize: 20,
                 color: "rgba(255,255,255,0.7)",
                 display: "flex",
-                textShadow: "0 2px 15px rgba(0,0,0,0.6)",
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
                 fontWeight: 500,
               }}
             >
@@ -1066,7 +1126,13 @@ export async function GET(request: NextRequest) {
       },
     );
   } catch (error) {
-    console.error("OG Image generation error:", error);
+    // #region agent log
+    console.error('[OG-DEBUG] === OG Image Generation ERROR ===', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      timestamp: Date.now()
+    });
+    // #endregion
 
     // Return a simple fallback image on error
     return new ImageResponse(

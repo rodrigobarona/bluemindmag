@@ -1,6 +1,8 @@
 /**
  * Download images from Pexels for OG image backgrounds
  * Run with: npx tsx scripts/download-og-images.ts
+ * 
+ * Downloads 5-6 images per category for random selection
  */
 
 import fs from 'fs';
@@ -30,6 +32,9 @@ const OG_QUERIES = {
   'legal': 'calm ocean blue gradient peaceful',
 };
 
+// How many images to download per category
+const IMAGES_PER_CATEGORY = 6;
+
 interface PexelsPhoto {
   id: number;
   width: number;
@@ -51,11 +56,11 @@ interface PexelsPhoto {
   alt: string;
 }
 
-async function searchPexels(query: string): Promise<PexelsPhoto[]> {
+async function searchPexels(query: string, count: number): Promise<PexelsPhoto[]> {
   try {
     const params = new URLSearchParams({
       query,
-      per_page: '5',
+      per_page: count.toString(),
       page: '1',
       orientation: 'landscape',
     });
@@ -102,7 +107,7 @@ async function downloadImage(url: string, filepath: string): Promise<void> {
 }
 
 async function main() {
-  console.log('🔍 Searching Pexels for OG images...\n');
+  console.log(`🔍 Searching Pexels for ${IMAGES_PER_CATEGORY} images per category...\n`);
 
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
@@ -117,44 +122,43 @@ async function main() {
   for (const [type, query] of Object.entries(OG_QUERIES)) {
     console.log(`\n📸 Searching for: ${type} ("${query}")`);
     
-    const photos = await searchPexels(query);
+    const photos = await searchPexels(query, IMAGES_PER_CATEGORY);
     
     if (photos.length === 0) {
       console.log(`⚠️  No images found for ${type}`);
       continue;
     }
 
-    // Show options
-    console.log(`\nFound ${photos.length} images:\n`);
-    photos.forEach((photo, index) => {
-      console.log(`${index + 1}. ${photo.alt || 'Untitled'}`);
-      console.log(`   By: ${photo.photographer}`);
-      console.log(`   Color: ${photo.avg_color}`);
-      console.log(`   URL: ${photo.url}\n`);
-    });
+    console.log(`\nFound ${photos.length} images, downloading...\n`);
 
-    // Download the best one (first result is usually best)
-    const bestPhoto = photos[0];
-    const filename = `${type}-og.jpg`;
-    const filepath = path.join(fallbackDir, filename);
+    // Download all images
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      const filename = `${type}-og-${i + 1}.jpg`;
+      const filepath = path.join(fallbackDir, filename);
 
-    console.log(`⬇️  Downloading best image for ${type}...`);
-    await downloadImage(bestPhoto.src.large2x, filepath);
-    
-    // Log metadata
-    console.log(`   Photographer: ${bestPhoto.photographer}`);
-    console.log(`   Avg Color: ${bestPhoto.avg_color}`);
-    console.log(`   Pexels URL: ${bestPhoto.url}`);
+      console.log(`⬇️  ${i + 1}/${photos.length}: ${photo.alt || 'Untitled'}`);
+      console.log(`   By: ${photo.photographer} | Color: ${photo.avg_color}`);
+      
+      await downloadImage(photo.src.large2x, filepath);
 
-    // Wait a bit to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      // Wait a bit to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    console.log(`✨ Completed ${type}: ${photos.length} images downloaded`);
   }
 
-  console.log('\n✨ Done! Update the FALLBACK_IMAGES mapping in app/api/og/route.tsx');
-  console.log('\nNew files:');
+  console.log('\n🎉 All done!');
+  console.log('\nDownloaded images structure:');
   Object.keys(OG_QUERIES).forEach(type => {
-    console.log(`  - /images/fallback/${type}-og.jpg`);
+    console.log(`\n${type}:`);
+    for (let i = 1; i <= IMAGES_PER_CATEGORY; i++) {
+      console.log(`  - /images/fallback/${type}-og-${i}.jpg`);
+    }
   });
+  
+  console.log('\n📝 Update app/api/og/route.tsx to use random selection from these images');
 }
 
 main().catch(console.error);
