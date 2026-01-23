@@ -27,30 +27,27 @@ const FALLBACK_IMAGES: Record<string, string> = {
 };
 
 // ============================================
-// FONT LOADING
-// Satori requires at least one font and only supports TTF/OTF
-// Using Noto Sans as a reliable fallback from Google Fonts CDN
+// FONT LOADING - Google Fonts Pattern
+// Following Vercel's recommended approach for loading fonts
 // ============================================
 
-const notoSansPromise = fetch(
-  "https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9a6Vc.ttf"
-).then((res) => res.arrayBuffer());
+async function loadGoogleFont(font: string, text: string) {
+  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
+  const css = await (await fetch(url)).text();
+  const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/);
+
+  if (resource) {
+    const response = await fetch(resource[1]);
+    if (response.status == 200) {
+      return await response.arrayBuffer();
+    }
+  }
+
+  throw new Error('failed to load font data');
+}
 
 export async function GET(request: NextRequest) {
   try {
-    // Load font data
-    const fontData = await notoSansPromise;
-
-    // Font configuration for ImageResponse - Noto Sans as fallback
-    const fonts = [
-      {
-        name: "sans-serif",
-        data: fontData,
-        weight: 400 as const,
-        style: "normal" as const,
-      },
-    ];
-
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
     const subtitle =
@@ -62,9 +59,7 @@ export async function GET(request: NextRequest) {
     const date = searchParams.get("date");
 
     const baseUrl = getBaseUrl();
-    const logoUrl = `${baseUrl}/images/logo-white.png`; // Use white logo for better visibility
-
-    // Use custom accent color if provided
+    const logoUrl = `${baseUrl}/images/logo-white.png`;
     const accentColor = accentColorParam || BRAND_BLUE;
 
     // Truncate text if too long
@@ -72,6 +67,30 @@ export async function GET(request: NextRequest) {
       title.length > 45 ? title.substring(0, 42) + "..." : title;
     const displaySubtitle =
       subtitle.length > 55 ? subtitle.substring(0, 52) + "..." : subtitle;
+
+    // Load fonts dynamically based on the text being rendered
+    // This is more efficient than loading all fonts upfront
+    const allText = `${displayTitle}${displaySubtitle}BLUE MIND`;
+    
+    const [interData, interBoldData] = await Promise.all([
+      loadGoogleFont('Inter', allText),
+      loadGoogleFont('Inter:wght@700', allText),
+    ]);
+
+    const fonts = [
+      {
+        name: 'Inter',
+        data: interData,
+        weight: 400 as const,
+        style: 'normal' as const,
+      },
+      {
+        name: 'Inter',
+        data: interBoldData,
+        weight: 700 as const,
+        style: 'normal' as const,
+      },
+    ];
 
     // ============================================
     // ISSUE / READ TEMPLATE - Magazine Cover Hero
@@ -184,7 +203,7 @@ export async function GET(request: NextRequest) {
                 />
                 <div
                   style={{
-                    fontFamily: "DM Sans",
+                    fontFamily: "Inter",
                     fontSize: 15,
                     fontWeight: 700,
                     letterSpacing: 4,
@@ -203,7 +222,7 @@ export async function GET(request: NextRequest) {
               {/* Title */}
               <div
                 style={{
-                  fontFamily: "League Gothic",
+                  fontFamily: "Inter",
                   fontSize: displayTitle.length > 20 ? 64 : 72,
                   fontWeight: 400,
                   color: "white",
@@ -221,7 +240,7 @@ export async function GET(request: NextRequest) {
               {/* Subtitle/Description */}
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 30,
                   color: "rgba(255,255,255,0.9)",
                   marginBottom: 32,
@@ -235,7 +254,7 @@ export async function GET(request: NextRequest) {
               {/* Domain */}
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 16,
                   color: "rgba(255,255,255,0.6)",
                   display: "flex",
@@ -348,7 +367,7 @@ export async function GET(request: NextRequest) {
             {/* Surf Science label - smaller and more subtle */}
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 13,
                 fontWeight: 400,
                 letterSpacing: 8,
@@ -364,7 +383,7 @@ export async function GET(request: NextRequest) {
             {/* BLUE MIND masthead - HUGE like the hero */}
             <div
               style={{
-                fontFamily: "League Gothic",
+                fontFamily: "Inter",
                 fontSize: 140,
                 fontWeight: 400,
                 color: "white",
@@ -382,7 +401,7 @@ export async function GET(request: NextRequest) {
             {/* Tagline in quotes - elegant, not italic */}
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 28,
                 fontWeight: 400,
                 color: "rgba(255,255,255,0.9)",
@@ -409,7 +428,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 14,
                 color: "rgba(255,255,255,0.5)",
                 display: "flex",
@@ -535,7 +554,7 @@ export async function GET(request: NextRequest) {
               >
                 <div
                   style={{
-                    fontFamily: "DM Sans",
+                    fontFamily: "Inter",
                     fontSize: 14,
                     fontWeight: 700,
                     letterSpacing: 3,
@@ -563,7 +582,7 @@ export async function GET(request: NextRequest) {
               {/* Optional: Magazine label */}
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 13,
                   fontWeight: 600,
                   letterSpacing: 4,
@@ -579,7 +598,7 @@ export async function GET(request: NextRequest) {
               {/* Title - Bigger and more dramatic */}
               <div
                 style={{
-                  fontFamily: "League Gothic",
+                  fontFamily: "Inter",
                   fontSize: 110,
                   fontWeight: 400,
                   color: "white",
@@ -597,7 +616,7 @@ export async function GET(request: NextRequest) {
               {/* Subtitle - Larger and clearer */}
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 36,
                   color: "rgba(255,255,255,0.95)",
                   marginBottom: 56,
@@ -634,7 +653,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 18,
                   color: "rgba(255,255,255,0.7)",
                   display: "flex",
@@ -732,7 +751,7 @@ export async function GET(request: NextRequest) {
             >
               <div
                 style={{
-                  fontFamily: "DM Sans",
+                  fontFamily: "Inter",
                   fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: 3,
@@ -760,7 +779,7 @@ export async function GET(request: NextRequest) {
             {/* Magazine label - Consistent across all pages */}
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 13,
                 fontWeight: 600,
                 letterSpacing: 4,
@@ -776,7 +795,7 @@ export async function GET(request: NextRequest) {
             {/* Title - Bigger */}
             <div
               style={{
-                fontFamily: "League Gothic",
+                fontFamily: "Inter",
                 fontSize: titleFontSize + 12,
                 fontWeight: 400,
                 color: "white",
@@ -794,7 +813,7 @@ export async function GET(request: NextRequest) {
             {/* Subtitle - Bigger */}
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 36,
                 color: "rgba(255,255,255,0.95)",
                 marginBottom: 56,
@@ -831,7 +850,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 18,
                 color: "rgba(255,255,255,0.7)",
                 display: "flex",
@@ -923,7 +942,7 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
-                fontFamily: "DM Sans",
+                fontFamily: "Inter",
                 fontSize: 14,
                 fontWeight: 700,
                 letterSpacing: 3,
@@ -950,7 +969,7 @@ export async function GET(request: NextRequest) {
           {/* Title - Bigger */}
           <div
             style={{
-              fontFamily: "League Gothic",
+              fontFamily: "Inter",
               fontSize: 76,
               fontWeight: 400,
               color: "white",
@@ -968,7 +987,7 @@ export async function GET(request: NextRequest) {
           {/* Subtitle - Bigger */}
           <div
             style={{
-              fontFamily: "DM Sans",
+              fontFamily: "Inter",
               fontSize: 30,
               color: "rgba(255,255,255,0.6)",
               marginBottom: 48,
@@ -1002,7 +1021,7 @@ export async function GET(request: NextRequest) {
         >
           <div
             style={{
-              fontFamily: "DM Sans",
+              fontFamily: "Inter",
               fontSize: 18,
               color: "rgba(255,255,255,0.5)",
               display: "flex",
