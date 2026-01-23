@@ -476,8 +476,8 @@ export async function GET(request: NextRequest) {
       console.log('[OG-DEBUG] Testing MINIMAL ImageResponse to isolate issue');
       // #endregion
 
-      // TESTING: Ultra-minimal example from Vercel docs
-      return new ImageResponse(
+      // TESTING: Ultra-minimal example from Vercel docs with explicit status
+      const response = new ImageResponse(
         (
           <div
             style={{
@@ -496,8 +496,19 @@ export async function GET(request: NextRequest) {
         {
           width: 1200,
           height: 630,
+          status: 200,
+          headers: {
+            'Content-Type': 'image/png',
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
         },
       );
+      
+      // #region agent log
+      console.log('[OG-DEBUG] ImageResponse created with explicit headers');
+      // #endregion
+      
+      return response;
     }
 
     // ============================================
