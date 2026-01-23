@@ -593,6 +593,12 @@ export async function GET(request: NextRequest) {
           fonts,
         },
       );
+      
+      // #region agent log
+      console.log('[OG-DEBUG] Home template ImageResponse created, returning');
+      // #endregion
+      
+      return imageResponse;
     }
 
     // ============================================
@@ -820,11 +826,21 @@ export async function GET(request: NextRequest) {
             fonts,
           },
         );
+        
+        // #region agent log
+        console.log('[OG-DEBUG] Old generic template (should not reach) ImageResponse created');
+        // #endregion
+        
+        return oldGenericResponse;
       }
 
       // ============================================
       // STANDARD TEMPLATE - For other pages
       // ============================================
+      
+      // #region agent log
+      console.log('[OG-DEBUG] Creating generic template ImageResponse:', { type, backgroundUrl });
+      // #endregion
 
       return new ImageResponse(
         <div
@@ -970,6 +986,11 @@ export async function GET(request: NextRequest) {
     // ============================================
     // LEGAL PAGES TEMPLATE - Simple dark style (no image)
     // ============================================
+    
+    // #region agent log
+    console.log('[OG-DEBUG] Creating legal template ImageResponse');
+    // #endregion
+    
     return new ImageResponse(
       <div
         style={{
