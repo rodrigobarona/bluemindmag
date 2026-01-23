@@ -27,17 +27,29 @@ const FALLBACK_IMAGES: Record<string, string> = {
 };
 
 // ============================================
-// FONT LOADING - DISABLED FOR NOW
-// Satori only supports TTF/OTF fonts, not WOFF/WOFF2
-// Using system fonts as fallback until TTF fonts are available
+// FONT LOADING
+// Satori requires at least one font and only supports TTF/OTF
+// Using Noto Sans as a reliable fallback from Google Fonts CDN
 // ============================================
+
+const notoSansPromise = fetch(
+  "https://fonts.gstatic.com/s/notosans/v36/o-0mIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjcz6L1SoM-jCpoiyD9A-9a6Vc.ttf"
+).then((res) => res.arrayBuffer());
 
 export async function GET(request: NextRequest) {
   try {
-    // No custom fonts for now - use system fonts
-    // League Gothic can fall back to Impact, Arial Black
-    // DM Sans can fall back to system-ui, sans-serif
-    const fonts: Array<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" }> = [];
+    // Load font data
+    const fontData = await notoSansPromise;
+
+    // Font configuration for ImageResponse - Noto Sans as fallback
+    const fonts = [
+      {
+        name: "sans-serif",
+        data: fontData,
+        weight: 400 as const,
+        style: "normal" as const,
+      },
+    ];
 
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
