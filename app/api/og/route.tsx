@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { getBaseUrl } from "@/lib/utils";
+import { getCanonicalUrl } from "@/lib/utils";
 
 // Force edge runtime for OG image generation
 export const runtime = "edge";
@@ -155,9 +155,14 @@ export async function GET(request: NextRequest) {
     console.log('[OG-DEBUG] Request params:', { title, subtitle, type, cover, issueNumber, date });
     // #endregion
 
-    const baseUrl = getBaseUrl();
+    // Use canonical URL for OG images so social media crawlers can always access them
+    const baseUrl = getCanonicalUrl();
     const logoUrl = `${baseUrl}/images/logo-white.png`;
     const accentColor = accentColorParam || BRAND_BLUE;
+    
+    // #region agent log
+    console.log('[OG-DEBUG] Using base URL:', { baseUrl });
+    // #endregion
 
     // Truncate text if too long
     const displayTitle =
@@ -443,10 +448,15 @@ export async function GET(request: NextRequest) {
       const backgroundUrl = `${baseUrl}${getRandomImage("home")}`;
       
       // #region agent log
-      console.log('[OG-DEBUG] Creating home template ImageResponse:', { backgroundUrl, displayTitle, displaySubtitle });
+      console.log('[OG-DEBUG] Creating home template ImageResponse:', { 
+        backgroundUrl, 
+        displayTitle, 
+        displaySubtitle,
+        usingCanonicalUrl: true 
+      });
       // #endregion
 
-      return new ImageResponse(
+      const imageResponse = new ImageResponse(
         <div
           style={{
             height: "100%",
