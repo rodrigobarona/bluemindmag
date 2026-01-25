@@ -498,6 +498,157 @@ export async function GET(request: NextRequest) {
           height: 630,
         },
       );
+
+      /* ORIGINAL COMPLEX TEMPLATE - TEMPORARILY DISABLED FOR TESTING
+      const imageResponse = new ImageResponse(
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            backgroundColor: "#0a1628", // Dark blue fallback
+          }}
+        >
+          {/* TEMPORARILY REMOVED BACKGROUND IMAGE FOR TESTING
+          <img
+            src={backgroundUrl}
+            alt=""
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+          */}
+          
+          {/* #region agent log */}
+          {/* TESTING: Background image temporarily removed to test if Satori can render without it */}
+          {/* #endregion */}
+
+          {/* Dark overlay for text readability - DARKER for better contrast */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage:
+                "linear-gradient(135deg, #0a1628 0%, #0d2847 50%, #0a1628 100%)",
+              display: "flex",
+            }}
+          />
+
+          {/* Main content - centered like hero */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              position: "relative",
+              padding: "0 80px",
+            }}
+          >
+            {/* Surf Science label - MUCH BIGGER to balance headline */}
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 20,
+                fontWeight: 600,
+                letterSpacing: 12,
+                color: "rgba(255,255,255,0.85)",
+                marginBottom: 36,
+                display: "flex",
+                textTransform: "uppercase",
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+              }}
+            >
+              SURF SCIENCE MAGAZINE
+            </div>
+
+            {/* BLUE MIND masthead - MASSIVE with TIGHT letter spacing like hero */}
+            <div
+              style={{
+                fontFamily: "League Gothic",
+                fontSize: 240,
+                fontWeight: 400,
+                color: "white",
+                lineHeight: 0.85,
+                marginBottom: 44,
+                display: "flex",
+                textShadow:
+                  "0 6px 50px rgba(0,0,0,0.9), 0 3px 30px rgba(0,0,0,0.7)",
+                letterSpacing: -4,
+                textTransform: "uppercase",
+              }}
+            >
+              BLUE MIND
+            </div>
+
+            {/* Tagline in quotes - MUCH BIGGER for better balance */}
+            <div
+              style={{
+                fontFamily: "Cormorant Garamond",
+                fontSize: 46,
+                fontWeight: 400,
+                fontStyle: "italic",
+                color: "rgba(255,255,255,0.95)",
+                marginBottom: 0,
+                display: "flex",
+                textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+                maxWidth: 800,
+                textAlign: "center",
+                letterSpacing: "0.03em",
+              }}
+            >
+              &ldquo;{displaySubtitle}&rdquo;
+            </div>
+          </div>
+
+          {/* Footer with domain - minimal */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "32px 60px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "DM Sans",
+                fontSize: 20,
+                color: "rgba(255,255,255,0.7)",
+                display: "flex",
+                textShadow: "0 2px 20px rgba(0,0,0,0.8)",
+                fontWeight: 500,
+              }}
+            >
+              bluemindmag.com
+            </div>
+          </div>
+        </div>,
+        {
+          width: 1200,
+          height: 630,
+          fonts,
+        },
+      );
+      
+      // #region agent log
+      console.log('[OG-DEBUG] Home template ImageResponse created, returning');
+      // #endregion
+      
+      return imageResponse;
+      */
     }
 
     // ============================================
