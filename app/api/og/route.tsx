@@ -100,8 +100,9 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
+    // Stronger overlay in center where text appears, lighter at edges
     backgroundImage:
-      "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%)",
+      "linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.5) 100%)",
     display: "flex" as const,
   },
 
@@ -747,14 +748,20 @@ export async function GET(request: NextRequest) {
       subtitle.length > 55 ? subtitle.substring(0, 52) + "..." : subtitle;
 
     // Load fonts - include ALL text that will be rendered
+    // Include alphabet, numbers, and common punctuation to cover all cases
     const allText = [
       displayTitle,
       displaySubtitle,
-      "BLUE MIND",
+      "BLUE MIND MAGAZINE",
       "SURF SCIENCE MAGAZINE",
       BADGE_LABEL, // "FROM SURFER TO SURFER"
       "bluemindmag.com",
       "READ NOW",
+      date || "", // Include date if provided (e.g., "JANUARY 2026")
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // All uppercase letters
+      "abcdefghijklmnopqrstuvwxyz", // All lowercase letters
+      "0123456789", // All numbers
+      ".,!?&'-:", // Common punctuation
     ].join("");
     const fonts = await loadFonts(allText);
 
