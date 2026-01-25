@@ -472,10 +472,6 @@ export async function GET(request: NextRequest) {
       }
       // #endregion
 
-      // #region agent log
-      console.log('[OG-DEBUG] Testing without background image to isolate Satori rendering issue');
-      // #endregion
-
       const imageResponse = new ImageResponse(
         <div
           style={{
@@ -484,10 +480,10 @@ export async function GET(request: NextRequest) {
             display: "flex",
             flexDirection: "column",
             position: "relative",
-            backgroundColor: "#0a1628", // Dark blue fallback
           }}
         >
-          {/* TEMPORARILY REMOVED BACKGROUND IMAGE FOR TESTING
+          {/* Background Image */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={backgroundUrl}
             alt=""
@@ -500,11 +496,6 @@ export async function GET(request: NextRequest) {
               objectFit: "cover",
             }}
           />
-          */}
-          
-          {/* #region agent log */}
-          {/* TESTING: Background image temporarily removed to test if Satori can render without it */}
-          {/* #endregion */}
 
           {/* Dark overlay for text readability - DARKER for better contrast */}
           <div
@@ -515,7 +506,7 @@ export async function GET(request: NextRequest) {
               right: 0,
               bottom: 0,
               backgroundImage:
-                "linear-gradient(135deg, #0a1628 0%, #0d2847 50%, #0a1628 100%)",
+                "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.75) 100%)",
               display: "flex",
             }}
           />
