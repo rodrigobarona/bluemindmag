@@ -49,14 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/issues/${slug}`;
 
   // Build OG image URL with issue-specific parameters
+  // Use description as subtitle (tagline), and formatted subtitle as date display
   const ogParams = new URLSearchParams({
     title: translation.title,
-    subtitle: translation.subtitle,
+    subtitle: translation.description, // Use description as the tagline
     type: 'issue',
     cover: issue.cover,
     accentColor: issue.accentColor,
     issueNumber: String(issue.issueNumber),
-    date: issue.date,
+    date: translation.subtitle, // Use subtitle (e.g., "January 2026") as the formatted date
   });
   const ogImageUrl = `${canonicalUrl}/api/og?${ogParams.toString()}`;
 

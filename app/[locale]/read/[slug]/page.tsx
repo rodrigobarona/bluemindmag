@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     cover: issue.cover,
     accentColor: issue.accentColor,
     issueNumber: String(issue.issueNumber),
-    date: issue.date,
+    date: translation.subtitle, // Use formatted date (e.g., "January 2026")
   });
   const ogImageUrl = `${canonicalUrl}/api/og?${ogParams.toString()}`;
 
