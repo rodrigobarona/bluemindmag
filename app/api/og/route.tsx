@@ -89,8 +89,8 @@ const styles = {
     position: "absolute" as const,
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
+    width: OG_WIDTH,
+    height: OG_HEIGHT,
     objectFit: "cover" as const,
   },
 
@@ -138,18 +138,18 @@ const styles = {
     fontWeight: 600,
     letterSpacing: 4,
     color: "rgba(255,255,255,0.6)",
-    marginBottom: 24,
+    marginBottom: 10,
     display: "flex" as const,
     textTransform: "uppercase" as const,
   },
 
   title: {
     fontFamily: "League Gothic",
-    fontSize: 110,
+    fontSize: 140,
     fontWeight: 400,
     color: "white",
     lineHeight: 0.95,
-    marginBottom: 36,
+    marginBottom: 12,
     display: "flex" as const,
     textShadow: "0 6px 50px rgba(0,0,0,0.7), 0 2px 20px rgba(0,0,0,0.5)",
     textTransform: "uppercase" as const,
@@ -158,7 +158,7 @@ const styles = {
 
   subtitle: {
     fontFamily: "DM Sans",
-    fontSize: 36,
+    fontSize: 28,
     color: "rgba(255,255,255,0.95)",
     marginBottom: 56,
     display: "flex" as const,
@@ -302,7 +302,7 @@ function Header({
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={logoUrl}
-          height={60}
+          height={80}
           alt=""
           style={{ objectFit: "contain" }}
         />
@@ -746,10 +746,17 @@ export async function GET(request: NextRequest) {
     const displaySubtitle =
       subtitle.length > 55 ? subtitle.substring(0, 52) + "..." : subtitle;
 
-    // Load fonts
-    const fonts = await loadFonts(
-      `${displayTitle}${displaySubtitle}BLUE MINDSURFSCIENCE MAGAZINE`,
-    );
+    // Load fonts - include ALL text that will be rendered
+    const allText = [
+      displayTitle,
+      displaySubtitle,
+      "BLUE MIND",
+      "SURF SCIENCE MAGAZINE",
+      BADGE_LABEL, // "FROM SURFER TO SURFER"
+      "bluemindmag.com",
+      "READ NOW",
+    ].join("");
+    const fonts = await loadFonts(allText);
 
     const baseProps: BaseProps = {
       displayTitle,
