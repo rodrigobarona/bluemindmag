@@ -210,29 +210,8 @@ function getRandomImage(category: string): string {
   return images[Math.floor(Math.random() * images.length)];
 }
 
-// Common character set for font loading (ASCII + Portuguese accents)
-const FONT_CHARS = [
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  "abcdefghijklmnopqrstuvwxyz",
-  "0123456789",
-  " .,!?-:;&@#%()'\"",
-  // Portuguese accented characters
-  "\u00C1\u00C0\u00C2\u00C3", // Á À Â Ã
-  "\u00E1\u00E0\u00E2\u00E3", // á à â ã
-  "\u00C9\u00CA", // É Ê
-  "\u00E9\u00EA", // é ê
-  "\u00CD", // Í
-  "\u00ED", // í
-  "\u00D3\u00D4\u00D5", // Ó Ô Õ
-  "\u00F3\u00F4\u00F5", // ó ô õ
-  "\u00DA\u00DC", // Ú Ü
-  "\u00FA\u00FC", // ú ü
-  "\u00C7\u00E7", // Ç ç
-].join("");
-
-async function loadGoogleFont(font: string) {
-  // Load full character set instead of subsetting (more reliable rendering)
-  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(FONT_CHARS)}`;
+async function loadGoogleFont(font: string, text: string) {
+  const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
 
   // Use older Safari User-Agent to force TTF format (Satori can't render woff2)
   const css = await (
@@ -258,12 +237,12 @@ async function loadGoogleFont(font: string) {
   throw new Error(`Failed to load font: ${font}`);
 }
 
-async function loadFonts() {
+async function loadFonts(text: string) {
   const [leagueGothic, dmSans, dmSansBold, cormorant] = await Promise.all([
-    loadGoogleFont("League+Gothic"),
-    loadGoogleFont("DM+Sans"),
-    loadGoogleFont("DM+Sans:wght@700"),
-    loadGoogleFont("Cormorant+Garamond:ital@1"),
+    loadGoogleFont("League+Gothic", text),
+    loadGoogleFont("DM+Sans", text),
+    loadGoogleFont("DM+Sans:wght@700", text),
+    loadGoogleFont("Cormorant+Garamond:ital@1", text),
   ]);
 
   return [
@@ -754,8 +733,11 @@ export async function GET(request: NextRequest) {
     const issueNumber = searchParams.get("issueNumber") || undefined;
     const date = searchParams.get("date") || undefined;
 
-    // Always use request origin - works in both dev and production
-    const baseUrl = request.nextUrl.origin;
+    // Use request origin for local dev, canonical URL for production
+    const baseUrl =
+      process.env.NODE_ENV === "development"
+        ? request.nextUrl.origin
+        : process.env.NEXT_PUBLIC_BASE_URL || "https://bluemindmag.com";
     const logoUrl = `${baseUrl}/images/logo-white.png`;
 
     // Truncate text if too long
@@ -764,8 +746,10 @@ export async function GET(request: NextRequest) {
     const displaySubtitle =
       subtitle.length > 55 ? subtitle.substring(0, 52) + "..." : subtitle;
 
-    // Load fonts with full character set
-    const fonts = await loadFonts();
+    // Load fonts
+    const fonts = await loadFonts(
+      `${displayTitle}${displaySubtitle}BLUE MINDSURFSCIENCE MAGAZINE`,
+    );
 
     const baseProps: BaseProps = {
       displayTitle,
