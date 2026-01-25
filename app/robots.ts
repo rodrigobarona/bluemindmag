@@ -8,69 +8,69 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/api/og/*'],  // Explicitly allow OG image generation
-        disallow: ['/api/contact', '/api/subscribe', '/_next/', '/private/'],  // Disallow specific API routes, not all
+        allow: ['/', '/api/og'],  // Allow OG image generation for social media
+        disallow: ['/api/', '/_next/', '/private/'],
       },
       // AI/LLM crawler specific rules - allow access to content
       {
         userAgent: 'GPTBot',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'ChatGPT-User',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'Claude-Web',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'Anthropic-AI',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'PerplexityBot',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'Cohere-AI',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'YouBot',
         allow: ['/', '/llms.txt'],
-        disallow: ['/api/contact', '/api/subscribe', '/_next/'],
+        disallow: ['/api/', '/_next/'],
       },
       {
         userAgent: 'Googlebot',
-        allow: ['/', '/api/og/*'],  // Allow OG image generation
-        disallow: ['/api/contact', '/api/subscribe', '/_next/', '/private/'],
+        allow: ['/', '/api/og'],  // Allow OG image generation
+        disallow: ['/api/', '/_next/', '/private/'],
       },
       {
         userAgent: 'Bingbot',
-        allow: ['/', '/api/og/*'],  // Allow OG image generation
-        disallow: ['/api/contact', '/api/subscribe', '/_next/', '/private/'],
+        allow: ['/', '/api/og'],  // Allow OG image generation
+        disallow: ['/api/', '/_next/', '/private/'],
       },
-      // Social media crawlers need OG images - NO RESTRICTIONS
+      // Social media crawlers need OG images
       {
         userAgent: 'Twitterbot',
-        allow: ['/'],
+        allow: ['/', '/api/og'],
         disallow: [],
       },
       {
         userAgent: 'facebookexternalhit',
-        allow: ['/'],
+        allow: ['/', '/api/og'],
         disallow: [],
       },
       {
         userAgent: 'LinkedInBot',
-        allow: ['/'],
+        allow: ['/', '/api/og'],
         disallow: [],
       },
     ],
