@@ -67,7 +67,7 @@ export async function generateMetadata({
   const canonicalUrl = getCanonicalUrl();
 
   // OG image URL - always use canonical URL for stable social media sharing
-  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(t("title"))}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent("Blue Mind")}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
 
   return {
     title: {
@@ -83,7 +83,7 @@ export async function generateMetadata({
         pt: `${canonicalUrl}/pt`,
       },
       types: {
-        'application/rss+xml': `${canonicalUrl}/feed.xml`,
+        "application/rss+xml": `${canonicalUrl}/feed.xml`,
       },
     },
     openGraph: {
@@ -128,15 +128,15 @@ export async function generateMetadata({
     },
     icons: {
       icon: [
-        { url: '/favicon.ico', sizes: 'any' },
-        { url: '/bluemind-avatar.png', type: 'image/png', sizes: '839x839' },
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/bluemind-avatar.png", type: "image/png", sizes: "839x839" },
       ],
       apple: [
-        { url: '/bluemind-avatar.png', sizes: '180x180', type: 'image/png' },
+        { url: "/bluemind-avatar.png", sizes: "180x180", type: "image/png" },
       ],
-      shortcut: '/favicon.ico',
+      shortcut: "/favicon.ico",
     },
-    manifest: '/manifest.json',
+    manifest: "/manifest.json",
   };
 }
 
@@ -165,7 +165,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       <head>
         {/* DNS prefetch for external resources - improves LCP */}
         <link rel="dns-prefetch" href="//images.pexels.com" />
-        <link rel="preconnect" href="https://images.pexels.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://images.pexels.com"
+          crossOrigin="anonymous"
+        />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
       </head>
