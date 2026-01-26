@@ -735,7 +735,9 @@ function renderLegalTemplate({
 // ─────────────────────────────────────────────
 
 function renderErrorFallback() {
-  console.log("[OG] Rendering error fallback");
+  console.log("[OG] Rendering error fallback (CACHE MISS):", {
+    cacheMaxAge: "3600s (1 hour)",
+  });
   return new ImageResponse(
     <div
       style={{
@@ -846,10 +848,11 @@ export async function GET(request: NextRequest) {
 
     // Issue/Read - unique magazine cover layout
     if ((type === "issue" || type === "read") && cover) {
-      console.log("[OG] Rendering issue template:", {
+      console.log("[OG] Rendering issue template (CACHE MISS):", {
         issueNumber,
         isReadMode: type === "read",
         duration: `${Date.now() - startTime}ms`,
+        cacheMaxAge: "31536000s (1 year)",
       });
       return renderIssueTemplate({
         ...baseProps,
@@ -864,9 +867,10 @@ export async function GET(request: NextRequest) {
 
     // Legal - dark background, no image
     if (type === "legal") {
-      console.log("[OG] Rendering legal template:", {
+      console.log("[OG] Rendering legal template (CACHE MISS):", {
         title: displayTitle,
         duration: `${Date.now() - startTime}ms`,
+        cacheMaxAge: "31536000s (1 year)",
       });
       return renderLegalTemplate(baseProps);
     }
@@ -878,10 +882,11 @@ export async function GET(request: NextRequest) {
     const backgroundUrl = `${baseUrl}${getImage(category, seed)}`;
     const badge = BADGE_LABEL;
 
-    console.log("[OG] Rendering standard template:", {
+    console.log("[OG] Rendering standard template (CACHE MISS):", {
       category,
       backgroundUrl: backgroundUrl.split("/").pop(),
       duration: `${Date.now() - startTime}ms`,
+      cacheMaxAge: "31536000s (1 year)",
     });
 
     return renderStandardTemplate({
