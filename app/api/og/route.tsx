@@ -206,9 +206,30 @@ const styles = {
 // HELPER FUNCTIONS
 // ============================================
 
-function getRandomImage(category: string): string {
+/**
+ * Generate a deterministic hash from a string seed.
+ * This ensures the same URL parameters always produce the same image,
+ * enabling effective CDN caching.
+ */
+function getImageIndex(seed: string, arrayLength: number): number {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash) % arrayLength;
+}
+
+/**
+ * Get a background image deterministically based on category and seed.
+ * The seed should include URL parameters to ensure consistent image selection
+ * for the same page across CDN edge locations.
+ */
+function getImage(category: string, seed: string): string {
   const images = FALLBACK_IMAGES[category] || FALLBACK_IMAGES.home;
-  return images[Math.floor(Math.random() * images.length)];
+  const index = getImageIndex(seed, images.length);
+  return images[index];
 }
 
 async function loadGoogleFont(font: string, text: string) {
@@ -796,7 +817,9 @@ export async function GET(request: NextRequest) {
 
     // Standard template for all other pages
     const category = type === "default" ? "home" : type;
-    const backgroundUrl = `${baseUrl}${getRandomImage(category)}`;
+    // Create a deterministic seed from URL parameters for consistent caching
+    const seed = `${type}-${title}-${subtitle}`;
+    const backgroundUrl = `${baseUrl}${getImage(category, seed)}`;
     const badge = BADGE_LABEL;
 
     return renderStandardTemplate({
