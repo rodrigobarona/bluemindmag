@@ -232,31 +232,53 @@ function getImage(category: string, seed: string): string {
   return images[index];
 }
 
-async function loadGoogleFont(font: string, text: string) {
+/**
+ * Load a Google Font with retry logic for network resilience.
+ * Uses exponential backoff to handle transient connection failures.
+ */
+async function loadGoogleFont(
+  font: string,
+  text: string,
+  retries = 3,
+): Promise<ArrayBuffer> {
   const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
 
-  // Use older Safari User-Agent to force TTF format (Satori can't render woff2)
-  const css = await (
-    await fetch(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
-      },
-    })
-  ).text();
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      // Use older Safari User-Agent to force TTF format (Satori can't render woff2)
+      const css = await (
+        await fetch(url, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+          },
+        })
+      ).text();
 
-  const resource = css.match(
-    /src: url\((.+)\) format\('(opentype|truetype)'\)/,
-  );
+      const resource = css.match(
+        /src: url\((.+)\) format\('(opentype|truetype)'\)/,
+      );
 
-  if (resource) {
-    const response = await fetch(resource[1]);
-    if (response.status === 200) {
-      return await response.arrayBuffer();
+      if (resource) {
+        const response = await fetch(resource[1]);
+        if (response.status === 200) {
+          return await response.arrayBuffer();
+        }
+      }
+
+      throw new Error(`Failed to parse font CSS: ${font}`);
+    } catch (error) {
+      const isLastAttempt = attempt === retries - 1;
+      if (isLastAttempt) {
+        console.error(`[OG] Font load failed after ${retries} attempts:`, font);
+        throw error;
+      }
+      // Exponential backoff: 100ms, 200ms, 400ms...
+      await new Promise((r) => setTimeout(r, 100 * Math.pow(2, attempt)));
     }
   }
 
-  throw new Error(`Failed to load font: ${font}`);
+  throw new Error(`Failed to load font after ${retries} retries: ${font}`);
 }
 
 async function loadFonts(text: string) {
