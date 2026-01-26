@@ -9,12 +9,63 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { IconCoffee, IconCalendar, IconX } from "@tabler/icons-react";
+import { Frame } from '@c15t/react';
 
 interface CalcomDialogProps {
   calcomUrl: string;
   triggerLabel: string;
   triggerSubLabel?: string;
   className?: string;
+  locale: string;
+}
+
+// Custom placeholder component matching brand guidelines
+function CalcomPlaceholder({ 
+  locale 
+}: { 
+  locale: string;
+}) {
+  const text = {
+    en: {
+      title: 'Cookie Consent Required',
+      description: 'To schedule a meeting, please accept functionality cookies.',
+      button: 'Accept & Schedule',
+    },
+    pt: {
+      title: 'Consentimento de Cookies Necessário',
+      description: 'Para agendar uma reunião, por favor aceite os cookies de funcionalidade.',
+      button: 'Aceitar & Agendar',
+    },
+  };
+
+  const t = locale === 'pt' ? text.pt : text.en;
+
+  return (
+    <div className="flex flex-col items-center justify-center h-full w-full bg-[#EEEFF2] dark:bg-[#0F0F0F] p-8 text-center">
+      {/* Icon */}
+      <div className="w-20 h-20 mb-6 flex items-center justify-center bg-brand/10 border border-brand/20 rounded-full">
+        <IconCalendar className="w-10 h-10 text-brand" />
+      </div>
+
+      {/* Title */}
+      <h2 className="font-headline text-2xl md:text-3xl text-foreground mb-4 tracking-wide uppercase text-balance">
+        {t.title}
+      </h2>
+
+      {/* Description */}
+      <p className="font-body text-muted-foreground mb-8 max-w-md leading-relaxed text-balance">
+        {t.description}
+      </p>
+
+      {/* The Frame.Button will handle opening the consent dialog */}
+      <Frame.Button
+        category="functionality"
+        className="px-8 py-4 font-ui text-sm font-medium uppercase tracking-wider bg-brand text-brand-foreground hover:brightness-110 transition-all duration-300 rounded-md"
+      >
+        {t.button}
+      </Frame.Button>
+    </div>
+  );
 }
 
 export function CalcomDialog({
@@ -22,6 +73,7 @@ export function CalcomDialog({
   triggerLabel,
   triggerSubLabel,
   className,
+  locale,
 }: CalcomDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -36,7 +88,7 @@ export function CalcomDialog({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left !cursor-pointer ${className}`}
+        className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left cursor-pointer! ${className}`}
       >
         <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
           <IconCoffee className="h-6 w-6 text-brand" />
@@ -80,13 +132,20 @@ export function CalcomDialog({
             <IconX className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           </button>
 
-          {/* Cal.com iframe */}
-          <iframe
-            src={embedUrl}
-            className="w-full h-full min-h-[90vh] lg:min-h-[680px] border-0"
-            title="Schedule a meeting with Pedro Seixas"
-            allow="camera; microphone; payment"
-          />
+          {/* Cal.com iframe wrapped in Frame for cookie consent */}
+          <Frame
+            category="functionality"
+            placeholder={<CalcomPlaceholder locale={locale} />}
+            noStyle
+            className="w-full h-full"
+          >
+            <iframe
+              src={embedUrl}
+              className="w-full h-full min-h-[90vh] lg:min-h-[680px] border-0"
+              title="Schedule a meeting with Pedro Seixas"
+              allow="camera; microphone; payment"
+            />
+          </Frame>
         </DialogContent>
       </DialogPortal>
     </Dialog>

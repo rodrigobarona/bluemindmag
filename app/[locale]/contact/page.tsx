@@ -272,6 +272,7 @@ export default async function ContactPage({ params }: Props) {
                     calcomUrl={content.links.calcom}
                     triggerLabel={content.chat.book}
                     triggerSubLabel={content.chat.duration}
+                    locale={locale}
                   />
 
                   <p className="text-sm text-muted-foreground mt-4">
