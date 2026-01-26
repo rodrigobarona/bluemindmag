@@ -274,7 +274,9 @@ async function loadGoogleFont(
         throw error;
       }
       // Exponential backoff: 100ms, 200ms, 400ms...
-      await new Promise((r) => setTimeout(r, 100 * Math.pow(2, attempt)));
+      const delay = 100 * Math.pow(2, attempt);
+      console.warn(`[OG] Font load retry ${attempt + 1}/${retries}:`, font, `(waiting ${delay}ms)`);
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
 
@@ -282,6 +284,7 @@ async function loadGoogleFont(
 }
 
 async function loadFonts(text: string) {
+  console.log("[OG] Loading fonts...");
   const [leagueGothic, dmSans, dmSansBold, cormorant] = await Promise.all([
     loadGoogleFont("League+Gothic", text),
     loadGoogleFont("DM+Sans", text),
@@ -727,6 +730,7 @@ function renderLegalTemplate({
 // ─────────────────────────────────────────────
 
 function renderErrorFallback() {
+  console.log("[OG] Rendering error fallback");
   return new ImageResponse(
     <div
       style={{
@@ -766,6 +770,8 @@ function renderErrorFallback() {
 // ============================================
 
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const title = searchParams.get("title") || "Blue Mind Magazine";
@@ -776,6 +782,13 @@ export async function GET(request: NextRequest) {
     const accentColorParam = searchParams.get("accentColor");
     const issueNumber = searchParams.get("issueNumber") || undefined;
     const date = searchParams.get("date") || undefined;
+
+    console.log("[OG] Request received:", {
+      type,
+      title: title.substring(0, 50),
+      cover: cover ? "yes" : "no",
+      issueNumber,
+    });
 
     // Use request origin for local dev, canonical URL for production
     const baseUrl =
@@ -792,6 +805,7 @@ export async function GET(request: NextRequest) {
 
     // Load fonts - include ALL text that will be rendered
     // Include alphabet, numbers, and common punctuation to cover all cases
+    const fontStartTime = Date.now();
     const allText = [
       displayTitle,
       displaySubtitle,
@@ -807,6 +821,7 @@ export async function GET(request: NextRequest) {
       ".,!?&'-:", // Common punctuation
     ].join("");
     const fonts = await loadFonts(allText);
+    console.log("[OG] Fonts loaded:", `${Date.now() - fontStartTime}ms`);
 
     const baseProps: BaseProps = {
       displayTitle,
@@ -821,6 +836,11 @@ export async function GET(request: NextRequest) {
 
     // Issue/Read - unique magazine cover layout
     if ((type === "issue" || type === "read") && cover) {
+      console.log("[OG] Rendering issue template:", {
+        issueNumber,
+        isReadMode: type === "read",
+        duration: `${Date.now() - startTime}ms`,
+      });
       return renderIssueTemplate({
         ...baseProps,
         baseUrl,
@@ -834,6 +854,10 @@ export async function GET(request: NextRequest) {
 
     // Legal - dark background, no image
     if (type === "legal") {
+      console.log("[OG] Rendering legal template:", {
+        title: displayTitle,
+        duration: `${Date.now() - startTime}ms`,
+      });
       return renderLegalTemplate(baseProps);
     }
 
@@ -844,13 +868,24 @@ export async function GET(request: NextRequest) {
     const backgroundUrl = `${baseUrl}${getImage(category, seed)}`;
     const badge = BADGE_LABEL;
 
+    console.log("[OG] Rendering standard template:", {
+      category,
+      backgroundUrl: backgroundUrl.split("/").pop(),
+      duration: `${Date.now() - startTime}ms`,
+    });
+
     return renderStandardTemplate({
       ...baseProps,
       backgroundUrl,
       badge,
     });
   } catch (error) {
-    console.error("[OG] Error generating image:", error);
+    const duration = Date.now() - startTime;
+    console.error("[OG] Error generating image:", {
+      error: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      duration: `${duration}ms`,
+    });
     return renderErrorFallback();
   }
 }
