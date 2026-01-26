@@ -17,6 +17,11 @@ const DARK_BG = "#1a1a1a";
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 
+// Cache headers for CDN caching (1 year)
+const CACHE_HEADERS = {
+  "cache-control": "public, immutable, no-transform, max-age=31536000",
+};
+
 // Badge label - consistent branding across all pages
 const BADGE_LABEL = "FROM SURFER TO SURFER";
 
@@ -425,7 +430,7 @@ function renderStandardTemplate({
 
       <Footer />
     </div>,
-    { width: OG_WIDTH, height: OG_HEIGHT, fonts },
+    { width: OG_WIDTH, height: OG_HEIGHT, fonts, headers: CACHE_HEADERS },
   );
 }
 
@@ -639,7 +644,7 @@ function renderIssueTemplate({
         </div>
       </div>
     </div>,
-    { width: OG_WIDTH, height: OG_HEIGHT, fonts },
+    { width: OG_WIDTH, height: OG_HEIGHT, fonts, headers: CACHE_HEADERS },
   );
 }
 
@@ -721,7 +726,7 @@ function renderLegalTemplate({
 
       <Footer color="rgba(255,255,255,0.5)" />
     </div>,
-    { width: OG_WIDTH, height: OG_HEIGHT, fonts },
+    { width: OG_WIDTH, height: OG_HEIGHT, fonts, headers: CACHE_HEADERS },
   );
 }
 
@@ -761,7 +766,12 @@ function renderErrorFallback() {
         Surf Science Magazine
       </div>
     </div>,
-    { width: OG_WIDTH, height: OG_HEIGHT },
+    {
+      width: OG_WIDTH,
+      height: OG_HEIGHT,
+      // Shorter cache for error fallback (1 hour) to allow recovery
+      headers: { "cache-control": "public, max-age=3600" },
+    },
   );
 }
 
