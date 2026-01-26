@@ -79,12 +79,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           height: 630,
           alt: translation.title,
         },
-        {
-          url: `${canonicalUrl}${issue.cover}`,
-          width: 800,
-          height: 1200,
-          alt: `${translation.title} Cover`,
-        },
       ],
     },
     twitter: {
