@@ -58,6 +58,7 @@ export interface ReadingSessionParams {
  * Fired on mount of the issue detail page
  */
 export function trackViewIssueDetail(params: IssueEventParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "view_issue_detail", {
     issue_id: params.issue_id,
     issue_number: params.issue_number,
@@ -71,6 +72,7 @@ export function trackViewIssueDetail(params: IssueEventParams): void {
  * This is a KEY EVENT (conversion) - Primary KPI
  */
 export function trackStartReading(params: IssueEventParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "start_reading", {
     issue_id: params.issue_id,
     issue_number: params.issue_number,
@@ -84,6 +86,7 @@ export function trackStartReading(params: IssueEventParams): void {
  * Confirms the reader actually opened
  */
 export function trackReadingSessionStart(params: ReadingSessionParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "reading_session_start", {
     issue_id: params.issue_id,
     issue_number: params.issue_number,
@@ -99,6 +102,7 @@ export function trackReadingSessionStart(params: ReadingSessionParams): void {
  * This is a KEY EVENT (conversion) - Secondary KPI
  */
 export function trackNewsletterSignup(params: NewsletterEventParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "newsletter_signup", {
     source: params.source,
     locale: params.locale,
@@ -110,6 +114,7 @@ export function trackNewsletterSignup(params: NewsletterEventParams): void {
  * This is a KEY EVENT (conversion) - Tertiary KPI
  */
 export function trackContactFormSubmit(params: ContactEventParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "contact_form_submit", {
     locale: params.locale,
   });
@@ -124,8 +129,33 @@ export function trackContactFormSubmit(params: ContactEventParams): void {
  * This is a KEY EVENT (conversion) - Tertiary KPI for lead generation
  */
 export function trackBookChatClick(params: BookChatEventParams): void {
+  if (!isAnalyticsAvailable()) return;
   sendGAEvent("event", "book_chat_click", {
     locale: params.locale,
+  });
+}
+
+// ============================================
+// OUTBOUND LINK TRACKING
+// ============================================
+
+export interface OutboundLinkParams {
+  url: string;
+  link_text?: string;
+  link_type: "sponsor" | "social" | "external";
+}
+
+/**
+ * Track when a user clicks an external/outbound link
+ * Useful for tracking sponsor clicks, social links, and external references
+ */
+export function trackOutboundClick(params: OutboundLinkParams): void {
+  if (!isAnalyticsAvailable()) return;
+  sendGAEvent("event", "click", {
+    link_url: params.url,
+    link_text: params.link_text,
+    link_type: params.link_type,
+    outbound: true,
   });
 }
 

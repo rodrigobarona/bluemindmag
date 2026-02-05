@@ -5,6 +5,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, useMotionValue, useAnimationFrame } from "motion/react";
 import type { Sponsor } from "@/content/types/content";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { trackOutboundClick } from "@/lib/analytics";
 
 interface SponsorsCarouselProps {
   sponsors: Sponsor[];
@@ -17,8 +18,10 @@ interface SponsorsCarouselProps {
  * Parse dimensions from filename convention: name_WxH.ext
  * Example: ferox-surfboards_476x113.svg → { width: 476, height: 113 }
  */
-function parseDimensionsFromFilename(path: string): { width: number; height: number } | null {
-  const filename = path.split('/').pop() || '';
+function parseDimensionsFromFilename(
+  path: string
+): { width: number; height: number } | null {
+  const filename = path.split("/").pop() || "";
   const match = filename.match(/_(\d+)x(\d+)\.[a-z]+$/i);
   if (match) {
     return { width: parseInt(match[1], 10), height: parseInt(match[2], 10) };
@@ -31,7 +34,10 @@ function parseDimensionsFromFilename(path: string): { width: number; height: num
  * All logos display at the same height (56px / h-14)
  * Width scales naturally based on aspect ratio
  */
-function getProportionalDimensions(path: string, targetHeight: number = 56): { width: number; height: number } {
+function getProportionalDimensions(
+  path: string,
+  targetHeight: number = 56
+): { width: number; height: number } {
   const parsed = parseDimensionsFromFilename(path);
   if (parsed) {
     const aspectRatio = parsed.width / parsed.height;
@@ -47,7 +53,11 @@ function getProportionalDimensions(path: string, targetHeight: number = 56): { w
 /**
  * Renders one set of sponsor logos
  */
-function SponsorTrack({ sponsors }: { sponsors: Array<Sponsor & { dimensions: { width: number; height: number } }> }) {
+function SponsorTrack({
+  sponsors,
+}: {
+  sponsors: Array<Sponsor & { dimensions: { width: number; height: number } }>;
+}) {
   return (
     <>
       {sponsors.map((sponsor, index) => (
@@ -58,6 +68,13 @@ function SponsorTrack({ sponsors }: { sponsors: Array<Sponsor & { dimensions: { 
           rel="noopener noreferrer"
           className="shrink-0 px-8 md:px-12 opacity-50 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-300"
           title={sponsor.name}
+          onClick={() =>
+            trackOutboundClick({
+              url: sponsor.url,
+              link_text: sponsor.name,
+              link_type: "sponsor",
+            })
+          }
         >
           <Image
             src={sponsor.logo}
@@ -73,19 +90,26 @@ function SponsorTrack({ sponsors }: { sponsors: Array<Sponsor & { dimensions: { 
   );
 }
 
-export function SponsorsCarousel({ sponsors, title, variant = "default", speed = 50 }: SponsorsCarouselProps) {
+export function SponsorsCarousel({
+  sponsors,
+  title,
+  variant = "default",
+  speed = 50,
+}: SponsorsCarouselProps) {
   const prefersReducedMotion = useReducedMotion();
   const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(0);
   const x = useMotionValue(0);
-  
+
   // Pre-calculate dimensions for all sponsors
-  const sponsorsWithDimensions = useMemo(() => 
-    sponsors.map(sponsor => ({
-      ...sponsor,
-      dimensions: getProportionalDimensions(sponsor.logo),
-    })), [sponsors]
+  const sponsorsWithDimensions = useMemo(
+    () =>
+      sponsors.map((sponsor) => ({
+        ...sponsor,
+        dimensions: getProportionalDimensions(sponsor.logo),
+      })),
+    [sponsors]
   );
 
   // Measure the width of one track
@@ -103,12 +127,12 @@ export function SponsorsCarousel({ sponsors, title, variant = "default", speed =
   useAnimationFrame((_, delta) => {
     // Skip animation if user prefers reduced motion or paused
     if (prefersReducedMotion || isPaused || trackWidth === 0) return;
-    
+
     // Move left by speed * delta (in seconds)
     const moveBy = (speed * delta) / 1000;
     const currentX = x.get();
     const newX = currentX - moveBy;
-    
+
     // When we've scrolled one full track width, reset seamlessly
     if (newX <= -trackWidth) {
       x.set(newX + trackWidth);
@@ -118,36 +142,36 @@ export function SponsorsCarousel({ sponsors, title, variant = "default", speed =
   });
 
   // Use white gradients for light variant (forced light mode for logo visibility)
-  const gradientClass = variant === "light" 
-    ? "from-white" 
-    : "from-background";
+  const gradientClass = variant === "light" ? "from-white" : "from-background";
 
   return (
     <div className="w-full">
       {title && (
-        <h3 className={`font-headline text-2xl md:text-3xl text-center mb-10 ${
-          variant === "light" ? "text-gray-900" : ""
-        }`}>
+        <h3
+          className={`font-headline text-2xl md:text-3xl text-center mb-10 ${
+            variant === "light" ? "text-gray-900" : ""
+          }`}
+        >
           {title}
         </h3>
       )}
-      
+
       {/* Marquee container */}
-      <div 
+      <div
         className="relative overflow-hidden"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         {/* Fade edges */}
-        <div className={`absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r ${gradientClass} to-transparent z-10 pointer-events-none`} />
-        <div className={`absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l ${gradientClass} to-transparent z-10 pointer-events-none`} />
-        
+        <div
+          className={`absolute left-0 top-0 bottom-0 w-24 bg-linear-to-r ${gradientClass} to-transparent z-10 pointer-events-none`}
+        />
+        <div
+          className={`absolute right-0 top-0 bottom-0 w-24 bg-linear-to-l ${gradientClass} to-transparent z-10 pointer-events-none`}
+        />
+
         {/* Seamless infinite scroll using motion */}
-        <motion.div 
-          ref={containerRef}
-          className="flex w-fit"
-          style={{ x }}
-        >
+        <motion.div ref={containerRef} className="flex w-fit" style={{ x }}>
           {/* First track */}
           <div className="flex shrink-0">
             <SponsorTrack sponsors={sponsorsWithDimensions} />

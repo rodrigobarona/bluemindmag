@@ -367,6 +367,15 @@ bun run start
 | `newsletter_signup` | Successful subscription | Secondary conversion |
 | `contact_form_submit` | Contact form success | Engagement metric |
 | `book_chat_click` | Click "Book a Chat" | Lead generation |
+| `click` (outbound) | External link click | Track sponsor/social clicks |
+
+**Outbound Link Tracking:**
+External links are tracked with additional context:
+
+- `link_url` — The destination URL
+- `link_text` — The link text/name (e.g., sponsor name)
+- `link_type` — Type: `sponsor`, `social`, or `external`
+- `outbound: true` — Marks as outbound click
 
 **Core Web Vitals Monitoring:**
 
@@ -400,6 +409,9 @@ After deploying, configure these in GA4 Admin:
    - `metric_id` (Scope: Event) — Web Vitals deduplication
    - `metric_value` (Scope: Event) — Web Vitals final value
    - `metric_rating` (Scope: Event) — Web Vitals performance rating
+   - `link_url` (Scope: Event) — Outbound link destination
+   - `link_text` (Scope: Event) — Outbound link text
+   - `link_type` (Scope: Event) — Outbound link category
 
 2. **Key Events** (Admin > Events > Mark as key event):
    - `start_reading` — Primary KPI
