@@ -160,6 +160,23 @@ export function trackOutboundClick(params: OutboundLinkParams): void {
 }
 
 // ============================================
+// SCROLL DEPTH TRACKING
+// ============================================
+
+export type ScrollDepthMilestone = 25 | 50 | 75 | 100;
+
+/**
+ * Track scroll depth milestones
+ * Fired when user reaches 25%, 50%, 75%, or 100% of page
+ */
+export function trackScrollDepth(depth: ScrollDepthMilestone): void {
+  if (!isAnalyticsAvailable()) return;
+  sendGAEvent("event", "scroll_depth", {
+    depth_percentage: depth,
+  });
+}
+
+// ============================================
 // UTILITY FUNCTIONS
 // ============================================
 

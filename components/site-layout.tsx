@@ -1,8 +1,10 @@
-import { Header } from './header';
-import { Footer } from './footer';
-import type { ImageResult } from '@/lib/pexels';
-import type { Sponsor } from '@/content/types/content';
-import { getAllSponsors } from '@/content/data/sponsors';
+import { Suspense } from "react";
+import { Header } from "./header";
+import { Footer } from "./footer";
+import { FooterSkeleton } from "./footer-skeleton";
+import type { ImageResult } from "@/lib/pexels";
+import type { Sponsor } from "@/content/types/content";
+import { getAllSponsors } from "@/content/data/sponsors";
 
 interface SiteLayoutProps {
   children: React.ReactNode;
@@ -12,7 +14,7 @@ interface SiteLayoutProps {
 export function SiteLayout({ children, newsletterImage }: SiteLayoutProps) {
   // Fetch sponsors on the server side
   const sponsors: Sponsor[] = getAllSponsors();
-  
+
   return (
     <div className="flex min-h-screen flex-col overflow-x-hidden">
       {/* Skip Navigation Link - Accessibility (WCAG 2.1 AA) */}
@@ -23,8 +25,13 @@ export function SiteLayout({ children, newsletterImage }: SiteLayoutProps) {
         Skip to main content
       </a>
       <Header />
-      <main id="main-content" className="flex-1 overflow-x-hidden">{children}</main>
-      <Footer newsletterImage={newsletterImage} sponsors={sponsors} />
+      <main id="main-content" className="flex-1 overflow-x-hidden">
+        {children}
+      </main>
+      {/* Suspense boundary for footer - allows main content to render first */}
+      <Suspense fallback={<FooterSkeleton />}>
+        <Footer newsletterImage={newsletterImage} sponsors={sponsors} />
+      </Suspense>
     </div>
   );
 }
