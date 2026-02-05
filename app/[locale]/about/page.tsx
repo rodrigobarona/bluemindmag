@@ -135,7 +135,7 @@ export default async function AboutPage({ params }: Props) {
               sizes="100vw"
               quality={85}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" aria-hidden="true" />
             
             {/* Photo credit */}
             {heroImage.photographer && (
@@ -295,7 +295,7 @@ export default async function AboutPage({ params }: Props) {
                       className="p-3 border border-border hover:border-brand hover:text-brand transition-base"
                       aria-label="LinkedIn"
                     >
-                      <IconBrandLinkedin className="h-5 w-5" />
+                      <IconBrandLinkedin className="h-5 w-5" aria-hidden="true" />
                     </a>
                   )}
                   {editor.social.instagram && (
@@ -306,7 +306,7 @@ export default async function AboutPage({ params }: Props) {
                       className="p-3 border border-border hover:border-brand hover:text-brand transition-base"
                       aria-label="Instagram"
                     >
-                      <IconBrandInstagram className="h-5 w-5" />
+                      <IconBrandInstagram className="h-5 w-5" aria-hidden="true" />
                     </a>
                   )}
                 </div>
@@ -343,7 +343,7 @@ export default async function AboutPage({ params }: Props) {
                       className="p-3 border border-border hover:border-brand hover:text-brand transition-base"
                       aria-label="Website"
                     >
-                      <IconWorld className="h-5 w-5" />
+                      <IconWorld className="h-5 w-5" aria-hidden="true" />
                     </a>
                   )}
                   {publisher.social.linkedin && (
@@ -354,7 +354,7 @@ export default async function AboutPage({ params }: Props) {
                       className="p-3 border border-border hover:border-brand hover:text-brand transition-base"
                       aria-label="LinkedIn"
                     >
-                      <IconBrandLinkedin className="h-5 w-5" />
+                      <IconBrandLinkedin className="h-5 w-5" aria-hidden="true" />
                     </a>
                   )}
                   {publisher.social.instagram && (
@@ -365,7 +365,7 @@ export default async function AboutPage({ params }: Props) {
                       className="p-3 border border-border hover:border-brand hover:text-brand transition-base"
                       aria-label="Instagram"
                     >
-                      <IconBrandInstagram className="h-5 w-5" />
+                      <IconBrandInstagram className="h-5 w-5" aria-hidden="true" />
                     </a>
                   )}
                 </div>

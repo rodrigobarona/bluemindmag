@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { IconSend, IconCheck, IconX } from "@tabler/icons-react";
@@ -20,6 +20,8 @@ export function ContactForm() {
   const t = useTranslations("Contact.form");
   const locale = useLocale();
   const prefersReducedMotion = useReducedMotion();
+  const formId = useId();
+  const statusId = `${formId}-status`;
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -112,18 +114,19 @@ export function ContactForm() {
         {/* Name */}
         <div className="group">
           <label
-            htmlFor="name"
+            htmlFor={`${formId}-name`}
             className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
           >
             {t("name")}
           </label>
           <input
             type="text"
-            id="name"
+            id={`${formId}-name`}
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
+            autoComplete="name"
             placeholder={t("namePlaceholder")}
             className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors placeholder:text-muted-foreground/50"
           />
@@ -132,18 +135,19 @@ export function ContactForm() {
         {/* Email */}
         <div className="group">
           <label
-            htmlFor="email"
+            htmlFor={`${formId}-email`}
             className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
           >
             {t("email")}
           </label>
           <input
             type="email"
-            id="email"
+            id={`${formId}-email`}
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
+            autoComplete="email"
             placeholder={t("emailPlaceholder")}
             className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-border focus:border-brand focus:ring-0 transition-colors placeholder:text-muted-foreground/50"
           />
@@ -153,14 +157,14 @@ export function ContactForm() {
       {/* Subject */}
       <motion.div className="group" variants={itemVariants}>
         <label
-          htmlFor="subject"
+          htmlFor={`${formId}-subject`}
           className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
         >
           {t("subject")}
         </label>
         <input
           type="text"
-          id="subject"
+          id={`${formId}-subject`}
           name="subject"
           value={formData.subject}
           onChange={handleChange}
@@ -173,13 +177,13 @@ export function ContactForm() {
       {/* Message */}
       <motion.div className="group" variants={itemVariants}>
         <label
-          htmlFor="message"
+          htmlFor={`${formId}-message`}
           className="block font-ui text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3 group-focus-within:text-foreground transition-colors"
         >
           {t("message")}
         </label>
         <textarea
-          id="message"
+          id={`${formId}-message`}
           name="message"
           value={formData.message}
           onChange={handleChange}
@@ -199,54 +203,63 @@ export function ContactForm() {
         >
           {status === "submitting" ? (
             <>
-              <div className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <div className="h-5 w-5 border-2 border-current border-t-transparent rounded-full animate-spin" aria-hidden="true" />
               {t("submitting")}
             </>
           ) : (
             <>
-              <IconSend className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <IconSend className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
               {t("submit")}
             </>
           )}
         </button>
       </motion.div>
 
-      {/* Status Messages with AnimatePresence */}
-      <AnimatePresence mode="wait">
-        {status === "success" && (
-          <motion.div
-            className="flex items-center gap-3 p-5 bg-green-500/10 border border-green-500/20"
-            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            transition={{
-              duration: prefersReducedMotion
-                ? 0.01
-                : ANIMATION_CONFIG.duration.base,
-            }}
-          >
-            <IconCheck className="h-5 w-5 text-green-600 shrink-0" />
-            <p className="text-green-600">{t("success")}</p>
-          </motion.div>
-        )}
+      {/* Status Messages with AnimatePresence - Accessible Live Region */}
+      <div
+        id={statusId}
+        aria-live="polite"
+        aria-atomic="true"
+        className="min-h-[1px]"
+      >
+        <AnimatePresence mode="wait">
+          {status === "success" && (
+            <motion.div
+              className="flex items-center gap-3 p-5 bg-green-500/10 border border-green-500/20"
+              role="status"
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
+              transition={{
+                duration: prefersReducedMotion
+                  ? 0.01
+                  : ANIMATION_CONFIG.duration.base,
+              }}
+            >
+              <IconCheck className="h-5 w-5 text-green-600 shrink-0" aria-hidden="true" />
+              <p className="text-green-600">{t("success")}</p>
+            </motion.div>
+          )}
 
-        {status === "error" && (
-          <motion.div
-            className="flex items-center gap-3 p-5 bg-red-500/10 border border-red-500/20"
-            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            transition={{
-              duration: prefersReducedMotion
-                ? 0.01
-                : ANIMATION_CONFIG.duration.base,
-            }}
-          >
-            <IconX className="h-5 w-5 text-red-600 shrink-0" />
-            <p className="text-red-600">{t("error")}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {status === "error" && (
+            <motion.div
+              className="flex items-center gap-3 p-5 bg-red-500/10 border border-red-500/20"
+              role="alert"
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
+              transition={{
+                duration: prefersReducedMotion
+                  ? 0.01
+                  : ANIMATION_CONFIG.duration.base,
+              }}
+            >
+              <IconX className="h-5 w-5 text-red-600 shrink-0" aria-hidden="true" />
+              <p className="text-red-600">{t("error")}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.form>
   );
 }

@@ -35,9 +35,9 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
   const getSocialIcon = (platform: string) => {
     switch (platform) {
       case "instagram":
-        return <Instagram className="h-5 w-5" />;
+        return <Instagram className="h-5 w-5" aria-hidden="true" />;
       case "linkedin":
-        return <Linkedin className="h-5 w-5" />;
+        return <Linkedin className="h-5 w-5" aria-hidden="true" />;
       default:
         return null;
     }
@@ -83,18 +83,18 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
               sizes="100vw"
               quality={80}
             />
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
 
-            {/* Photo credit as figcaption */}
+            {/* Photo credit as figcaption - enhanced contrast */}
             {newsletterImage.photographer && (
-              <figcaption className="absolute bottom-4 right-4 font-ui text-xs text-white/30 z-10">
+              <figcaption className="absolute bottom-4 right-4 font-ui text-xs text-white/70 z-10">
                 Photo:{" "}
                 {newsletterImage.photographerUrl ? (
                   <a
                     href={newsletterImage.photographerUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-white/50 transition-colors"
+                    className="hover:text-white/90 transition-colors underline underline-offset-2"
                   >
                     {newsletterImage.photographer}
                   </a>
@@ -107,9 +107,12 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
           </figure>
         )}
 
-        {/* Fallback gradient if no image */}
+        {/* Fallback gradient if no image - decorative */}
         {!newsletterImage && (
-          <div className="absolute inset-0 bg-linear-to-br from-warm/20 via-foreground to-brand/10" />
+          <div
+            className="absolute inset-0 bg-linear-to-br from-warm/20 via-foreground to-brand/10"
+            aria-hidden="true"
+          />
         )}
 
         <div className="container-narrow relative z-10">
@@ -130,7 +133,7 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
           >
             <span
               className={`font-ui text-xs font-medium uppercase tracking-[0.3em] mb-4 block ${
-                newsletterImage ? "text-white/60" : "text-background/60"
+                newsletterImage ? "text-white/90" : "text-background/90"
               }`}
             >
               Newsletter
@@ -146,7 +149,7 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
 
             <p
               className={`tagline mb-10 max-w-lg mx-auto text-balance ${
-                newsletterImage ? "text-white/80" : "text-background/70"
+                newsletterImage ? "text-white/90" : "text-background/90"
               }`}
             >
               {tFooter("newsletter.description")}
@@ -186,10 +189,10 @@ export function Footer({ newsletterImage, sponsors = [] }: FooterProps) {
             >
               <Link
                 href="/newsletter"
-                className={`inline-flex items-center gap-2 font-ui text-sm transition-colors ${
+                className={`inline-flex items-center gap-2 font-ui text-sm transition-colors underline underline-offset-2 ${
                   newsletterImage
-                    ? "text-white/60 hover:text-white"
-                    : "text-background/60 hover:text-background"
+                    ? "text-white/80 hover:text-white"
+                    : "text-background/80 hover:text-background"
                 }`}
               >
                 {tFooter("newsletter.learnMore")}

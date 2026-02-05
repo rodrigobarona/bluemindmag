@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useId } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Check, Loader2, AlertCircle } from "lucide-react";
@@ -20,6 +20,9 @@ export function NewsletterForm({
 }: NewsletterFormProps) {
   const t = useTranslations("Newsletter");
   const locale = useLocale();
+  const formId = useId();
+  const inputId = `${formId}-email`;
+  const errorId = `${formId}-error`;
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -162,14 +165,17 @@ export function NewsletterForm({
       <form
         onSubmit={handleSubmit}
         className={cn("w-full max-w-md", className)}
+        noValidate
       >
         <div className="relative">
           <input
             type="email"
+            id={inputId}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("placeholder")}
             disabled={isPending}
+            autoComplete="email"
             className={cn(
               "w-full rounded-full border bg-background px-6 py-4 pr-14 text-base",
               "placeholder:text-muted-foreground/60",
@@ -182,6 +188,7 @@ export function NewsletterForm({
             )}
             aria-label={t("placeholder")}
             aria-invalid={status === "error"}
+            aria-describedby={status === "error" ? errorId : undefined}
           />
           <button
             type="submit"
@@ -198,26 +205,30 @@ export function NewsletterForm({
             aria-label={t("submit")}
           >
             {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             )}
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {status === "error" && errorMessage && (
-            <motion.p
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
-            >
-              <AlertCircle className="h-4 w-4" />
-              {errorMessage}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <div aria-live="polite" aria-atomic="true">
+          <AnimatePresence mode="wait">
+            {status === "error" && errorMessage && (
+              <motion.p
+                id={errorId}
+                role="alert"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
+              >
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
       </form>
     );
   }
@@ -225,15 +236,17 @@ export function NewsletterForm({
   // Footer variant - for dark backgrounds with image overlay
   if (variant === "footer") {
     return (
-      <form onSubmit={handleSubmit} className={cn("w-full", className)}>
+      <form onSubmit={handleSubmit} className={cn("w-full", className)} noValidate>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <input
               type="email"
+              id={inputId}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("placeholder")}
               disabled={isPending}
+              autoComplete="email"
               className={cn(
                 "w-full border-0 bg-white/10 backdrop-blur-sm px-5 py-4 text-base text-white",
                 "placeholder:text-white/50",
@@ -244,6 +257,7 @@ export function NewsletterForm({
               )}
               aria-label={t("placeholder")}
               aria-invalid={status === "error"}
+              aria-describedby={status === "error" ? errorId : undefined}
             />
           </div>
           <button
@@ -259,28 +273,30 @@ export function NewsletterForm({
             )}
           >
             {isPending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-              </>
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
-              <>{t("submit")}</>
+              t("submit")
             )}
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {status === "error" && errorMessage && (
-            <motion.p
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-2 flex items-center gap-1.5 text-sm text-red-300"
-            >
-              <AlertCircle className="h-4 w-4" />
-              {errorMessage}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <div aria-live="polite" aria-atomic="true">
+          <AnimatePresence mode="wait">
+            {status === "error" && errorMessage && (
+              <motion.p
+                id={errorId}
+                role="alert"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mt-2 flex items-center gap-1.5 text-sm text-red-300"
+              >
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
       </form>
     );
   }
@@ -291,15 +307,18 @@ export function NewsletterForm({
       <form
         onSubmit={handleSubmit}
         className={cn("w-full max-w-md", className)}
+        noValidate
       >
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <input
               type="email"
+              id={inputId}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("placeholder")}
               disabled={isPending}
+              autoComplete="email"
               className={cn(
                 "w-full border bg-background px-4 py-3 text-base",
                 "placeholder:text-muted-foreground/60",
@@ -312,6 +331,7 @@ export function NewsletterForm({
               )}
               aria-label={t("placeholder")}
               aria-invalid={status === "error"}
+              aria-describedby={status === "error" ? errorId : undefined}
             />
           </div>
           <button
@@ -327,26 +347,30 @@ export function NewsletterForm({
             )}
           >
             {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
               t("submit")
             )}
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {status === "error" && errorMessage && (
-            <motion.p
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
-            >
-              <AlertCircle className="h-4 w-4" />
-              {errorMessage}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <div aria-live="polite" aria-atomic="true">
+          <AnimatePresence mode="wait">
+            {status === "error" && errorMessage && (
+              <motion.p
+                id={errorId}
+                role="alert"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
+              >
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
+                {errorMessage}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
       </form>
     );
   }
@@ -357,13 +381,16 @@ export function NewsletterForm({
       <form
         onSubmit={handleSubmit}
         className={cn("flex items-center gap-2", className)}
+        noValidate
       >
         <input
           type="email"
+          id={inputId}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("placeholder")}
           disabled={isPending}
+          autoComplete="email"
           className={cn(
             "flex-1 rounded-full border bg-background px-4 py-2 text-sm",
             "placeholder:text-muted-foreground/60",
@@ -373,6 +400,7 @@ export function NewsletterForm({
             status === "error" ? "border-red-500" : "border-border"
           )}
           aria-label={t("placeholder")}
+          aria-invalid={status === "error"}
         />
         <button
           type="submit"
@@ -387,9 +415,9 @@ export function NewsletterForm({
           aria-label={t("submit")}
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           ) : (
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           )}
         </button>
       </form>
@@ -398,15 +426,17 @@ export function NewsletterForm({
 
   // Default variant - balanced
   return (
-    <form onSubmit={handleSubmit} className={cn("w-full", className)}>
+    <form onSubmit={handleSubmit} className={cn("w-full", className)} noValidate>
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <input
             type="email"
+            id={inputId}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("placeholder")}
             disabled={isPending}
+            autoComplete="email"
             className={cn(
               "w-full rounded-lg border bg-background px-4 py-3 text-base",
               "placeholder:text-muted-foreground/60",
@@ -419,6 +449,7 @@ export function NewsletterForm({
             )}
             aria-label={t("placeholder")}
             aria-invalid={status === "error"}
+            aria-describedby={status === "error" ? errorId : undefined}
           />
         </div>
         <button
@@ -435,31 +466,35 @@ export function NewsletterForm({
         >
           {isPending ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               {t("submitting")}
             </>
           ) : (
             <>
               {t("submit")}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </>
           )}
         </button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {status === "error" && errorMessage && (
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
-          >
-            <AlertCircle className="h-4 w-4" />
-            {errorMessage}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      <div aria-live="polite" aria-atomic="true">
+        <AnimatePresence mode="wait">
+          {status === "error" && errorMessage && (
+            <motion.p
+              id={errorId}
+              role="alert"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mt-2 flex items-center gap-1.5 text-sm text-red-500"
+            >
+              <AlertCircle className="h-4 w-4" aria-hidden="true" />
+              {errorMessage}
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
     </form>
   );
 }

@@ -35,14 +35,15 @@ export function PullQuote({
       ref={containerRef}
       className={`relative py-24 md:py-32 lg:py-40 overflow-hidden ${className}`}
     >
-      {/* Subtle texture background */}
+      {/* Subtle texture background - decorative */}
       <motion.div
         style={{ y: backgroundY }}
         className="absolute inset-0 -top-20 -bottom-20 bg-secondary"
+        aria-hidden="true"
       />
 
-      {/* Warm gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-warm/5 via-transparent to-brand/5 pointer-events-none" />
+      {/* Warm gradient overlay - decorative */}
+      <div className="absolute inset-0 bg-gradient-to-br from-warm/5 via-transparent to-brand/5 pointer-events-none" aria-hidden="true" />
 
       {/* Content */}
       <div className="container-narrow relative z-10">
@@ -121,21 +122,23 @@ export function PullQuoteImage({
           quality={85}
         />
 
-        {/* Film grain */}
+        {/* Film grain - decorative */}
         <div
           className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.02]"
+          aria-hidden="true"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           }}
         />
       </motion.div>
 
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/60" />
+      {/* Dark overlay for text readability - decorative */}
+      <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
 
-      {/* Vignette */}
+      {/* Vignette - decorative */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
         style={{
           background:
             "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(0,0,0,0.3) 100%)",
@@ -160,21 +163,21 @@ export function PullQuoteImage({
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="block text-center mt-8 font-ui text-sm text-white/60 not-italic tracking-wider"
+            className="block text-center mt-8 font-ui text-sm text-white/80 not-italic tracking-wider"
           >
             — {attribution}
           </motion.cite>
         )}
       </div>
 
-      {/* Photo credit */}
+      {/* Photo credit - enhanced contrast for accessibility */}
       {image?.photographer && (
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="absolute bottom-6 right-6 font-ui text-xs text-white/30 z-10"
+          className="absolute bottom-6 right-6 font-ui text-xs text-white/70 z-10"
         >
           Photo:{" "}
           {image.photographerUrl ? (
@@ -182,7 +185,7 @@ export function PullQuoteImage({
               href={image.photographerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white/50 transition-colors"
+              className="hover:text-white/90 transition-colors underline underline-offset-2"
             >
               {image.photographer}
             </a>
@@ -218,10 +221,11 @@ export function PullQuoteDark({
       ref={containerRef}
       className={`relative py-32 md:py-40 lg:py-48 overflow-hidden bg-[#0d1117] ${className}`}
     >
-      {/* Subtle animated gradient */}
+      {/* Subtle animated gradient - decorative */}
       <motion.div
         style={{ y: backgroundY }}
         className="absolute inset-0 -top-20 -bottom-20 bg-gradient-to-br from-brand/10 via-transparent to-warm/5"
+        aria-hidden="true"
       />
 
       {/* Content */}
@@ -231,7 +235,7 @@ export function PullQuoteDark({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="pullquote text-white/90"
+          className="pullquote text-white"
         >
           &ldquo;{quote}&rdquo;
         </motion.blockquote>
@@ -242,7 +246,7 @@ export function PullQuoteDark({
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="block text-center mt-8 font-ui text-sm text-white/50 not-italic tracking-wider"
+            className="block text-center mt-8 font-ui text-sm text-white/80 not-italic tracking-wider"
           >
             — {attribution}
           </motion.cite>

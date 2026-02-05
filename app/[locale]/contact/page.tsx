@@ -96,9 +96,9 @@ export default async function ContactPage({ params }: Props) {
   const getSocialIcon = (platform: string) => {
     switch (platform) {
       case "instagram":
-        return <IconBrandInstagram className="h-5 w-5" />;
+        return <IconBrandInstagram className="h-5 w-5" aria-hidden="true" />;
       case "linkedin":
-        return <IconBrandLinkedin className="h-5 w-5" />;
+        return <IconBrandLinkedin className="h-5 w-5" aria-hidden="true" />;
       default:
         return null;
     }
@@ -137,7 +137,7 @@ export default async function ContactPage({ params }: Props) {
               sizes="100vw"
               quality={85}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" aria-hidden="true" />
 
             {/* Photo credit */}
             {heroImage.photographer && (

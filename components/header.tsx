@@ -94,25 +94,29 @@ export function Header() {
 
           {/* Desktop Navigation - Simple Links */}
           <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">
-            {mainNavLinks.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                className={cn(
-                  'px-4 py-2 text-sm font-medium rounded-full transition-colors',
-                  isActiveLink(link.href)
-                    ? isTransparent
-                      ? 'bg-white/20 text-white'
-                      : 'bg-muted text-foreground'
-                    : isTransparent
-                    ? 'text-white/80 hover:text-white hover:bg-white/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                )}
-                style={isTransparent ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
-              >
-                {t(link.key)}
-              </Link>
-            ))}
+            {mainNavLinks.map((link) => {
+              const isActive = isActiveLink(link.href);
+              return (
+                <Link
+                  key={link.key}
+                  href={link.href}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={cn(
+                    'px-4 py-2 text-sm font-medium rounded-full transition-colors',
+                    isActive
+                      ? isTransparent
+                        ? 'bg-white/20 text-white'
+                        : 'bg-muted text-foreground'
+                      : isTransparent
+                      ? 'text-white/80 hover:text-white hover:bg-white/10'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                  )}
+                  style={isTransparent ? { textShadow: '0 1px 3px rgba(0,0,0,0.2)' } : undefined}
+                >
+                  {t(link.key)}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop Actions */}
@@ -158,25 +162,29 @@ export function Header() {
                 {/* Mobile Navigation Links */}
                 <nav className="flex flex-col p-6" aria-label="Mobile navigation">
                   <ul className="space-y-1">
-                    {mainNavLinks.map((link) => (
-                      <li key={link.key}>
-                        <SheetClose
-                          render={
-                    <Link
-                      href={link.href}
-                              className={cn(
-                                'flex items-center py-3 px-4 rounded-full text-base font-medium transition-colors',
-                                isActiveLink(link.href)
-                                  ? 'bg-muted text-foreground'
-                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                              )}
-                            />
-                          }
-                    >
-                      {t(link.key)}
-                        </SheetClose>
-                      </li>
-                ))}
+                    {mainNavLinks.map((link) => {
+                      const isActive = isActiveLink(link.href);
+                      return (
+                        <li key={link.key}>
+                          <SheetClose
+                            render={
+                              <Link
+                                href={link.href}
+                                aria-current={isActive ? 'page' : undefined}
+                                className={cn(
+                                  'flex items-center py-3 px-4 rounded-full text-base font-medium transition-colors',
+                                  isActive
+                                    ? 'bg-muted text-foreground'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                )}
+                              />
+                            }
+                          >
+                            {t(link.key)}
+                          </SheetClose>
+                        </li>
+                      );
+                    })}
                   </ul>
 
                   {/* Divider */}

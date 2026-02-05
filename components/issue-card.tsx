@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import { Link } from '@/i18n/navigation';
-import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { Sparkles } from 'lucide-react';
-import type { Issue, IssueTranslation } from '@/content/types/content';
-import { CurrentIssueBadge, IssueHoverCTA } from './issue-cta';
-import { useReducedMotion, ANIMATION_CONFIG } from '@/lib/use-reduced-motion';
+import { useRef, useState } from "react";
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
+import { Sparkles } from "lucide-react";
+import type { Issue, IssueTranslation } from "@/content/types/content";
+import { CurrentIssueBadge, IssueHoverCTA } from "./issue-cta";
+import { useReducedMotion, ANIMATION_CONFIG } from "@/lib/use-reduced-motion";
 
 interface IssueCardProps {
   issue: Issue;
@@ -15,42 +15,54 @@ interface IssueCardProps {
   priority?: boolean;
 }
 
-export function IssueCard({ issue, translation, priority = false }: IssueCardProps) {
+export function IssueCard({
+  issue,
+  translation,
+  priority = false,
+}: IssueCardProps) {
   const prefersReducedMotion = useReducedMotion();
-  
+
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <motion.article 
-          className="relative"
-        whileHover={prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.large }}
-        transition={{ duration: ANIMATION_CONFIG.duration.base, ease: ANIMATION_CONFIG.ease.out }}
-        >
+      <motion.article
+        className="relative"
+        whileHover={
+          prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.large }
+        }
+        transition={{
+          duration: ANIMATION_CONFIG.duration.base,
+          ease: ANIMATION_CONFIG.ease.out,
+        }}
+      >
         {/* Cover as semantic figure */}
         <figure className="relative overflow-hidden shadow-float group-hover:shadow-cover transition-slow">
-            {/* Cover Image */}
+          {/* Cover Image */}
           <div className="aspect-magazine-cover relative bg-muted overflow-hidden">
-              <Image
-                src={issue.cover}
-                alt={`${translation.title} cover`}
-                fill
+            <Image
+              src={issue.cover}
+              alt={`${translation.title} cover`}
+              fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                priority={priority}
-              />
-            
-            {/* Warm overlay on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            </div>
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={priority}
+            />
 
-            {/* Current issue badge */}
-            {issue.isCurrent && (
-              <CurrentIssueBadge
-                label="Current"
-                accentColor={issue.accentColor}
-                className="absolute top-4 right-4 z-10"
-              />
-            )}
-          
+            {/* Warm overlay on hover - decorative */}
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              aria-hidden="true"
+            />
+          </div>
+
+          {/* Current issue badge */}
+          {issue.isCurrent && (
+            <CurrentIssueBadge
+              label="Current"
+              accentColor={issue.accentColor}
+              className="absolute top-4 right-4 z-10"
+            />
+          )}
+
           {/* Issue info as figcaption */}
           <figcaption className="mt-6 text-center">
             <h3 className="font-headline text-xl md:text-2xl group-hover:text-brand transition-base">
@@ -67,7 +79,11 @@ export function IssueCard({ issue, translation, priority = false }: IssueCardPro
 }
 
 // Large featured card for current issue on homepage with 3D tilt effect
-export function IssueCardFeatured({ issue, translation, priority = true }: IssueCardProps) {
+export function IssueCardFeatured({
+  issue,
+  translation,
+  priority = true,
+}: IssueCardProps) {
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -79,29 +95,53 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
   // Smooth spring animation for the tilt
   const springConfig = { damping: 25, stiffness: 150 };
   const rotateX = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [12, -12]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [12, -12]
+    ),
     springConfig
   );
   const rotateY = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-12, 12]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-12, 12]
+    ),
     springConfig
   );
 
   // Parallax layers
   const glowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-20, 20]
+    ),
     springConfig
   );
   const glowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-20, 20]
+    ),
     springConfig
   );
   const shadowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [30, -30]
+    ),
     springConfig
   );
   const shadowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [30, -30]
+    ),
     springConfig
   );
 
@@ -134,14 +174,15 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
       onMouseLeave={handleMouseLeave}
       style={{ perspective: 1200 }}
     >
-      {/* Floating shadow layer */}
+      {/* Floating shadow layer - decorative */}
       <motion.div
         className="absolute inset-4 -z-20 opacity-40"
+        aria-hidden="true"
         style={{
           x: shadowX,
           y: shadowY,
           background: `linear-gradient(135deg, ${issue.accentColor}40 0%, transparent 60%)`,
-          filter: 'blur(40px)',
+          filter: "blur(40px)",
         }}
       />
 
@@ -151,7 +192,7 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
         style={{
           rotateX,
           rotateY,
-          transformStyle: 'preserve-3d',
+          transformStyle: "preserve-3d",
         }}
       >
         <Link href={`/read/${issue.slug}`} className="group block w-full">
@@ -169,9 +210,10 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
                   priority={priority}
                 />
 
-                {/* Glossy reflection effect */}
+                {/* Glossy reflection effect - decorative */}
                 <motion.div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-slow pointer-events-none"
+                  aria-hidden="true"
                   style={{
                     background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)`,
                     x: glowX,
@@ -179,8 +221,11 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
                   }}
                 />
 
-                {/* Warm gradient overlay on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
+                {/* Warm gradient overlay on hover - decorative */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow"
+                  aria-hidden="true"
+                />
 
                 {/* CTA on hover */}
                 <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
@@ -202,6 +247,7 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
             {/* Floating decorative elements */}
             <motion.div
               className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20 blur-xl pointer-events-none"
+              aria-hidden="true"
               style={{
                 background: issue.accentColor,
                 x: useTransform(mouseX, [-0.5, 0.5], [10, -10]),
@@ -219,7 +265,7 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
         animate={{ opacity: isHovering ? 0 : 1 }}
         transition={{ duration: 0.3 }}
       >
-        <Sparkles className="w-3 h-3" />
+        <Sparkles className="w-3 h-3" aria-hidden="true" />
         Move cursor
       </motion.div>
     </motion.div>
@@ -227,20 +273,20 @@ export function IssueCardFeatured({ issue, translation, priority = true }: Issue
 }
 
 // Horizontal scroll card for sections
-export function IssueCardHorizontal({ 
-  issue, 
+export function IssueCardHorizontal({
+  issue,
   translation,
   sectionTitle,
   sectionDescription,
-}: IssueCardProps & { 
+}: IssueCardProps & {
   sectionTitle?: string;
   sectionDescription?: string;
 }) {
   const prefersReducedMotion = useReducedMotion();
-  
+
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <motion.article 
+      <motion.article
         className="relative h-[400px] md:h-[500px] overflow-hidden bg-card"
         whileHover={prefersReducedMotion ? undefined : "hover"}
       >
@@ -253,21 +299,27 @@ export function IssueCardHorizontal({
             className="object-cover"
             sizes="85vw"
           />
-          
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+          {/* Gradient overlay - decorative */}
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+            aria-hidden="true"
+          />
         </div>
-        
+
         {/* Content */}
-        <motion.div 
+        <motion.div
           className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white"
           variants={{
             hover: { y: ANIMATION_CONFIG.lift.large },
           }}
-          transition={{ duration: ANIMATION_CONFIG.duration.base, ease: ANIMATION_CONFIG.ease.out }}
+          transition={{
+            duration: ANIMATION_CONFIG.duration.base,
+            ease: ANIMATION_CONFIG.ease.out,
+          }}
         >
           {sectionTitle && (
-            <span className="font-ui text-xs uppercase tracking-[0.2em] text-white/70 mb-2 block">
+            <span className="font-ui text-xs uppercase tracking-[0.2em] text-white/90 mb-2 block">
               {sectionTitle}
             </span>
           )}
@@ -275,7 +327,7 @@ export function IssueCardHorizontal({
             {translation.title}
           </h3>
           {sectionDescription && (
-            <p className="font-body text-white/70 text-sm md:text-base line-clamp-2">
+            <p className="font-body text-white/90 text-sm md:text-base line-clamp-2">
               {sectionDescription}
             </p>
           )}
@@ -292,13 +344,18 @@ export function IssueCardSimple({
   priority = false,
 }: IssueCardProps) {
   const prefersReducedMotion = useReducedMotion();
-  
+
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <motion.article 
+      <motion.article
         className="relative"
-        whileHover={prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.base }}
-        transition={{ duration: ANIMATION_CONFIG.duration.base, ease: ANIMATION_CONFIG.ease.out }}
+        whileHover={
+          prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.base }
+        }
+        transition={{
+          duration: ANIMATION_CONFIG.duration.base,
+          ease: ANIMATION_CONFIG.ease.out,
+        }}
       >
         {/* Cover as semantic figure */}
         <figure>
@@ -347,13 +404,18 @@ export function IssueCardMini({
   priority = false,
 }: IssueCardProps) {
   const prefersReducedMotion = useReducedMotion();
-  
+
   return (
     <Link href={`/issues/${issue.slug}`} className="group block">
-      <motion.article 
+      <motion.article
         className="relative"
-        whileHover={prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.small }}
-        transition={{ duration: ANIMATION_CONFIG.duration.fast, ease: 'easeOut' }}
+        whileHover={
+          prefersReducedMotion ? {} : { y: ANIMATION_CONFIG.lift.small }
+        }
+        transition={{
+          duration: ANIMATION_CONFIG.duration.fast,
+          ease: "easeOut",
+        }}
       >
         <figure>
           <div className="relative overflow-hidden shadow-editorial">
@@ -368,7 +430,7 @@ export function IssueCardMini({
               />
             </div>
           </div>
-          
+
           <figcaption className="mt-3 text-center">
             <span className="font-ui text-xs text-muted-foreground">
               Issue {issue.issueNumber}

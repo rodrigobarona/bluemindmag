@@ -85,14 +85,14 @@ export function ReadIssueCTA({
 
   const content = (
     <>
-      {showIcon && <BookOpen className="w-5 h-5" />}
+      {showIcon && <BookOpen className="w-5 h-5" aria-hidden="true" />}
       {label}
       {animated ? (
         <motion.span
           animate={{ x: [0, 4, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
         </motion.span>
       ) : null}
     </>
@@ -145,7 +145,7 @@ export function ViewDetailsCTA({
       style={{ "--hover-color": accentColor } as React.CSSProperties}
     >
       {label}
-      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
     </Link>
   );
 }
@@ -202,9 +202,9 @@ export function IssueHoverCTA({
 }: IssueHoverCTAProps) {
   return (
     <span className="inline-flex items-center gap-2 font-ui text-sm font-medium text-white">
-      {showIcon && <BookOpen className="w-4 h-4" />}
+      {showIcon && <BookOpen className="w-4 h-4" aria-hidden="true" />}
       {label}
-      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
     </span>
   );
 }

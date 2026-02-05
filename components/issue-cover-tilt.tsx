@@ -98,9 +98,10 @@ export function IssueCoverTilt({
       onMouseLeave={handleMouseLeave}
       style={{ perspective: 1200 }}
     >
-      {/* Floating shadow layer */}
+      {/* Floating shadow layer - decorative */}
       <motion.div
         className="absolute inset-4 -z-10 opacity-40"
+        aria-hidden="true"
         style={{
           x: shadowX,
           y: shadowY,
@@ -131,9 +132,10 @@ export function IssueCoverTilt({
                 priority={priority}
               />
 
-              {/* Glossy reflection effect */}
+              {/* Glossy reflection effect - decorative */}
               <motion.div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-slow pointer-events-none"
+                aria-hidden="true"
                 style={{
                   background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)`,
                   x: glowX,
@@ -141,8 +143,11 @@ export function IssueCoverTilt({
                 }}
               />
 
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
+              {/* Hover overlay - decorative */}
+              <div
+                className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow"
+                aria-hidden="true"
+              />
 
               {/* CTA on hover */}
               <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
@@ -164,6 +169,7 @@ export function IssueCoverTilt({
           {/* Floating decorative element */}
           <motion.div
             className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20 blur-xl pointer-events-none"
+            aria-hidden="true"
             style={{
               background: accentColor,
               x: useTransform(mouseX, [-0.5, 0.5], [10, -10]),
@@ -181,7 +187,7 @@ export function IssueCoverTilt({
           animate={{ opacity: isHovering ? 0 : 1 }}
           transition={{ duration: 0.3 }}
         >
-          <Sparkles className="w-3 h-3" />
+          <Sparkles className="w-3 h-3" aria-hidden="true" />
           Move cursor
         </motion.div>
       )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { useTransition } from 'react';
+import { useTransition, useRef, useCallback } from 'react';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,7 @@ export function LanguageSwitcher({
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleLocaleChange = (newLocale: Locale) => {
     if (newLocale === locale) return;
@@ -32,6 +33,32 @@ export function LanguageSwitcher({
       router.replace(pathname, { locale: newLocale });
     });
   };
+
+  // Handle arrow key navigation for tablist pattern
+  const handleKeyDown = useCallback((event: React.KeyboardEvent, index: number) => {
+    const { key } = event;
+    let newIndex: number | null = null;
+
+    if (key === 'ArrowRight' || key === 'ArrowDown') {
+      event.preventDefault();
+      newIndex = (index + 1) % locales.length;
+    } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
+      event.preventDefault();
+      newIndex = (index - 1 + locales.length) % locales.length;
+    } else if (key === 'Home') {
+      event.preventDefault();
+      newIndex = 0;
+    } else if (key === 'End') {
+      event.preventDefault();
+      newIndex = locales.length - 1;
+    }
+
+    if (newIndex !== null) {
+      buttonRefs.current[newIndex]?.focus();
+      // Optionally activate on arrow key press (follows WCAG recommendation)
+      handleLocaleChange(locales[newIndex].code);
+    }
+  }, []);
 
   if (variant === 'minimal') {
     return (
@@ -80,15 +107,17 @@ export function LanguageSwitcher({
           className
         )}
       >
-        {locales.map((loc) => {
+        {locales.map((loc, index) => {
           const isActive = locale === loc.code;
 
           return (
             <button
               key={loc.code}
+              ref={(el) => { buttonRefs.current[index] = el; }}
               type="button"
               role="tab"
               onClick={() => handleLocaleChange(loc.code)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
               disabled={isPending}
               aria-selected={isActive}
               aria-label={`Switch language to ${loc.fullName}`}
@@ -119,15 +148,17 @@ export function LanguageSwitcher({
         className
       )}
     >
-      {locales.map((loc) => {
+      {locales.map((loc, index) => {
         const isActive = locale === loc.code;
 
         return (
           <button
             key={loc.code}
+            ref={(el) => { buttonRefs.current[index] = el; }}
             type="button"
             role="tab"
             onClick={() => handleLocaleChange(loc.code)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             disabled={isPending}
             aria-selected={isActive}
             aria-label={`Switch language to ${loc.fullName}`}

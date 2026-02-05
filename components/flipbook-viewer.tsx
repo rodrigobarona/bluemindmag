@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { IconMaximize, IconX } from '@tabler/icons-react';
 
@@ -16,6 +16,32 @@ export function FlipbookViewer({
   accentColor = '#0097B2',
 }: FlipbookViewerProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  // Handle ESC key to close fullscreen
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape' && isFullscreen) {
+      setIsFullscreen(false);
+    }
+  }, [isFullscreen]);
+
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (isFullscreen) {
+      // Focus the close button when opening
+      closeRef.current?.focus();
+      // Add keyboard listener
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      // Return focus to trigger when closing
+      triggerRef.current?.focus();
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullscreen, handleKeyDown]);
 
   return (
     <>
@@ -33,14 +59,16 @@ export function FlipbookViewer({
 
         {/* Fullscreen button */}
         <button
+          ref={triggerRef}
           onClick={() => setIsFullscreen(true)}
-          className="cursor-pointer absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all duration-300"
+          className="cursor-pointer absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all duration-300"
           aria-label="View fullscreen"
+          aria-haspopup="dialog"
           style={{
             '--tw-ring-color': accentColor,
           } as React.CSSProperties}
         >
-          <IconMaximize className="h-5 w-5" />
+          <IconMaximize className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -48,6 +76,9 @@ export function FlipbookViewer({
       <AnimatePresence>
         {isFullscreen && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${title} - Fullscreen viewer`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -55,11 +86,12 @@ export function FlipbookViewer({
           >
             {/* Close button */}
             <button
+              ref={closeRef}
               onClick={() => setIsFullscreen(false)}
-              className="cursor-pointer absolute top-4 right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
-              aria-label="Close fullscreen"
+              className="cursor-pointer absolute top-4 right-4 z-10 p-3 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label="Close fullscreen (press Escape)"
             >
-              <IconX className="h-6 w-6" />
+              <IconX className="h-6 w-6" aria-hidden="true" />
             </button>
 
             {/* Fullscreen iframe */}

@@ -138,7 +138,7 @@ export default async function IssuesPage({ params }: Props) {
               sizes="100vw"
               quality={85}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" aria-hidden="true" />
             
             {/* Photo credit */}
             {heroImage.photographer && (

@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useConsentManager } from '@c15t/react';
-import { cn } from '@/lib/utils';
+import { useConsentManager } from "@c15t/react";
+import { cn } from "@/lib/utils";
 
 interface ManageCookiesButtonProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-export function ManageCookiesButton({ 
-  className, 
-  children 
+export function ManageCookiesButton({
+  className,
+  children,
 }: ManageCookiesButtonProps) {
   const { setIsPrivacyDialogOpen, isPrivacyDialogOpen } = useConsentManager();
 
@@ -24,12 +24,11 @@ export function ManageCookiesButton({
       type="button"
       onClick={handleClick}
       className={cn(
-        'font-ui text-sm text-background/80 hover:text-brand transition-base text-left',
+        "font-ui text-sm text-background/80 hover:text-brand transition-base text-left cursor-pointer",
         className
       )}
     >
-      {children || 'Manage Cookies'}
+      {children || "Manage Cookies"}
     </button>
   );
 }
-

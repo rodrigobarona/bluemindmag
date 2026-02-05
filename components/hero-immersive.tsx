@@ -86,21 +86,26 @@ export function HeroImmersive({
           quality={90}
         />
 
-        {/* Film grain overlay */}
+        {/* Film grain overlay - decorative */}
         <div
           className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-[0.03]"
+          aria-hidden="true"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           }}
         />
       </motion.div>
 
-      {/* Gradient overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+      {/* Gradient overlay for text readability - decorative */}
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60"
+        aria-hidden="true"
+      />
 
-      {/* Vignette effect */}
+      {/* Vignette effect - decorative */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
         style={{
           background:
             "radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(0,0,0,0.4) 100%)",
@@ -119,7 +124,7 @@ export function HeroImmersive({
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="mb-4"
         >
-          <span className="font-ui text-sm tracking-[0.3em] uppercase text-white/70">
+          <span className="font-ui text-sm tracking-[0.3em] uppercase text-white/90">
             Surf Science
           </span>
         </motion.div>
@@ -170,19 +175,19 @@ export function HeroImmersive({
 
               {/* Issue Info */}
               <div className="flex flex-col">
-                <span className="font-ui text-xs tracking-[0.2em] uppercase text-white/60 mb-1">
+                <span className="font-ui text-xs tracking-[0.2em] uppercase text-white/80 mb-1">
                   Current Issue
                 </span>
                 <span className="font-headline text-lg text-white tracking-wide">
                   Issue {issueNumber}
                 </span>
-                <span className="font-ui text-xs text-white/50 mt-0.5">
+                <span className="font-ui text-xs text-white/80 mt-0.5">
                   {issueDate}
                 </span>
               </div>
 
-              {/* Arrow */}
-              <ArrowRight className="w-5 h-5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all ml-2" />
+              {/* Arrow - decorative */}
+              <ArrowRight className="w-5 h-5 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all ml-2" aria-hidden="true" />
             </Link>
           ) : (
             // Fallback if no issue slug (just display info)
@@ -202,7 +207,7 @@ export function HeroImmersive({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/80"
       >
         <span className="font-ui text-xs tracking-widest uppercase mb-3">
           Scroll
@@ -211,17 +216,17 @@ export function HeroImmersive({
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ChevronDown className="w-5 h-5" />
+          <ChevronDown className="w-5 h-5" aria-hidden="true" />
         </motion.div>
       </motion.div>
 
-      {/* Photo credit */}
+      {/* Photo credit - enhanced contrast */}
       {heroImage?.photographer && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 1.5 }}
-          className="absolute bottom-8 right-8 font-ui text-xs text-white/40"
+          className="absolute bottom-8 right-8 font-ui text-xs text-white/70"
         >
           Photo:{" "}
           {heroImage.photographerUrl ? (
@@ -229,7 +234,7 @@ export function HeroImmersive({
               href={heroImage.photographerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white/60 transition-colors"
+              className="hover:text-white/90 transition-colors underline underline-offset-2"
             >
               {heroImage.photographer}
             </a>

@@ -11,6 +11,7 @@ import type { Locale } from "@/content/types/content";
 import { IconX } from "@tabler/icons-react";
 import { JsonLd } from "@/components/json-ld";
 import { FlipbookFrame } from "@/components/flipbook-frame";
+import { ReaderKeyboardHandler } from "@/components/reader-keyboard-handler";
 import { siteConfig } from "@/content/data/navigation";
 import { getCanonicalUrl } from "@/lib/utils";
 import {
@@ -143,49 +144,51 @@ export default async function ReadIssuePage({ params }: Props) {
   ];
 
   return (
-    <div className="flipbook-reader">
-      {/* JSON-LD Structured Data */}
-      <JsonLd data={schemas} />
+    <ReaderKeyboardHandler issueSlug={slug}>
+      <div className="flipbook-reader">
+        {/* JSON-LD Structured Data */}
+        <JsonLd data={schemas} />
 
-      {/* Header with close button and issue indicator */}
-      <header className="flipbook-reader__header">
-        {/* Issue info - from MDX content */}
-        <Link
-          href={`/issues/${slug}`}
-          className="font-ui text-white/70 text-sm hover:text-white transition-colors"
-        >
-          {translation.title} · {translation.subtitle}
-        </Link>
+        {/* Header with close button and issue indicator */}
+        <header className="flipbook-reader__header">
+          {/* Issue info - from MDX content */}
+          <Link
+            href={`/issues/${slug}`}
+            className="font-ui text-white/70 text-sm hover:text-white transition-colors"
+          >
+            {translation.title} · {translation.subtitle}
+          </Link>
 
-        {/* ESC hint - center */}
-        <div className="text-white/40 text-xs font-ui hidden md:block absolute left-1/2 -translate-x-1/2">
-          Press{" "}
-          <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">
-            ESC
-          </kbd>{" "}
-          to close
+          {/* ESC hint - center */}
+          <div className="text-white/40 text-xs font-ui hidden md:block absolute left-1/2 -translate-x-1/2">
+            Press{" "}
+            <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">
+              ESC
+            </kbd>{" "}
+            to close
+          </div>
+
+          {/* Close button */}
+          <Link
+            href={`/issues/${slug}`}
+            className="p-2 bg-white/10 hover:bg-white/20 text-white transition-colors rounded"
+            aria-label="Close reader (press Escape)"
+          >
+            <IconX className="h-5 w-5" aria-hidden="true" />
+          </Link>
+        </header>
+
+        {/* Flipbook content area - wrapped with consent Frame */}
+        <div className="flipbook-reader__content">
+          <FlipbookFrame
+            src={flipbookUrl}
+            title={translation.title}
+            issueNumber={issue.issueNumber}
+            locale={locale}
+            issueId={issue.id}
+          />
         </div>
-
-        {/* Close button */}
-        <Link
-          href={`/issues/${slug}`}
-          className="p-2 bg-white/10 hover:bg-white/20 text-white transition-colors rounded"
-          aria-label="Close reader"
-        >
-          <IconX className="h-5 w-5" />
-        </Link>
-      </header>
-
-      {/* Flipbook content area - wrapped with consent Frame */}
-      <div className="flipbook-reader__content">
-        <FlipbookFrame
-          src={flipbookUrl}
-          title={translation.title}
-          issueNumber={issue.issueNumber}
-          locale={locale}
-          issueId={issue.id}
-        />
       </div>
-    </div>
+    </ReaderKeyboardHandler>
   );
 }

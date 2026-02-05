@@ -134,9 +134,10 @@ export function IssueShowcase({
       className="relative overflow-x-clip overflow-y-visible"
       style={{ "--issue-accent": issue.accentColor } as React.CSSProperties}
     >
-      {/* Background ambient glow */}
+      {/* Background ambient glow - decorative */}
       <div
         className="absolute inset-0 opacity-30 blur-3xl pointer-events-none"
+        aria-hidden="true"
         style={{
           background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${issue.accentColor}20 0%, transparent 70%)`,
         }}
@@ -157,17 +158,19 @@ export function IssueShowcase({
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Large issue number behind cover - using issue accent color */}
+            {/* Large issue number behind cover - decorative */}
             <div
               className="absolute -top-16 -left-8 text-display-number pointer-events-none select-none hidden lg:block opacity-[0.08]"
+              aria-hidden="true"
               style={{ color: issue.accentColor }}
             >
               {String(issue.issueNumber).padStart(2, "0")}
             </div>
 
-            {/* Floating shadow layer */}
+            {/* Floating shadow layer - decorative */}
             <motion.div
               className="absolute inset-4 -z-20 opacity-40"
+              aria-hidden="true"
               style={{
                 x: shadowX,
                 y: shadowY,
@@ -198,9 +201,10 @@ export function IssueShowcase({
                       priority
                     />
 
-                    {/* Glossy reflection effect */}
+                    {/* Glossy reflection effect - decorative */}
                     <motion.div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-slow pointer-events-none"
+                      aria-hidden="true"
                       style={{
                         background: `linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 55%, transparent 60%)`,
                         x: glowX,
@@ -208,8 +212,11 @@ export function IssueShowcase({
                       }}
                     />
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow" />
+                    {/* Hover overlay - decorative */}
+                    <div
+                      className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-slow"
+                      aria-hidden="true"
+                    />
 
                     {/* CTA on hover */}
                     <div className="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-slow">
@@ -221,6 +228,7 @@ export function IssueShowcase({
                 {/* Floating decorative elements */}
                 <motion.div
                   className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-20 blur-xl pointer-events-none"
+                  aria-hidden="true"
                   style={{
                     background: issue.accentColor,
                     x: useTransform(mouseX, [-0.5, 0.5], [10, -10]),
@@ -229,6 +237,7 @@ export function IssueShowcase({
                 />
                 <motion.div
                   className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full opacity-10 blur-2xl pointer-events-none"
+                  aria-hidden="true"
                   style={{
                     background: "var(--warm)",
                     x: useTransform(mouseX, [-0.5, 0.5], [-15, 15]),

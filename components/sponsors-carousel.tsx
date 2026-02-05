@@ -52,11 +52,14 @@ function getProportionalDimensions(
 
 /**
  * Renders one set of sponsor logos
+ * @param isClone - If true, links are non-focusable (for infinite scroll duplicate)
  */
 function SponsorTrack({
   sponsors,
+  isClone = false,
 }: {
   sponsors: Array<Sponsor & { dimensions: { width: number; height: number } }>;
+  isClone?: boolean;
 }) {
   return (
     <>
@@ -68,6 +71,7 @@ function SponsorTrack({
           rel="noopener noreferrer"
           className="shrink-0 px-8 md:px-12 opacity-50 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-300"
           title={sponsor.name}
+          tabIndex={isClone ? -1 : undefined}
           onClick={() =>
             trackOutboundClick({
               url: sponsor.url,
@@ -78,7 +82,7 @@ function SponsorTrack({
         >
           <Image
             src={sponsor.logo}
-            alt={sponsor.alt || sponsor.name}
+            alt={isClone ? "" : sponsor.alt || sponsor.name}
             width={sponsor.dimensions.width}
             height={sponsor.dimensions.height}
             loading="lazy"
@@ -162,23 +166,25 @@ export function SponsorsCarousel({
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Fade edges */}
+        {/* Fade edges - decorative */}
         <div
           className={`absolute left-0 top-0 bottom-0 w-24 bg-linear-to-r ${gradientClass} to-transparent z-10 pointer-events-none`}
+          aria-hidden="true"
         />
         <div
           className={`absolute right-0 top-0 bottom-0 w-24 bg-linear-to-l ${gradientClass} to-transparent z-10 pointer-events-none`}
+          aria-hidden="true"
         />
 
         {/* Seamless infinite scroll using motion */}
         <motion.div ref={containerRef} className="flex w-fit" style={{ x }}>
-          {/* First track */}
+          {/* First track - accessible */}
           <div className="flex shrink-0">
             <SponsorTrack sponsors={sponsorsWithDimensions} />
           </div>
-          {/* Second track (duplicate for seamless loop) */}
-          <div className="flex shrink-0">
-            <SponsorTrack sponsors={sponsorsWithDimensions} />
+          {/* Second track (duplicate for seamless loop) - hidden from assistive tech */}
+          <div className="flex shrink-0" aria-hidden="true">
+            <SponsorTrack sponsors={sponsorsWithDimensions} isClone />
           </div>
         </motion.div>
       </div>

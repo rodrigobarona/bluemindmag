@@ -81,9 +81,10 @@ export function IssueDetailHero({
         background: `linear-gradient(135deg, ${issue.accentColor}25 0%, ${issue.accentColor}18 50%, ${issue.accentColor}08 100%)`,
       }}
     >
-      {/* Animated ambient glow with parallax */}
+      {/* Animated ambient glow with parallax - decorative */}
       <motion.div
         className="absolute inset-0 blur-3xl pointer-events-none"
+        aria-hidden="true"
         style={{
           background: `radial-gradient(ellipse 120% 100% at 15% 20%, ${issue.accentColor}40 0%, transparent 50%)`,
           y: glowY,
@@ -316,9 +317,10 @@ export function IssueDetailFeatures({
                             />
                           </div>
                         )}
-                        {/* Gradient overlay */}
+                        {/* Gradient overlay - decorative */}
                         <div
                           className="absolute inset-0"
+                          aria-hidden="true"
                           style={{
                             background: `linear-gradient(to top, ${issue.accentColor}90 0%, transparent 50%)`,
                           }}
@@ -354,7 +356,7 @@ export function IssueDetailFeatures({
                           {isMounted ? (
                             <>
                               <motion.span
-                                className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/70 mb-2 block"
+                                className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/90 mb-2 block"
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true }}
@@ -373,7 +375,7 @@ export function IssueDetailFeatures({
                                   highlightTranslation.title}
                               </motion.h3>
                               <motion.p
-                                className="font-accent italic text-white/80 text-lg"
+                                className="font-accent italic text-white/90 text-lg"
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
                                 viewport={{ once: true }}
@@ -384,14 +386,14 @@ export function IssueDetailFeatures({
                             </>
                           ) : (
                             <>
-                              <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/70 mb-2 block">
+                              <span className="font-ui text-xs font-medium uppercase tracking-[0.2em] text-white/90 mb-2 block">
                                 {highlightTranslation.title}
                               </span>
                               <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4 text-balance">
                                 {highlightTranslation.headline ||
                                   highlightTranslation.title}
                               </h3>
-                              <p className="font-accent italic text-white/80 text-lg">
+                              <p className="font-accent italic text-white/90 text-lg">
                                 {labels.by} {highlightTranslation.author}
                               </p>
                             </>
@@ -458,9 +460,10 @@ export function IssueDetailFeatures({
                           </div>
                         )}
                       </div>
-                      {/* Accent color frame on hover */}
+                      {/* Accent color frame on hover - decorative */}
                       <div
                         className="absolute inset-0 border-4 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        aria-hidden="true"
                         style={{ borderColor: issue.accentColor }}
                       />
                     </motion.div>
@@ -566,7 +569,7 @@ export function IssueDetailCTA({
       }}
     >
       {/* Animated decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
         <Floating duration={8} distance={20}>
           <div
             className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10"
@@ -589,7 +592,7 @@ export function IssueDetailCTA({
             staggerDelay={0.1}
           >
             <StaggerItem>
-              <span className="inline-block font-ui text-xs font-semibold uppercase tracking-[0.3em] text-white/70 mb-4">
+              <span className="inline-block font-ui text-xs font-semibold uppercase tracking-[0.3em] text-white/90 mb-4">
                 {labels.fullIssue}
               </span>
             </StaggerItem>
@@ -599,7 +602,7 @@ export function IssueDetailCTA({
               </h2>
             </StaggerItem>
             <StaggerItem>
-              <p className="font-body text-lg text-white/80 mb-10 max-w-md mx-auto lg:mx-0 text-balance">
+              <p className="font-body text-lg text-white/90 mb-10 max-w-md mx-auto lg:mx-0 text-balance">
                 {labels.exploreMore}
               </p>
             </StaggerItem>
@@ -609,17 +612,17 @@ export function IssueDetailCTA({
                 className="inline-flex items-center gap-3 bg-white text-foreground px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-white/90"
                 onClick={handleReadClick}
               >
-                <BookOpen className="w-5 h-5" />
+                <BookOpen className="w-5 h-5" aria-hidden="true" />
                 {labels.readIssue}
                 {isMounted ? (
                   <motion.span
                     animate={{ x: [0, 4, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </motion.span>
                 ) : (
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 )}
               </Link>
             </StaggerItem>
@@ -633,10 +636,11 @@ export function IssueDetailCTA({
             threshold={0.1}
             className="hidden md:flex justify-center items-center relative"
           >
-            {/* Large issue number - animated */}
+            {/* Large issue number - decorative */}
             {isMounted ? (
               <motion.span
                 className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
+                aria-hidden="true"
                 style={{ letterSpacing: "-0.05em" }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -648,6 +652,7 @@ export function IssueDetailCTA({
             ) : (
               <span
                 className="absolute top-1/2 left-1/2 translate-x-16 xl:translate-x-24 -translate-y-1/3 font-headline text-[12rem] xl:text-[16rem] leading-none text-white/20 select-none pointer-events-none"
+                aria-hidden="true"
                 style={{ letterSpacing: "-0.05em" }}
               >
                 {String(issue.issueNumber).padStart(2, "0")}
@@ -661,7 +666,10 @@ export function IssueDetailCTA({
                 className="group relative lg:-mt-32 z-10 block rotate-3 transition-transform duration-500 ease-out hover:rotate-0"
                 onClick={handleReadClick}
               >
-                <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
+                <div
+                  className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4"
+                  aria-hidden="true"
+                />
                 <div className="relative w-64 xl:w-80 shadow-2xl group-hover:shadow-cover transition-all duration-500">
                   <div className="aspect-magazine-cover relative overflow-hidden">
                     <Image
@@ -675,7 +683,7 @@ export function IssueDetailCTA({
                   {/* CTA on hover - button slides up without opacity change */}
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center pointer-events-none overflow-hidden h-12">
                     <span className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 font-ui text-sm font-medium shadow-lg translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <BookOpen className="w-4 h-4" />
+                      <BookOpen className="w-4 h-4" aria-hidden="true" />
                       {labels.readIssue}
                     </span>
                   </div>
@@ -725,7 +733,7 @@ export function MoreIssuesAnimated({
                 className="font-ui text-sm font-medium text-muted-foreground hover:text-brand transition-base flex items-center gap-1"
               >
                 {labels.viewAll}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
             </motion.div>
           </div>
