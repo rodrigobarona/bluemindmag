@@ -1,15 +1,22 @@
-import { notFound } from 'next/navigation';
-import { Link } from '@/i18n/navigation';
-import type { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { getIssueBySlug, getAllIssues, getIssueTranslations } from '@/content/data/issues';
-import type { Locale } from '@/content/types/content';
-import { IconX } from '@tabler/icons-react';
-import { JsonLd } from '@/components/json-ld';
-import { FlipbookFrame } from '@/components/flipbook-frame';
-import { siteConfig } from '@/content/data/navigation';
-import { getCanonicalUrl } from '@/lib/utils';
-import { generateReadIssueSchema, generateBreadcrumbSchema } from '@/lib/schema';
+import { notFound } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getIssueBySlug,
+  getAllIssues,
+  getIssueTranslations,
+} from "@/content/data/issues";
+import type { Locale } from "@/content/types/content";
+import { IconX } from "@tabler/icons-react";
+import { JsonLd } from "@/components/json-ld";
+import { FlipbookFrame } from "@/components/flipbook-frame";
+import { siteConfig } from "@/content/data/navigation";
+import { getCanonicalUrl } from "@/lib/utils";
+import {
+  generateReadIssueSchema,
+  generateBreadcrumbSchema,
+} from "@/lib/schema";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -26,26 +33,26 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const issue = getIssueBySlug(slug);
-  const t = await getTranslations({ locale, namespace: 'Issues' });
+  const t = await getTranslations({ locale, namespace: "Issues" });
 
   if (!issue) {
-    return { title: 'Issue Not Found' };
+    return { title: "Issue Not Found" };
   }
 
   // Get translations from MDX (single source of truth)
   const issueTranslations = getIssueTranslations(locale as Locale);
   const translation = issueTranslations[issue.id];
   const canonicalUrl = getCanonicalUrl();
-  const pageUrl = `${canonicalUrl}${locale === 'pt' ? '/pt' : ''}/read/${slug}`;
+  const pageUrl = `${canonicalUrl}${locale === "pt" ? "/pt" : ""}/read/${slug}`;
 
-  const title = `${t('readIssue')} ${issue.issueNumber} - ${translation.title}`;
+  const title = `${t("readIssue")} ${issue.issueNumber} - ${translation.title}`;
   const description = translation.description;
 
   // Build OG image URL with issue-specific parameters
   const ogParams = new URLSearchParams({
     title: translation.title,
-    subtitle: t('readNow'),
-    type: 'read',
+    subtitle: t("readNow"),
+    type: "read",
     cover: issue.cover,
     accentColor: issue.accentColor,
     issueNumber: String(issue.issueNumber),
@@ -60,9 +67,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} | Blue Mind Magazine`,
       description,
       url: pageUrl,
-      siteName: 'Blue Mind Magazine',
-      locale: locale === 'en' ? 'en_US' : 'pt_PT',
-      type: 'article',
+      siteName: "Blue Mind Magazine",
+      locale: locale === "en" ? "en_US" : "pt_PT",
+      type: "article",
       publishedTime: issue.date,
       images: [
         {
@@ -74,7 +81,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: `${title} | Blue Mind Magazine`,
       description,
       images: [
@@ -98,7 +105,7 @@ export default async function ReadIssuePage({ params }: Props) {
   setRequestLocale(locale);
 
   const issue = getIssueBySlug(slug);
-  const tNav = await getTranslations('Navigation');
+  const tNav = await getTranslations("Navigation");
 
   if (!issue) {
     notFound();
@@ -109,15 +116,25 @@ export default async function ReadIssuePage({ params }: Props) {
   const translation = issueTranslations[issue.id];
 
   // Get the flipbook URL for the current locale
-  const flipbookUrl = issue.flipbook[locale as 'en' | 'pt'] || issue.flipbook.en;
+  const flipbookUrl =
+    issue.flipbook[locale as "en" | "pt"] || issue.flipbook.en;
 
   // Generate JSON-LD schema for SEO
   const baseUrl = siteConfig.url;
   const breadcrumbItems = [
-    { name: tNav('home'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}` },
-    { name: tNav('issues'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues` },
-    { name: translation.title, url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/issues/${issue.slug}` },
-    { name: tNav('read'), url: `${baseUrl}${locale === 'pt' ? '/pt' : ''}/read/${issue.slug}` },
+    { name: tNav("home"), url: `${baseUrl}${locale === "pt" ? "/pt" : ""}` },
+    {
+      name: tNav("issues"),
+      url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues`,
+    },
+    {
+      name: translation.title,
+      url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/issues/${issue.slug}`,
+    },
+    {
+      name: tNav("read"),
+      url: `${baseUrl}${locale === "pt" ? "/pt" : ""}/read/${issue.slug}`,
+    },
   ];
 
   const schemas = [
@@ -133,7 +150,7 @@ export default async function ReadIssuePage({ params }: Props) {
       {/* Header with close button and issue indicator */}
       <header className="flipbook-reader__header">
         {/* Issue info - from MDX content */}
-        <Link 
+        <Link
           href={`/issues/${slug}`}
           className="font-ui text-white/70 text-sm hover:text-white transition-colors"
         >
@@ -142,7 +159,11 @@ export default async function ReadIssuePage({ params }: Props) {
 
         {/* ESC hint - center */}
         <div className="text-white/40 text-xs font-ui hidden md:block absolute left-1/2 -translate-x-1/2">
-          Press <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">ESC</kbd> to close
+          Press{" "}
+          <kbd className="px-1.5 py-0.5 bg-white/10 rounded text-white/60">
+            ESC
+          </kbd>{" "}
+          to close
         </div>
 
         {/* Close button */}
@@ -162,6 +183,7 @@ export default async function ReadIssuePage({ params }: Props) {
           title={translation.title}
           issueNumber={issue.issueNumber}
           locale={locale}
+          issueId={issue.id}
         />
       </div>
     </div>

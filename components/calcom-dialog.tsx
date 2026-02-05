@@ -9,7 +9,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { IconCoffee, IconCalendar, IconX } from "@tabler/icons-react";
-import { Frame } from '@c15t/react';
+import { Frame } from "@c15t/react";
+import { trackBookChatClick } from "@/lib/analytics";
 
 interface CalcomDialogProps {
   calcomUrl: string;
@@ -20,25 +21,23 @@ interface CalcomDialogProps {
 }
 
 // Custom placeholder component matching brand guidelines
-function CalcomPlaceholder({ 
-  locale 
-}: { 
-  locale: string;
-}) {
+function CalcomPlaceholder({ locale }: { locale: string }) {
   const text = {
     en: {
-      title: 'Cookie Consent Required',
-      description: 'To schedule a meeting, please accept functionality cookies.',
-      button: 'Accept & Schedule',
+      title: "Cookie Consent Required",
+      description:
+        "To schedule a meeting, please accept functionality cookies.",
+      button: "Accept & Schedule",
     },
     pt: {
-      title: 'Consentimento de Cookies Necessário',
-      description: 'Para agendar uma reunião, por favor aceite os cookies de funcionalidade.',
-      button: 'Aceitar & Agendar',
+      title: "Consentimento de Cookies Necessário",
+      description:
+        "Para agendar uma reunião, por favor aceite os cookies de funcionalidade.",
+      button: "Aceitar & Agendar",
     },
   };
 
-  const t = locale === 'pt' ? text.pt : text.en;
+  const t = locale === "pt" ? text.pt : text.en;
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full bg-[#EEEFF2] dark:bg-[#0F0F0F] p-8 text-center">
@@ -87,7 +86,11 @@ export function CalcomDialog({
       {/* Custom trigger button */}
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          // Track book chat click before opening dialog
+          trackBookChatClick({ locale });
+          setIsOpen(true);
+        }}
         className={`group flex items-center gap-4 p-5 bg-muted/50 rounded-xl hover:bg-brand/10 border border-transparent hover:border-brand/20 transition-all w-full text-left cursor-pointer! ${className}`}
       >
         <div className="p-3 bg-brand/10 rounded-full group-hover:bg-brand/20 transition-colors">
@@ -108,7 +111,7 @@ export function CalcomDialog({
       <DialogPortal>
         {/* Custom backdrop with blur */}
         <DialogOverlay className="bg-black/40 backdrop-blur-sm" />
-        
+
         <DialogContent
           className="
             p-0 overflow-hidden rounded-2xl shadow-2xl

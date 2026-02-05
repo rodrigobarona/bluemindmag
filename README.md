@@ -31,17 +31,18 @@ Blue Mind Magazine is a Next.js 16 application that serves as the digital home f
 
 ### Key Stakeholders
 
-| Role | Name/Organization | Description |
-|------|-------------------|-------------|
-| **Chief Editor** | Pedro Seixas, PT, PhD | Scientific Coordinator at Surfing Medicine International |
-| **Publisher** | Surfisio | Specialized physiotherapy and sports performance company |
-| **Main Supporter** | Surfing Medicine International (SMI) | Non-profit organization for surfing medicine science |
+| Role               | Name/Organization                    | Description                                              |
+| ------------------ | ------------------------------------ | -------------------------------------------------------- |
+| **Chief Editor**   | Pedro Seixas, PT, PhD                | Scientific Coordinator at Surfing Medicine International |
+| **Publisher**      | Surfisio                             | Specialized physiotherapy and sports performance company |
+| **Main Supporter** | Surfing Medicine International (SMI) | Non-profit organization for surfing medicine science     |
 
 ---
 
 ## Tech Stack
 
 ### Core Framework
+
 - **Next.js 16.1.2** — React framework with App Router
 - **React 19.2.3** — UI library
 - **TypeScript 5** — Type safety
@@ -49,19 +50,21 @@ Blue Mind Magazine is a Next.js 16 application that serves as the digital home f
 
 ### Key Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `next-intl` | ^4.7.0 | Internationalization (EN/PT) |
-| `next-themes` | ^0.4.6 | Dark/light mode theming |
-| `motion` | ^12.26.2 | Animations and transitions |
-| `embla-carousel-react` | ^8.6.0 | Sponsor carousel |
-| `resend` | ^6.7.0 | Transactional emails (contact form) |
-| `@vercel/og` | ^0.8.6 | Dynamic OG image generation |
-| `@c15t/nextjs` | ^1.8.2 | Cookie consent management |
-| `@mdx-js/react` | ^3.1.1 | MDX content support |
+| Package                | Version  | Purpose                             |
+| ---------------------- | -------- | ----------------------------------- |
+| `next-intl`            | ^4.7.0   | Internationalization (EN/PT)        |
+| `next-themes`          | ^0.4.6   | Dark/light mode theming             |
+| `motion`               | ^12.26.2 | Animations and transitions          |
+| `embla-carousel-react` | ^8.6.0   | Sponsor carousel                    |
+| `resend`               | ^6.7.0   | Transactional emails (contact form) |
+| `@vercel/og`           | ^0.8.6   | Dynamic OG image generation         |
+| `@c15t/nextjs`         | ^1.8.2   | Cookie consent management           |
+| `@mdx-js/react`        | ^3.1.1   | MDX content support                 |
 
 ### Typography System
+
 The magazine uses a carefully curated editorial font stack:
+
 - **Headlines:** League Gothic (condensed bold)
 - **Body:** Source Serif 4 (editorial serif)
 - **UI/Labels:** DM Sans (modern sans-serif)
@@ -72,37 +75,44 @@ The magazine uses a carefully curated editorial font stack:
 ## Features
 
 ### 🌐 Bilingual Support
+
 - Full English and Portuguese translations
 - URL-based locale routing (`/` for EN, `/pt` for PT)
 - Cookie-based language preference persistence
 
 ### 📖 Digital Magazine Reader
+
 - Embedded Publuu flipbook viewer
 - Locale-specific flipbook versions
 - Fullscreen reading experience with keyboard navigation
 
 ### 🖼️ Dynamic Ocean Photography
+
 - Integration with Pexels API for fresh imagery
 - Pool-based caching system (15 images per category)
 - Random selection on each page visit for variety
 - Automatic blur placeholders for instant loading feedback
 
 ### 📧 Newsletter Integration
+
 - Beehiiv newsletter subscription
 - Welcome emails and UTM tracking
 - Form validation and error handling
 
 ### 📬 Contact Form
+
 - Powered by Resend email service
 - HTML-formatted notification emails
 - Form validation with error states
 
 ### 🍪 Privacy Compliance
+
 - GDPR-compliant cookie consent
 - Essential, Analytics, and Marketing cookie categories
 - Customizable consent preferences
 
 ### 🔍 SEO Optimized
+
 - Dynamic sitemap generation
 - Structured metadata with Open Graph
 - Alternate language tags (hreflang)
@@ -206,26 +216,33 @@ BEEHIIV_API_KEY=your_beehiiv_api_key
 BEEHIIV_PUBLICATION_ID=your_publication_id
 
 # ===========================================
-# OPTIONAL: Cache Management
+# OPTIONAL: Analytics & Cache Management
 # ===========================================
+
+# Google Analytics 4 - Website analytics
+# Get your Measurement ID from: https://analytics.google.com/
+# Format: G-XXXXXXXXXX
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 
 # Secret for manual cache revalidation API
 REVALIDATE_SECRET=your_random_secret_string
 ```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `PEXELS_API_KEY` | Yes | API key for Pexels image fetching |
-| `RESEND_API_KEY` | Yes | API key for Resend email service |
-| `BEEHIIV_API_KEY` | Yes | API key for Beehiiv newsletter |
-| `BEEHIIV_PUBLICATION_ID` | Yes | Beehiiv publication identifier |
-| `REVALIDATE_SECRET` | No | Secret for cache invalidation API |
+| Variable                        | Required | Description                                            |
+| ------------------------------- | -------- | ------------------------------------------------------ |
+| `PEXELS_API_KEY`                | Yes      | API key for Pexels image fetching                      |
+| `RESEND_API_KEY`                | Yes      | API key for Resend email service                       |
+| `BEEHIIV_API_KEY`               | Yes      | API key for Beehiiv newsletter                         |
+| `BEEHIIV_PUBLICATION_ID`        | Yes      | Beehiiv publication identifier                         |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | No       | Google Analytics 4 Measurement ID (e.g., G-XXXXXXXXXX) |
+| `REVALIDATE_SECRET`             | No       | Secret for cache invalidation API                      |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 20+ or Bun 1.0+
 - npm, yarn, pnpm, or bun
 
@@ -266,11 +283,13 @@ bun run start
 ## External Services
 
 ### 1. Pexels API 📸
+
 **Purpose:** Dynamic ocean and surf photography
 
 **Documentation:** [pexels.com/api](https://www.pexels.com/api/)
 
 **Usage in App:**
+
 - Hero images, backgrounds, and atmospheric photography
 - Images are fetched in pools of 15 per category
 - Random selection on each page render for fresh feel
@@ -281,16 +300,19 @@ bun run start
 ---
 
 ### 2. Beehiiv 📬
+
 **Purpose:** Newsletter subscription management
 
 **Documentation:** [developers.beehiiv.com](https://developers.beehiiv.com/)
 
 **Usage in App:**
+
 - Newsletter signup form (`/newsletter`, footer)
 - Automatic welcome emails
 - UTM tracking for signups
 
 **Features Used:**
+
 - Subscription API
 - Reactivation of existing subscribers
 - Welcome email automation
@@ -298,32 +320,82 @@ bun run start
 ---
 
 ### 3. Resend ✉️
+
 **Purpose:** Transactional emails for contact form
 
 **Documentation:** [resend.com/docs](https://resend.com/docs)
 
 **Usage in App:**
+
 - Contact form submissions (`/contact`)
 - HTML-formatted notification emails to `info@bluemindmag.com`
 
 ---
 
 ### 4. Publuu 📖
+
 **Purpose:** Digital flipbook hosting
 
 **Documentation:** [publuu.com](https://publuu.com/)
 
 **Usage in App:**
+
 - Embedded magazine reader at `/read/[slug]`
 - Separate flipbooks per language (EN/PT)
 - Iframe-based integration
 
 ---
 
-### 5. Vercel (Deployment) 🚀
+### 5. Google Analytics 4 📊
+
+**Purpose:** Website analytics and user behavior tracking
+
+**Documentation:** [developers.google.com/analytics](https://developers.google.com/analytics/devguides/collection/ga4)
+
+**Setup:**
+
+1. Create a GA4 property at [analytics.google.com](https://analytics.google.com/)
+2. Get your Measurement ID (format: `G-XXXXXXXXXX`)
+3. Add it to your environment variables as `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+
+**Tracked Events:**
+| Event | Trigger | Purpose |
+|-------|---------|---------|
+| `view_issue_detail` | Visit issue detail page | Track issue discovery |
+| `start_reading` | Click "Read Issue" CTA | Primary conversion |
+| `reading_session_start` | Flipbook loads | Confirm reader opened |
+| `newsletter_signup` | Successful subscription | Secondary conversion |
+| `contact_form_submit` | Contact form success | Engagement metric |
+| `book_chat_click` | Click "Book a Chat" | Lead generation |
+
+**GA4 Admin Setup:**
+After deploying, configure these in GA4 Admin:
+
+1. **Custom Dimensions** (Admin > Custom definitions > Create custom dimension):
+
+   - `issue_id` (Scope: Event)
+   - `issue_number` (Scope: Event)
+   - `issue_title` (Scope: Event)
+   - `locale` (Scope: Event)
+   - `source` (Scope: Event)
+
+2. **Key Events** (Admin > Events > Mark as key event):
+   - `start_reading` — Primary KPI
+   - `newsletter_signup` — Secondary KPI
+   - `book_chat_click` — Tertiary KPI
+   - `contact_form_submit` — Tertiary KPI
+
+**Privacy Compliance:**
+Google Analytics only loads when users grant "measurement" consent via the cookie banner. This is managed through the c15t consent system.
+
+---
+
+### 6. Vercel (Deployment) 🚀
+
 **Purpose:** Hosting and serverless infrastructure
 
 **Features Used:**
+
 - Automatic deployments from Git
 - Edge network for fast global delivery
 - Serverless functions for API routes
@@ -334,9 +406,11 @@ bun run start
 ## API Endpoints
 
 ### POST `/api/newsletter`
+
 Subscribe an email to the Beehiiv newsletter.
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com"
@@ -344,6 +418,7 @@ Subscribe an email to the Beehiiv newsletter.
 ```
 
 **Response (Success):**
+
 ```json
 {
   "success": true,
@@ -355,9 +430,11 @@ Subscribe an email to the Beehiiv newsletter.
 ---
 
 ### POST `/api/contact`
+
 Submit the contact form (sends email via Resend).
 
 **Request:**
+
 ```json
 {
   "name": "John Doe",
@@ -368,6 +445,7 @@ Submit the contact form (sends email via Resend).
 ```
 
 **Response (Success):**
+
 ```json
 {
   "message": "Email sent successfully",
@@ -378,14 +456,17 @@ Submit the contact form (sends email via Resend).
 ---
 
 ### POST `/api/revalidate-images`
+
 Manually invalidate the Pexels image cache.
 
 **Headers:**
+
 ```
 x-revalidate-secret: YOUR_REVALIDATE_SECRET
 ```
 
 **Request (Optional body):**
+
 ```json
 {
   "tag": "pexels"
@@ -405,6 +486,7 @@ x-revalidate-secret: YOUR_REVALIDATE_SECRET
 | `pexels-pool-contact` | Contact page images |
 
 **Response:**
+
 ```json
 {
   "revalidated": true,
@@ -415,6 +497,7 @@ x-revalidate-secret: YOUR_REVALIDATE_SECRET
 ```
 
 **Usage Example (curl):**
+
 ```bash
 curl -X POST https://bluemindmag.com/api/revalidate-images \
   -H "Content-Type: application/json" \
@@ -425,9 +508,11 @@ curl -X POST https://bluemindmag.com/api/revalidate-images \
 ---
 
 ### GET `/api/revalidate-images`
+
 Health check and API documentation.
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -444,13 +529,16 @@ Health check and API documentation.
 ---
 
 ### GET `/api/og`
+
 Generate dynamic Open Graph images.
 
 **Query Parameters:**
+
 - `title` — The title text
 - `subtitle` — Optional subtitle
 
 **Example:**
+
 ```
 /api/og?title=Issue%200&subtitle=January%202026
 ```
@@ -524,6 +612,7 @@ Edit `content/data/sponsors.ts`:
 ## Internationalization (i18n)
 
 ### Supported Locales
+
 - **English (en)** — Default, served at `/`
 - **Portuguese (pt)** — Served at `/pt`
 
@@ -550,20 +639,19 @@ Edit `content/data/sponsors.ts`:
 2. Use in components:
 
 ```tsx
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from "next-intl/server";
 
 export default async function MyPage() {
-  const t = await getTranslations('MyPage');
-  
-  return (
-    <h1>{t('title')}</h1>
-  );
+  const t = await getTranslations("MyPage");
+
+  return <h1>{t("title")}</h1>;
 }
 ```
 
 ### Language Switching
 
 Users can switch languages via:
+
 - Footer language selector
 - Direct URL navigation (`/pt/about`)
 
@@ -584,15 +672,15 @@ The application uses Next.js 16's `"use cache"` directive for serverless-compati
 
 ### Image Categories
 
-| Category | Usage | Query Examples |
-|----------|-------|----------------|
-| `hero` | Homepage, issue pages | Ocean waves, surfer silhouettes |
-| `quote` | Pull quote backgrounds | Mist, fog, calm nature |
-| `science` | About page, scientific sections | Coral reefs, marine life |
-| `surfer` | Lifestyle sections | Beach lifestyle, surfboards |
-| `portugal` | Atlantic coast imagery | Cliffs, rocky coastlines |
-| `cta` | Newsletter/CTA backgrounds | Dark, moody ocean |
-| `contact` | Contact page | Warm sunset tones |
+| Category   | Usage                           | Query Examples                  |
+| ---------- | ------------------------------- | ------------------------------- |
+| `hero`     | Homepage, issue pages           | Ocean waves, surfer silhouettes |
+| `quote`    | Pull quote backgrounds          | Mist, fog, calm nature          |
+| `science`  | About page, scientific sections | Coral reefs, marine life        |
+| `surfer`   | Lifestyle sections              | Beach lifestyle, surfboards     |
+| `portugal` | Atlantic coast imagery          | Cliffs, rocky coastlines        |
+| `cta`      | Newsletter/CTA backgrounds      | Dark, moody ocean               |
+| `contact`  | Contact page                    | Warm sunset tones               |
 
 ### Cache Invalidation
 
@@ -632,6 +720,7 @@ bun run build
 ### Vercel Configuration
 
 The app uses these Vercel-specific features:
+
 - `cacheComponents: true` — Enables `"use cache"` directive
 - Dynamic OG image generation
 - Serverless API routes
@@ -648,5 +737,6 @@ All rights reserved © Blue Mind Magazine
 ## Support
 
 For technical issues or questions:
+
 - **Email:** info@bluemindmag.com
 - **Website:** [bluemindmag.com](https://bluemindmag.com)

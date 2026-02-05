@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { BookOpen, ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { trackStartReading } from "@/lib/analytics";
 
 // ============================================
 // ISSUE CTA COMPONENTS
@@ -19,11 +20,17 @@ interface ReadIssueCTAProps {
   className?: string;
   showIcon?: boolean;
   animated?: boolean;
+  // Analytics tracking props (optional for backwards compatibility)
+  issueId?: string;
+  issueNumber?: number;
+  issueTitle?: string;
+  locale?: string;
 }
 
 /**
  * Primary CTA for reading an issue
  * Supports multiple variants: primary (accent color), white, outline
+ * Tracks 'start_reading' event when clicked (if analytics props provided)
  */
 export function ReadIssueCTA({
   slug,
@@ -34,6 +41,11 @@ export function ReadIssueCTA({
   className,
   showIcon = true,
   animated = false,
+  // Analytics props
+  issueId,
+  issueNumber,
+  issueTitle,
+  locale,
 }: ReadIssueCTAProps) {
   const sizeClasses = {
     default: "px-6 py-3 text-sm",
@@ -43,7 +55,8 @@ export function ReadIssueCTA({
   const variantClasses = {
     primary: "text-white hover:brightness-110 shadow-sm",
     white: "bg-white text-foreground hover:bg-white/90",
-    outline: "border border-foreground/20 dark:border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5",
+    outline:
+      "border border-foreground/20 dark:border-foreground/30 bg-transparent text-foreground hover:bg-foreground/5",
   };
 
   const baseClasses = cn(
@@ -57,6 +70,18 @@ export function ReadIssueCTA({
     variant === "primary" && accentColor
       ? { backgroundColor: accentColor }
       : undefined;
+
+  // Track start_reading event when clicked
+  const handleClick = () => {
+    if (issueId && issueNumber && issueTitle && locale) {
+      trackStartReading({
+        issue_id: issueId,
+        issue_number: issueNumber,
+        issue_title: issueTitle,
+        locale,
+      });
+    }
+  };
 
   const content = (
     <>
@@ -74,7 +99,12 @@ export function ReadIssueCTA({
   );
 
   return (
-    <Link href={`/read/${slug}`} className={baseClasses} style={style}>
+    <Link
+      href={`/read/${slug}`}
+      className={baseClasses}
+      style={style}
+      onClick={handleClick}
+    >
       {content}
     </Link>
   );
@@ -178,4 +208,3 @@ export function IssueHoverCTA({
     </span>
   );
 }
-

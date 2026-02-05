@@ -16,6 +16,7 @@ import {
   LineDraw,
 } from "@/components/animations/scroll-reveal";
 import type { Issue, IssueTranslation } from "@/content/types/content";
+import { trackViewIssueDetail, trackStartReading } from "@/lib/analytics";
 
 // Hook to prevent hydration mismatch
 function useMounted() {
@@ -61,6 +62,16 @@ export function IssueDetailHero({
   // Parallax effect for ambient glow
   const glowY = useTransform(scrollYProgress, [0, 1], [0, 100]);
   const glowOpacity = useTransform(scrollYProgress, [0, 0.5], [0.6, 0.2]);
+
+  // Track issue detail view on mount
+  useEffect(() => {
+    trackViewIssueDetail({
+      issue_id: issue.id,
+      issue_number: issue.issueNumber,
+      issue_title: translation.title,
+      locale,
+    });
+  }, [issue.id, issue.issueNumber, translation.title, locale]);
 
   return (
     <section
@@ -137,7 +148,14 @@ export function IssueDetailHero({
 
             {/* Primary Action - Read Issue */}
             <StaggerItem className="flex flex-wrap items-center gap-6">
-              <ReadIssueButton issueSlug={issue.slug} label={labels.readIssue} />
+              <ReadIssueButton
+                issueSlug={issue.slug}
+                label={labels.readIssue}
+                issueId={issue.id}
+                issueNumber={issue.issueNumber}
+                issueTitle={translation.title}
+                locale={locale}
+              />
               <a
                 href="#features"
                 className="font-ui text-sm font-medium transition-colors hover:opacity-70"
@@ -218,7 +236,10 @@ export function IssueDetailFeatures({
   const isMounted = useMounted();
 
   return (
-    <section id="features" className="py-20 md:py-28 border-t border-border overflow-x-clip overflow-y-visible">
+    <section
+      id="features"
+      className="py-20 md:py-28 border-t border-border overflow-x-clip overflow-y-visible"
+    >
       <div className="container-editorial">
         {/* Section Header with line animation */}
         <div className="mb-16 md:mb-20">
@@ -348,7 +369,8 @@ export function IssueDetailFeatures({
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.3, duration: 0.6 }}
                               >
-                                {highlightTranslation.headline || highlightTranslation.title}
+                                {highlightTranslation.headline ||
+                                  highlightTranslation.title}
                               </motion.h3>
                               <motion.p
                                 className="font-accent italic text-white/80 text-lg"
@@ -366,7 +388,8 @@ export function IssueDetailFeatures({
                                 {highlightTranslation.title}
                               </span>
                               <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-4 text-balance">
-                                {highlightTranslation.headline || highlightTranslation.title}
+                                {highlightTranslation.headline ||
+                                  highlightTranslation.title}
                               </h3>
                               <p className="font-accent italic text-white/80 text-lg">
                                 {labels.by} {highlightTranslation.author}
@@ -398,7 +421,9 @@ export function IssueDetailFeatures({
               >
                 <article className="group grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                   {/* Image - larger, with hover effect */}
-                  <div className={`lg:col-span-7 ${isEven ? "" : "lg:order-2"}`}>
+                  <div
+                    className={`lg:col-span-7 ${isEven ? "" : "lg:order-2"}`}
+                  >
                     <motion.div
                       className="relative overflow-hidden"
                       whileHover={{ scale: 1.02 }}
@@ -442,7 +467,9 @@ export function IssueDetailFeatures({
                   </div>
 
                   {/* Content */}
-                  <div className={`lg:col-span-5 ${isEven ? "" : "lg:order-1"}`}>
+                  <div
+                    className={`lg:col-span-5 ${isEven ? "" : "lg:order-1"}`}
+                  >
                     {/* Page Number with accent line */}
                     <div className="flex items-center gap-4 mb-6">
                       <LineDraw
@@ -473,7 +500,7 @@ export function IssueDetailFeatures({
 
                     {/* Title (label) */}
                     <TextReveal delay={0.1}>
-                      <span 
+                      <span
                         className="font-ui text-xs font-medium uppercase tracking-[0.2em] mb-2 block"
                         style={{ color: issue.accentColor }}
                       >
@@ -484,7 +511,8 @@ export function IssueDetailFeatures({
                     {/* Headline */}
                     <TextReveal delay={0.15}>
                       <h3 className="font-headline text-2xl md:text-3xl lg:text-4xl mb-6 group-hover:text-foreground/80 transition-colors text-balance">
-                        {highlightTranslation.headline || highlightTranslation.title}
+                        {highlightTranslation.headline ||
+                          highlightTranslation.title}
                       </h3>
                     </TextReveal>
 
@@ -519,6 +547,16 @@ export function IssueDetailCTA({
   labels,
 }: IssueDetailAnimatedProps) {
   const isMounted = useMounted();
+
+  // Track start_reading event when CTA is clicked
+  const handleReadClick = () => {
+    trackStartReading({
+      issue_id: issue.id,
+      issue_number: issue.issueNumber,
+      issue_title: translation.title,
+      locale,
+    });
+  };
 
   return (
     <section
@@ -569,6 +607,7 @@ export function IssueDetailCTA({
               <Link
                 href={`/read/${issue.slug}`}
                 className="inline-flex items-center gap-3 bg-white text-foreground px-8 py-4 font-ui text-sm font-medium transition-all hover:bg-white/90"
+                onClick={handleReadClick}
               >
                 <BookOpen className="w-5 h-5" />
                 {labels.readIssue}
@@ -617,9 +656,10 @@ export function IssueDetailCTA({
 
             {/* Floating cover with hover interaction */}
             <Floating duration={6} distance={8}>
-              <Link 
+              <Link
                 href={`/read/${issue.slug}`}
                 className="group relative lg:-mt-32 z-10 block rotate-3 transition-transform duration-500 ease-out hover:rotate-0"
+                onClick={handleReadClick}
               >
                 <div className="absolute inset-0 bg-black/30 translate-x-6 translate-y-6 blur-2xl transition-all duration-500 group-hover:translate-x-4 group-hover:translate-y-4" />
                 <div className="relative w-64 xl:w-80 shadow-2xl group-hover:shadow-cover transition-all duration-500">
@@ -713,4 +753,3 @@ export function MoreIssuesAnimated({
     </section>
   );
 }
-

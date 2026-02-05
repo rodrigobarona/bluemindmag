@@ -52,29 +52,53 @@ export function IssueShowcase({
   // Smooth spring animation for the tilt
   const springConfig = { damping: 25, stiffness: 150 };
   const rotateX = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [12, -12]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [12, -12]
+    ),
     springConfig
   );
   const rotateY = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-12, 12]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-12, 12]
+    ),
     springConfig
   );
 
   // Parallax layers
   const glowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-20, 20]
+    ),
     springConfig
   );
   const glowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [-20, 20]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [-20, 20]
+    ),
     springConfig
   );
   const shadowX = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
+    useTransform(
+      mouseX,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [30, -30]
+    ),
     springConfig
   );
   const shadowY = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], prefersReducedMotion ? [0, 0] : [30, -30]),
+    useTransform(
+      mouseY,
+      [-0.5, 0.5],
+      prefersReducedMotion ? [0, 0] : [30, -30]
+    ),
     springConfig
   );
 
@@ -192,7 +216,6 @@ export function IssueShowcase({
                       <IssueHoverCTA label={mergedLabels.readNow} />
                     </div>
                   </div>
-
                 </div>
 
                 {/* Floating decorative elements */}
@@ -230,13 +253,18 @@ export function IssueShowcase({
           {/* Issue Details */}
           <motion.div
             className="text-center lg:text-left"
-            initial={{ opacity: 0, x: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.base }}
+            initial={{
+              opacity: 0,
+              x: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.base,
+            }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ 
-              duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.slower, 
-              delay: prefersReducedMotion ? 0 : 0.2, 
-              ease: ANIMATION_CONFIG.ease.out 
+            transition={{
+              duration: prefersReducedMotion
+                ? 0.01
+                : ANIMATION_CONFIG.duration.slower,
+              delay: prefersReducedMotion ? 0 : 0.2,
+              ease: ANIMATION_CONFIG.ease.out,
             }}
           >
             <span
@@ -265,12 +293,21 @@ export function IssueShowcase({
                     <motion.div
                       key={index}
                       className="flex items-start gap-3 text-left"
-                      initial={{ opacity: 0, x: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small }}
+                      initial={{
+                        opacity: 0,
+                        x: prefersReducedMotion
+                          ? 0
+                          : ANIMATION_CONFIG.distance.small,
+                      }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ 
-                        delay: prefersReducedMotion ? 0 : 0.3 + index * ANIMATION_CONFIG.stagger.base, 
-                        duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base 
+                      transition={{
+                        delay: prefersReducedMotion
+                          ? 0
+                          : 0.3 + index * ANIMATION_CONFIG.stagger.base,
+                        duration: prefersReducedMotion
+                          ? 0.01
+                          : ANIMATION_CONFIG.duration.base,
                       }}
                     >
                       <span
@@ -294,12 +331,17 @@ export function IssueShowcase({
             {/* CTA */}
             <motion.div
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small }}
+              initial={{
+                opacity: 0,
+                y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small,
+              }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ 
-                delay: prefersReducedMotion ? 0 : 0.6, 
-                duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base 
+              transition={{
+                delay: prefersReducedMotion ? 0 : 0.6,
+                duration: prefersReducedMotion
+                  ? 0.01
+                  : ANIMATION_CONFIG.duration.base,
               }}
             >
               <ReadIssueCTA
@@ -307,6 +349,10 @@ export function IssueShowcase({
                 label={mergedLabels.readIssue}
                 accentColor={issue.accentColor}
                 size="lg"
+                issueId={issue.id}
+                issueNumber={issue.issueNumber}
+                issueTitle={translation.title}
+                locale={locale}
               />
               <ViewDetailsCTA
                 slug={issue.slug}

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 import { IconSend, IconCheck, IconX } from "@tabler/icons-react";
 import { useReducedMotion, ANIMATION_CONFIG } from "@/lib/use-reduced-motion";
+import { trackContactFormSubmit } from "@/lib/analytics";
 
 interface FormData {
   name: string;
@@ -17,6 +18,7 @@ type FormStatus = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const t = useTranslations("Contact.form");
+  const locale = useLocale();
   const prefersReducedMotion = useReducedMotion();
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -53,6 +55,9 @@ export function ContactForm() {
       setStatus("success");
       setFormData({ name: "", email: "", subject: "", message: "" });
 
+      // Track successful contact form submission
+      trackContactFormSubmit({ locale });
+
       // Reset success message after 5 seconds
       setTimeout(() => setStatus("idle"), 5000);
     } catch (error) {
@@ -70,19 +75,21 @@ export function ContactForm() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: prefersReducedMotion ? 0 : ANIMATION_CONFIG.stagger.base,
+        staggerChildren: prefersReducedMotion
+          ? 0
+          : ANIMATION_CONFIG.stagger.base,
         delayChildren: prefersReducedMotion ? 0 : 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small 
+    hidden: {
+      opacity: 0,
+      y: prefersReducedMotion ? 0 : ANIMATION_CONFIG.distance.small,
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: {
         duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base,
@@ -92,8 +99,8 @@ export function ContactForm() {
   };
 
   return (
-    <motion.form 
-      onSubmit={handleSubmit} 
+    <motion.form
+      onSubmit={handleSubmit}
       className="space-y-8"
       initial="hidden"
       whileInView="visible"
@@ -207,12 +214,16 @@ export function ContactForm() {
       {/* Status Messages with AnimatePresence */}
       <AnimatePresence mode="wait">
         {status === "success" && (
-          <motion.div 
+          <motion.div
             className="flex items-center gap-3 p-5 bg-green-500/10 border border-green-500/20"
             initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            transition={{ duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base }}
+            transition={{
+              duration: prefersReducedMotion
+                ? 0.01
+                : ANIMATION_CONFIG.duration.base,
+            }}
           >
             <IconCheck className="h-5 w-5 text-green-600 shrink-0" />
             <p className="text-green-600">{t("success")}</p>
@@ -220,12 +231,16 @@ export function ContactForm() {
         )}
 
         {status === "error" && (
-          <motion.div 
+          <motion.div
             className="flex items-center gap-3 p-5 bg-red-500/10 border border-red-500/20"
             initial={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -10 }}
-            transition={{ duration: prefersReducedMotion ? 0.01 : ANIMATION_CONFIG.duration.base }}
+            transition={{
+              duration: prefersReducedMotion
+                ? 0.01
+                : ANIMATION_CONFIG.duration.base,
+            }}
           >
             <IconX className="h-5 w-5 text-red-600 shrink-0" />
             <p className="text-red-600">{t("error")}</p>

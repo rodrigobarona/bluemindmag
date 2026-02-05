@@ -1,39 +1,44 @@
-'use client';
+"use client";
 
-import { Frame } from '@c15t/react';
-import { BookOpen } from 'lucide-react';
+import { Frame } from "@c15t/react";
+import { BookOpen } from "lucide-react";
+import { useRef } from "react";
+import { trackReadingSessionStart } from "@/lib/analytics";
 
 interface FlipbookFrameProps {
   src: string;
   title: string;
   issueNumber: number;
   locale: string;
+  issueId?: string; // Optional for backwards compatibility
 }
 
 // Custom placeholder component matching brand guidelines
-function FlipbookPlaceholder({ 
-  title, 
+function FlipbookPlaceholder({
+  title,
   issueNumber,
-  locale 
-}: { 
-  title: string; 
+  locale,
+}: {
+  title: string;
   issueNumber: number;
   locale: string;
 }) {
   const text = {
     en: {
-      title: 'Cookie Consent Required',
-      description: 'To view the interactive magazine, please accept functionality cookies.',
-      button: 'Accept & View Magazine',
+      title: "Cookie Consent Required",
+      description:
+        "To view the interactive magazine, please accept functionality cookies.",
+      button: "Accept & View Magazine",
     },
     pt: {
-      title: 'Consentimento de Cookies Necessário',
-      description: 'Para ver a revista interativa, por favor aceite os cookies de funcionalidade.',
-      button: 'Aceitar & Ver Revista',
+      title: "Consentimento de Cookies Necessário",
+      description:
+        "Para ver a revista interativa, por favor aceite os cookies de funcionalidade.",
+      button: "Aceitar & Ver Revista",
     },
   };
 
-  const t = locale === 'pt' ? text.pt : text.en;
+  const t = locale === "pt" ? text.pt : text.en;
 
   return (
     <div className="flex flex-col items-center justify-center h-full bg-card/95 backdrop-blur-sm p-8 text-center">
@@ -44,7 +49,7 @@ function FlipbookPlaceholder({
 
       {/* Issue info */}
       <div className="font-ui text-xs uppercase tracking-[0.3em] text-muted-foreground mb-2">
-        Issue {String(issueNumber).padStart(2, '0')}
+        Issue {String(issueNumber).padStart(2, "0")}
       </div>
 
       {/* Title */}
@@ -75,15 +80,37 @@ function FlipbookPlaceholder({
   );
 }
 
-export function FlipbookFrame({ src, title, issueNumber, locale }: FlipbookFrameProps) {
+export function FlipbookFrame({
+  src,
+  title,
+  issueNumber,
+  locale,
+  issueId,
+}: FlipbookFrameProps) {
+  const hasTrackedRef = useRef(false);
+
+  // Track reading session start when iframe loads
+  const handleIframeLoad = () => {
+    // Only track once per component mount
+    if (hasTrackedRef.current) return;
+    hasTrackedRef.current = true;
+
+    if (issueId) {
+      trackReadingSessionStart({
+        issue_id: issueId,
+        issue_number: issueNumber,
+      });
+    }
+  };
+
   return (
     <Frame
       category="functionality"
       placeholder={
-        <FlipbookPlaceholder 
-          title={title} 
-          issueNumber={issueNumber} 
-          locale={locale} 
+        <FlipbookPlaceholder
+          title={title}
+          issueNumber={issueNumber}
+          locale={locale}
         />
       }
       noStyle
@@ -95,8 +122,8 @@ export function FlipbookFrame({ src, title, issueNumber, locale }: FlipbookFrame
         className="w-full h-full"
         allow="clipboard-write; autoplay; fullscreen"
         allowFullScreen
+        onLoad={handleIframeLoad}
       />
     </Frame>
   );
 }
-

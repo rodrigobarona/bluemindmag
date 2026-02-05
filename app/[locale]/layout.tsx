@@ -14,7 +14,7 @@ import { routing } from "@/i18n/routing";
 import ConsentManager from "@/components/consent-manager";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
-import { getBaseUrl, getCanonicalUrl } from "@/lib/utils";
+import { getCanonicalUrl } from "@/lib/utils";
 import "../globals.css";
 
 // Display/Headlines - Condensed bold for masthead and titles
@@ -67,7 +67,13 @@ export async function generateMetadata({
   const canonicalUrl = getCanonicalUrl();
 
   // OG image URL - always use canonical URL for stable social media sharing
-  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent("Blue Mind")}&subtitle=${encodeURIComponent(locale === "en" ? "From surfers, to surfers" : "De surfistas, para surfistas")}&type=home`;
+  const ogImageUrl = `${canonicalUrl}/api/og?title=${encodeURIComponent(
+    "Blue Mind"
+  )}&subtitle=${encodeURIComponent(
+    locale === "en"
+      ? "From surfers, to surfers"
+      : "De surfistas, para surfistas"
+  )}&type=home`;
 
   return {
     title: {
@@ -172,12 +178,15 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        {/* DNS prefetch for Google Analytics */}
+        <link rel="dns-prefetch" href="//www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="//www.google-analytics.com" />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased overflow-x-hidden">
         <ThemeProvider>
           <NextIntlClientProvider>
             <Suspense fallback={null}>
-              <ConsentManager locale={locale}>{children}</ConsentManager>
+              <ConsentManager>{children}</ConsentManager>
             </Suspense>
           </NextIntlClientProvider>
         </ThemeProvider>
