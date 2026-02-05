@@ -368,6 +368,25 @@ bun run start
 | `contact_form_submit` | Contact form success | Engagement metric |
 | `book_chat_click` | Click "Book a Chat" | Lead generation |
 
+**Core Web Vitals Monitoring:**
+
+The website automatically tracks Core Web Vitals and sends them to GA4:
+
+| Metric | Name                      | Description         | Good Threshold |
+| ------ | ------------------------- | ------------------- | -------------- |
+| LCP    | Largest Contentful Paint  | Loading performance | ≤ 2.5s         |
+| INP    | Interaction to Next Paint | Interactivity       | ≤ 200ms        |
+| CLS    | Cumulative Layout Shift   | Visual stability    | ≤ 0.1          |
+| FCP    | First Contentful Paint    | Initial render      | ≤ 1.8s         |
+| TTFB   | Time to First Byte        | Server response     | ≤ 800ms        |
+
+Each metric includes:
+
+- `value` — The delta value (for summing across reports)
+- `metric_id` — Unique ID for deduplication
+- `metric_value` — Final metric value
+- `metric_rating` — Performance rating (`good`, `needs-improvement`, or `poor`)
+
 **GA4 Admin Setup:**
 After deploying, configure these in GA4 Admin:
 
@@ -378,6 +397,9 @@ After deploying, configure these in GA4 Admin:
    - `issue_title` (Scope: Event)
    - `locale` (Scope: Event)
    - `source` (Scope: Event)
+   - `metric_id` (Scope: Event) — Web Vitals deduplication
+   - `metric_value` (Scope: Event) — Web Vitals final value
+   - `metric_rating` (Scope: Event) — Web Vitals performance rating
 
 2. **Key Events** (Admin > Events > Mark as key event):
    - `start_reading` — Primary KPI

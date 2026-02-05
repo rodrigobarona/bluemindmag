@@ -6,6 +6,21 @@
 import { sendGAEvent } from "@next/third-parties/google";
 
 // ============================================
+// GLOBAL TYPE DECLARATIONS
+// ============================================
+
+// Extend Window interface to include gtag function
+declare global {
+  interface Window {
+    gtag: (
+      command: "config" | "event" | "js" | "set",
+      targetId: string | Date,
+      params?: Record<string, unknown>
+    ) => void;
+  }
+}
+
+// ============================================
 // TYPE DEFINITIONS
 // ============================================
 
