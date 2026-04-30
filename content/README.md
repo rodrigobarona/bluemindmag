@@ -78,6 +78,8 @@ Each magazine issue has its own file with all the articles and information.
 
 | Language      | File                                                                         | Action                                          |
 | ------------- | ---------------------------------------------------------------------------- | ----------------------------------------------- |
+| 🇵🇹 Portuguese | [`issues/pt/issue-1-abril-2026.mdx`](./issues/pt/issue-1-abril-2026.mdx)   | [✏️ Edit](./issues/pt/issue-1-abril-2026.mdx)   |
+| 🇬🇧 English    | [`issues/en/issue-1-april-2026.mdx`](./issues/en/issue-1-april-2026.mdx)   | [✏️ Edit](./issues/en/issue-1-april-2026.mdx)   |
 | 🇵🇹 Portuguese | [`issues/pt/issue-0-janeiro-2026.mdx`](./issues/pt/issue-0-janeiro-2026.mdx) | [✏️ Edit](./issues/pt/issue-0-janeiro-2026.mdx) |
 | 🇬🇧 English    | [`issues/en/issue-0-january-2026.mdx`](./issues/en/issue-0-january-2026.mdx) | [✏️ Edit](./issues/en/issue-0-january-2026.mdx) |
 

@@ -30,7 +30,7 @@ sleep 2
 
 # Test 5: Issue Detail
 echo "5. Testing Issue Detail..."
-open "${BASE_URL}/api/og?title=Issue%200&subtitle=January%202026&type=issue&cover=/images/issues/issue-0/cover.png&accentColor=%230097B2&issueNumber=0"
+open "${BASE_URL}/api/og?title=Issue%201&subtitle=April%202026&type=issue&cover=/images/issues/issue-1/cover.png&accentColor=%23C8102E&issueNumber=1"
 sleep 2
 
 # Test 6: Legal
