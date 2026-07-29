@@ -90,6 +90,13 @@
       "error": "Something went wrong. Please try again."
     }
   },
+  "Home": {
+    "archive": {
+      "label": "Archive",
+      "title": "Past Issues",
+      "viewAll": "View All Issues"
+    }
+  },
   "Newsletter": {
     "placeholder": "Enter your email",
     "submit": "Subscribe",

@@ -90,6 +90,13 @@
       "error": "Algo correu mal. Por favor tente novamente."
     }
   },
+  "Home": {
+    "archive": {
+      "label": "Arquivo",
+      "title": "Edições Anteriores",
+      "viewAll": "Ver Todas as Edições"
+    }
+  },
   "Newsletter": {
     "placeholder": "Insira o seu email",
     "submit": "Subscrever",
